@@ -34,22 +34,22 @@ Before you start, you'll need java (including javafx), and gradle installed on y
 
 For Debian Linux (as root) :
 
-> apt-get install openjdk-8-jdk libopenjfx-java gradle
+    apt-get install openjdk-8-jdk libopenjfx-java gradle
 
 Note. If you are running an old version of Debian (e.g. Jessie), you will need to download gradle v2+ manually
 because Jessie only supports gradle version 1.5, and I believe version 2.0+ is required.
 
 Kogo uses some components from another of my projects "paratask", so you will need to download and compile that first :
 
-> git clone https://github.com/nickthecoder/paratask.git
-> cd paratask
-> gradle install
+    git clone https://github.com/nickthecoder/paratask.git
+    cd paratask
+    gradle install
 
 Now download and compile kogo :
 
-> git clone https://github.com/nickthecoder/kogo.git
-> cd kogo
-> gradle installApp
+    git clone https://github.com/nickthecoder/kogo.git
+    cd kogo
+    gradle installApp
 
 
 Home Page
