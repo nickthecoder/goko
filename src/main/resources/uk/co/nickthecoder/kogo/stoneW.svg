@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   style="overflow: hidden; position: relative; top: -0.875px;"
+   height="250"
+   version="1.1"
+   width="250"
+   id="svg3769"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="stoneW.svg">
+  <metadata
+     id="metadata3784">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview3782"
+     showgrid="false"
+     inkscape:zoom="0.944"
+     inkscape:cx="125"
+     inkscape:cy="125.52966"
+     inkscape:window-x="603"
+     inkscape:window-y="237"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3769" />
+  <defs
+     id="defs3771">
+    <radialGradient
+       id="1r_0.75_0.75__fff-_A0A0A0"
+       fx="187.775"
+       fy="187.775"
+       cx="125"
+       cy="125"
+       r="125.55"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         id="stop3774" />
+      <stop
+         offset="100%"
+         stop-color="#a0a0a0"
+         stop-opacity="1"
+         id="stop3776" />
+    </radialGradient>
+  </defs>
+  <circle
+     cx="125"
+     cy="125"
+     r="125"
+     fill="#ffffff"
+     stroke="#000"
+     stroke-width="0"
+     id="circle3778" />
+  <circle
+     style="fill:url(#1r_0.75_0.75__fff-_A0A0A0);fill-opacity:1;stroke:#000000;stroke-width:1.10000002;stroke-opacity:0.3"
+     cx="125"
+     cy="125"
+     r="125"
+     id="circle3780"
+     sodipodi:cx="125"
+     sodipodi:cy="125"
+     sodipodi:rx="125"
+     sodipodi:ry="125"
+     transform="matrix(-1,0,0,-1,250,250)"
+     inkscape:export-filename="/home/nick/projects/kogo/src/main/resources/uk/co/nickthecoder/kogo/stoneW.png"
+     inkscape:export-xdpi="43.009998"
+     inkscape:export-ydpi="43.009998" />
+</svg>

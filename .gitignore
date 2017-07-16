@@ -1,0 +1,13 @@
+/build/
+/.gradle/
+/gradle/
+/gradlew
+/gradlew.bat
+/koforit.iml
+/koforit.ipr
+/koforit.iws
+/kogo.iml
+/kogo.iml
+/kogo.ipr
+/kogo.iws
+/out/

@@ -1,0 +1,123 @@
+package uk.co.nickthecoder.kogo.model
+
+import uk.co.nickthecoder.kogo.Player
+import uk.co.nickthecoder.kogo.util.array2d
+
+class Board(val sizeX: Int, val sizeY: Int = sizeX, val game: Game) {
+
+    private val points = array2d<StoneColor>(sizeX, sizeY) { StoneColor.NONE }
+
+    val listeners = mutableListOf<BoardListener>()
+
+    fun contains(x: Int, y: Int) = x >= 0 && y >= 0 && x < sizeX && y < sizeY
+
+    fun contains(point: Point) = point.x >= 0 && point.y >= 0 && point.x < sizeX && point.y < sizeY
+
+    fun getStoneAt(x: Int, y: Int): StoneColor {
+        if (contains(x, y)) {
+            return points[x][y]
+        } else {
+            return StoneColor.EDGE
+        }
+    }
+
+    fun getStoneAt(point: Point): StoneColor {
+        if (contains(point)) {
+            return points[point.x][point.y]
+        } else {
+            return StoneColor.EDGE
+        }
+    }
+
+    /**
+     * byPlayer is the Player that added the stone. This is only used by the board listeners, so that
+     * GNUGoPlayer does not re-add stones to its internal board for pieces that have already been added.
+     * Therefore, when moving back/forward through the game tree, this will be null.
+     */
+    fun setStoneAt(point: Point, color: StoneColor, byPlayer: Player? = null) {
+        if (contains(point)) {
+            points[point.x][point.y] = color
+            listeners.forEach {
+                it.stoneChanged(point, byPlayer)
+            }
+        }
+    }
+
+    /**
+     * See setStoneAt for a description of byPlayer.
+     */
+    fun removeStoneAt(point: Point, byPlayer: Player? = null) {
+        points[point.x][point.y] = StoneColor.NONE
+        listeners.forEach {
+            it.stoneChanged(point, byPlayer)
+        }
+    }
+
+    fun checkLiberties(point: Point): Set<Point>? {
+
+        val color = getStoneAt(point)
+        val opposite = if (color == StoneColor.BLACK) StoneColor.WHITE else StoneColor.BLACK
+        val group = mutableSetOf<Point>()
+
+        fun surrounded(innerPoint: Point): Boolean {
+            val c = getStoneAt(innerPoint)
+            if (c == StoneColor.NONE) {
+                return false
+            }
+            if (c == StoneColor.EDGE || c == opposite) {
+                return true
+            }
+            if (group.contains(innerPoint)) {
+                return true
+            }
+            group.add(innerPoint)
+
+            return surrounded(Point(innerPoint.x - 1, innerPoint.y)) &&
+                    surrounded(Point(innerPoint.x + 1, innerPoint.y)) &&
+                    surrounded(Point(innerPoint.x, innerPoint.y - 1)) &&
+                    surrounded(Point(innerPoint.x, innerPoint.y + 1))
+        }
+
+        if (surrounded(point)) {
+            return group
+        } else {
+            return null
+        }
+    }
+
+    fun removeTakenStones(point: Point, byPlayer: Player?): Set<Point> {
+
+        fun removeTakenStonesQuarter(innerPoint: Point): Set<Point> {
+            val group = checkLiberties(innerPoint)
+            group?.forEach {
+                removeStoneAt(it, byPlayer)
+            }
+            return group ?: setOf<Point>()
+        }
+
+        val removedPoints = mutableSetOf<Point>()
+        removedPoints += removeTakenStonesQuarter(Point(point.x - 1, point.y))
+        removedPoints += removeTakenStonesQuarter(Point(point.x + 1, point.y))
+        removedPoints += removeTakenStonesQuarter(Point(point.x, point.y - 1))
+        removedPoints += removeTakenStonesQuarter(Point(point.x, point.y + 1))
+
+        return removedPoints
+    }
+
+    fun copy(): Board {
+        val result = Board(sizeX, sizeY, game)
+        for (x in 0..sizeX - 1) {
+            for (y in 0..sizeY - 1) {
+                val point = Point(x, y)
+                result.setStoneAt(point, getStoneAt(point), null)
+            }
+        }
+        return result
+    }
+
+    /**
+     * The hash is used to detect kos. If the stones on the board are the same as a previous position, and
+     * the player to move is the same, then we have a repeated board position, which is illegal Ko move.
+     */
+    override fun hashCode(): Int = points.hashCode() xor game.playerToMove.color.hashCode()
+}

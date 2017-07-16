@@ -1,0 +1,43 @@
+
+Go Client
+---------
+Write using Kotlin and JavaFX
+
+When playing against GnuGo, set time limits similar to those on the servers.
+	e.g. 15 minutes, then 30s per move with 3 "extras".
+	Countdown timers, with human voice and progress bar.
+	Make it obvious when a countdown is vital (i.e. you will lose the game).
+
+Allow scoring the board during play. Tag dead stones using keyboard shortcut + mouse.
+
+Single window interface? If I ever want to play 2 simultaneous games, then open 2 windows!
+
+At first, only implement 1 account per server, and don't do the registration stuff.
+
+Home screen shows large buttons for :
+	Preferences
+	Play against GnuGo
+	Play on Server X
+	View saved games
+
+All games are automatically saved in a stadard place.
+	File names are automatic - Server_YYYY-MM-DD_HH-MM.s
+
+Use ParaTask for preferences???
+
+Go problems
+	Have a list of directories to search for problems.
+	Flattern out the directory structure, and display each directory as a top-level item
+	Allow user to give themselves a star rating, and display it similar to puzzle games
+		In a grid : Perfect, OK, Fail, not solved.
+	https://github.com/gogameguru/go-problems
+
+Use a cut-down version of GoTextProtocol to set up a client/server game across a LAN.
+	Or a propriatory protocol?
+
+Hidden Stone Go (via client server)
+	Parameters for # of black & white stones
+	Parameter for showing your own hidden stones
+
+One Color Go
+

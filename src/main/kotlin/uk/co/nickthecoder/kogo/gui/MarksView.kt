@@ -1,0 +1,42 @@
+package uk.co.nickthecoder.kogo.gui
+
+import javafx.geometry.HPos
+import javafx.geometry.VPos
+import javafx.scene.layout.Pane
+import uk.co.nickthecoder.kogo.model.Board
+
+/**
+ * Shows a set of marks on the board or on top of stones.
+ * Used to mark board positions with squares/triangles/circle, labelling a position with a letter,
+ * displaying the latest stone placed, etc.
+ */
+class MarksView(val board: Board) {
+    val markViews = mutableListOf<MarkView>()
+
+    val node = object : Pane() {
+
+        override fun layoutChildren() {
+            markViews.forEach { child ->
+                val x = child.point.x * BoardView.pointSize
+                val y = (board.sizeY - child.point.y - 1) * BoardView.pointSize
+                layoutInArea(child, x, y, BoardView.pointSize, BoardView.pointSize, 0.0, HPos.CENTER, VPos.CENTER)
+            }
+        }
+    }
+
+    init {
+        node.styleClass.add("marks")
+    }
+
+    fun add(markView: MarkView) {
+        markViews.add(markView)
+        markView.marksView = this
+        node.children.add(markView)
+    }
+
+    fun remove(markView: MarkView) {
+        markViews.remove(markView)
+        markView.marksView = null
+        node.children.remove(markView)
+    }
+}

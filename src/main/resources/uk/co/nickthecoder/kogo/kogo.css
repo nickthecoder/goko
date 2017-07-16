@@ -1,0 +1,109 @@
+/***********************************************************************************
+    Grid Views
+************************************************************************************/
+
+.grid {
+    -fx-hgap: 10px;
+    -fx-vgap: 10px;
+}
+
+.problems .grid {
+    -fx-hgap: 4px;
+    -fx-vgap: 4px;
+}
+
+.grid .button  {
+    -fx-alignment: bottom-right;
+}
+.grid .button .text {
+    -fx-text-alignment: right;
+}
+
+/***********************************************************************************
+    Prompted Tasks
+************************************************************************************/
+
+.prompt {
+    -fx-padding: 20px;
+}
+
+/***********************************************************************************
+    The board container is NOT scaled (unlike board), and therefore the
+    pixel values are REAL pixels.
+************************************************************************************/
+
+.board-container {
+    -fx-padding: 20px;
+}
+
+/***********************************************************************************
+    The nodes of .board, and its children are SCALED, so the CSS can assume that
+    a point on the board is 128px wide, and it will be scaled to fit the view.
+************************************************************************************/
+.board {
+    -fx-border-color: #666;
+    -fx-border-width: 6px;
+    -fx-background-color: #c84;
+    -fx-padding: 128px;
+}
+
+.playing-area {
+}
+
+/***********************************************************************************
+    Marks
+    See : https://www.w3schools.com/charsets/ref_utf_geometric.asp
+*************************************************************************************/
+
+.marks > .mark {
+    -fx-font-size: 100px;
+    -fx-padding: 0 0 0.25em 0;
+}
+/* The star points, such as the 4x4 point */
+.marks > .star {
+    -fx-font-size: 45px;
+    -fx-symbol: "●";
+}
+.marks > .white {
+    -fx-text-fill: #fff;
+}
+/* Column and row markings around the playing area */
+.marks > .coordinate {
+    -fx-font-size: 55px;
+}
+/* Highlights the point on the board  the mouse is hovering over*/
+.marks > .mouse {
+    -fx-symbol: "◾";
+}
+.marks > .latest {
+    -fx-symbol: "✩";
+}
+.marks > .latest.white {
+    -fx-text-fill: #ccc;
+}
+.marks > .square {
+    -fx-symbol: "□";
+}
+.marks > .circle {
+    -fx-symbol: "○";
+}
+.marks > .circle {
+    -fx-symbol: "△";
+}
+.marks > .cross {
+    -fx-symbol: "✕";
+}
+
+.marks > .stoneW {
+    -fx-graphic: url( "stoneW.png" );
+    -fx-padding: 2px;
+}
+.marks > .stoneB {
+    -fx-graphic: url( "stoneB.png" );
+    -fx-padding: 2px;
+}
+
+
+/***********************************************************************************
+
+*************************************************************************************/
