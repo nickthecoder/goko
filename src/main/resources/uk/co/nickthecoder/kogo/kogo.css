@@ -40,6 +40,7 @@
     The nodes of .board, and its children are SCALED, so the CSS can assume that
     a point on the board is 128px wide, and it will be scaled to fit the view.
 ************************************************************************************/
+
 .board {
     -fx-border-color: #666;
     -fx-border-width: 6px;
@@ -102,7 +103,6 @@
     -fx-graphic: url( "stoneB.png" );
     -fx-padding: 2px;
 }
-
 
 /***********************************************************************************
 

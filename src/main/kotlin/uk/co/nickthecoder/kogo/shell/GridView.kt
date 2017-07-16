@@ -8,9 +8,12 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import uk.co.nickthecoder.kogo.gui.MainWindow
+import uk.co.nickthecoder.kogo.gui.TopLevelView
 import uk.co.nickthecoder.kogo.gui.View
 
-abstract class GridView(override val mainWindow: MainWindow) : View {
+abstract class GridView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
+
+    open val buttonSize = 128.0
 
     val buttons = mutableListOf<Button>()
 
@@ -19,10 +22,6 @@ abstract class GridView(override val mainWindow: MainWindow) : View {
     val vbox = VBox()
 
     val grid = GridPane()
-
-    abstract val buttonWidth: Double
-
-    abstract val buttonHeight: Double
 
     override val node: Node = vbox
 
@@ -59,7 +58,7 @@ abstract class GridView(override val mainWindow: MainWindow) : View {
 
     abstract fun addButtons()
 
-    fun createButton(label: String, style: String?, viewFactory: () -> View): Button {
+    fun createButton(label: String, style: String?, viewFactory: () -> TopLevelView): Button {
         val button = Button(label)
         with(button) {
             style?.let { styleClass.add(it) }
@@ -67,8 +66,8 @@ abstract class GridView(override val mainWindow: MainWindow) : View {
             addEventHandler(ActionEvent.ACTION) {
                 mainWindow.addView(viewFactory())
             }
-            prefHeight = 128.0
-            prefWidth = 128.0
+            prefHeight = buttonSize
+            prefWidth = buttonSize
         }
         return button
     }

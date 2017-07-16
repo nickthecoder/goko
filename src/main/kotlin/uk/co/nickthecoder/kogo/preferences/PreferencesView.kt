@@ -5,13 +5,14 @@ import javafx.scene.Node
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import uk.co.nickthecoder.kogo.gui.MainWindow
+import uk.co.nickthecoder.kogo.gui.TopLevelView
 import uk.co.nickthecoder.kogo.gui.View
 import uk.co.nickthecoder.kogo.gui.ViewTab
 import uk.co.nickthecoder.kogo.shell.Home
 import uk.co.nickthecoder.kogo.shell.PromptTaskView
 import uk.co.nickthecoder.paratask.util.MyTabPane
 
-class PreferencesView(override val mainWindow: MainWindow) : View {
+class PreferencesView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
 
     private val tabs = MyTabPane()
 

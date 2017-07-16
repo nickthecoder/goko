@@ -2,7 +2,7 @@ package uk.co.nickthecoder.kogo.gui
 
 import uk.co.nickthecoder.paratask.util.MyTab
 
-class ViewTab(val view: View) : MyTab(view.title, view.node) {
+class ViewTab(val view: TopLevelView) : MyTab(view.title, view.node) {
 
     override fun removed() {
         view.tidyUp()

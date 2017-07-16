@@ -4,11 +4,7 @@ import javafx.scene.Node
 
 interface View {
 
-    val mainWindow: MainWindow
-
     val node: Node
-
-    val title: String
 
     fun build(): View
 

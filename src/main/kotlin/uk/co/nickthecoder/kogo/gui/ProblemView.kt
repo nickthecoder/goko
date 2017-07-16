@@ -9,7 +9,7 @@ import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
 
-class ProblemView(override val mainWindow: MainWindow, val game: Game) : View, GameListener {
+class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
 
     override val title = "Problem ${game.file!!.nameWithoutExtension}"
 
@@ -24,7 +24,7 @@ class ProblemView(override val mainWindow: MainWindow, val game: Game) : View, G
 
     protected val boardView = BoardView(board)
 
-    protected val commentsView = CommentsView(mainWindow, game)
+    protected val commentsView = CommentsView(game)
 
     protected val passB = Button("Pass")
 

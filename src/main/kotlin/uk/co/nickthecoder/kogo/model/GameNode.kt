@@ -52,13 +52,11 @@ abstract class GameNode() {
     }
 
     open fun bodyApply(game: Game, byPlayer: Player?) {
-        println("Applying node $this")
         removedStones.forEach { point, _ ->
             game.board.removeStoneAt(point, byPlayer)
         }
         addedStones.forEach { point, color ->
-            println("Applying stone $color @ $point")
-            game.board.setStoneAt(point, color, byPlayer)
+            game.setupStone(point, color)
         }
     }
 

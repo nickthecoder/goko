@@ -10,10 +10,6 @@ class ProblemSetsView(mainWindow: MainWindow) : GridView(mainWindow) {
 
     override val title = "Problems"
 
-    override val buttonWidth = 128.0
-
-    override val buttonHeight = 128.0
-
     override val viewStyle = "problem-sets"
 
     override fun addButtons() {

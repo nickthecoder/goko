@@ -24,7 +24,7 @@ class MainWindow(val stage: Stage) {
         stage.show()
     }
 
-    fun addView(view: View, index: Int = -1) {
+    fun addView(view: TopLevelView, index: Int = -1) {
         view.build()
         val tab = ViewTab(view)
         if (index < 0) {
@@ -35,7 +35,7 @@ class MainWindow(val stage: Stage) {
         tabs.selectedTab = tab
     }
 
-    fun changeView(view: View) {
+    fun changeView(view: TopLevelView) {
         val oldTab = tabs.selectionModel.selectedItem
         val index = tabs.selectionModel.selectedIndex
 

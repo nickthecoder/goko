@@ -75,6 +75,7 @@ class SGFReader(var file: File) {
 
         sgfNode.getPropertyValue("C")?.let {
             currentNode.comment = it
+            println("Added comment $it")
         }
         sgfNode.getPropertyValue("N")?.let {
             currentNode.name = it
@@ -90,7 +91,7 @@ class SGFReader(var file: File) {
             currentNode.statuses.add(NodeStatus.EVEN)
         }
         if (sgfNode.hasProperty("HO")) {
-            currentNode.statuses.add(NodeStatus.HOTSPOT)
+            currentNode.statuses.add(NodeStatus.HOT_SPOT)
         }
         if (sgfNode.hasProperty("UC")) {
             currentNode.statuses.add(NodeStatus.UNCLEAR)

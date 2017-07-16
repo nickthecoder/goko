@@ -6,11 +6,8 @@ import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.Task
 
 class Home(mainWindow: MainWindow) : GridView(mainWindow) {
+
     override val title = "Home"
-
-    override val buttonWidth = 128.0
-
-    override val buttonHeight = 128.0
 
     override val viewStyle = "home"
 

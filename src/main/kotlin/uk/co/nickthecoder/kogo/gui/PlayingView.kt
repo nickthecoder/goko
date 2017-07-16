@@ -10,7 +10,7 @@ import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
 
-open class PlayingView(override val mainWindow: MainWindow, val game: Game) : View, GameListener {
+open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
 
     override val title = "Playing"
 
