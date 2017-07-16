@@ -31,6 +31,7 @@ class CommentsView(val game: Game) : View, GameListener {
         whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, statusesPane)
 
         update()
+        game.gameListeners.add(this)
         return this
     }
 

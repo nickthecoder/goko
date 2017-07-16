@@ -1,6 +1,7 @@
 package uk.co.nickthecoder.kogo.shell
 
 import javafx.scene.control.Button
+import uk.co.nickthecoder.kogo.ProblemPlayer
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.gui.ProblemView
 import uk.co.nickthecoder.kogo.gui.TopLevelView
@@ -34,8 +35,11 @@ class ProblemsView(mainWindow: MainWindow, val directory: File) : GridView(mainW
         val game = reader.read()
 
         val view = ProblemView(mainWindow, game)
-        game.rewindTo(game.root)
         game.root.apply(game)
+
+        val firstPlayer = game.playerToMove
+        val secondPlayer = ProblemPlayer(game, firstPlayer.color.opposite())
+        game.addPlayer(secondPlayer)
 
         return view
     }

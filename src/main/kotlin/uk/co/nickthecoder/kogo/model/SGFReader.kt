@@ -33,6 +33,8 @@ class SGFReader(var file: File) {
 
         game.dumpTree()
         game.file = file
+        game.rewindTo(game.root)
+
         return game
     }
 
@@ -111,7 +113,7 @@ class SGFReader(var file: File) {
                 // Add an extra Pass node (SGF does not have a concept of a pass node!
                 // But only add ONE pass node, if there are many variations after the pass.
                 if (passNode == null) {
-                    passNode = PassNode()
+                    passNode = PassNode(game.playerToMove.color.opposite())
                     game.addNode(passNode)
                 }
                 passNode.apply(game, null)
@@ -131,7 +133,7 @@ class SGFReader(var file: File) {
         if (black != null) {
             return MoveNode(toPoint(game.board, black), StoneColor.BLACK)
         }
-        return SetupNode()
+        return SetupNode(game.playerToMove.color)
     }
 
     fun toStoneColor(str: String?): StoneColor? {

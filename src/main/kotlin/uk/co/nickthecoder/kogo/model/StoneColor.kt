@@ -8,4 +8,10 @@ enum class StoneColor {
     }
 
     fun isStone() = this == BLACK || this == WHITE
+
+    fun opposite(): StoneColor {
+        if (this == WHITE) return BLACK
+        if (this == BLACK) return WHITE
+        return this
+    }
 }

@@ -28,6 +28,8 @@ class PlayingArea(val boardView: BoardView) : BoardListener {
     val game: Game
         get() = boardView.board.game
 
+    private val OFF_SCREEN = Point(-100, -100)
+
     init {
         with(stack) {
             styleClass.add("playing-area")
@@ -67,12 +69,18 @@ class PlayingArea(val boardView: BoardView) : BoardListener {
             stones.removeAt(point)
         } else {
             stones.add(SymbolMark(point, "stone" + if (color == StoneColor.WHITE) "W" else "B"))
-            latestMark.point = point
-            latestMark.color(if (color == StoneColor.BLACK) StoneColor.WHITE else StoneColor.BLACK)
         }
     }
 
     override fun moved() {
         mouseMark.color(game.playerToMove.color)
+
+        val currentNode = game.currentNode
+        if (currentNode is MoveNode) {
+            latestMark.point = currentNode.point
+            latestMark.color(currentNode.color.opposite())
+        } else {
+            latestMark.point = OFF_SCREEN
+        }
     }
 }

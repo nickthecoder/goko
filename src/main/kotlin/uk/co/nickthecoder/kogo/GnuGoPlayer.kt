@@ -54,9 +54,13 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     private fun parseLine(line: String) {
         println("Parsing reply $line")
 
-        if (line.startsWith("=1") && line.length >= 5) {
+        if (line.startsWith("=1 ") && line.length >= 5) {
             if (line.startsWith("=1 resign")) {
                 game.resign(this)
+                return
+            }
+            if (line.startsWith("=1 PASS")) {
+                game.pass()
                 return
             }
             val point = Point.fromString(line.substring(3))
@@ -64,10 +68,10 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
                 game.move(point, color, this)
             }
 
-        } else if (line.startsWith("=2")) {
+        } else if (line.startsWith("=2 ")) {
             game.countedEndGame(line.substring(2).trim())
 
-        } else if (line.startsWith("=3")) {
+        } else if (line.startsWith("=3 ")) {
 
             val data = line.substring(2)
             val space = line.indexOf(" ")

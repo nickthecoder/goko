@@ -2,7 +2,7 @@ package uk.co.nickthecoder.kogo.model
 
 import uk.co.nickthecoder.kogo.Player
 
-abstract class GameNode() {
+abstract class GameNode(var colorToPlay: StoneColor) {
 
     var moveNumber: Int = 0
 
@@ -69,8 +69,8 @@ abstract class GameNode() {
             }
         }
         bodyApply(game, byPlayer)
-        game.moved()
         game.currentNode = this
+        game.moved()
     }
 
     fun takeBack(game: Game) {
@@ -93,19 +93,19 @@ abstract class GameNode() {
     open fun sameAs(node: GameNode) = false
 }
 
-class PassNode() : GameNode() {
+class PassNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
 
     override fun sameAs(node: GameNode) = node is PassNode
 
     override fun toString() = "#$moveNumber PassNode"
 }
 
-class SetupNode() : GameNode() {
+class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
 
     override fun toString() = "#$moveNumber SetupNode" // TODO count of stones added
 }
 
-class MoveNode(var point: Point, var color: StoneColor) : GameNode() {
+class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposite()) {
 
     var takenStones = setOf<Point>()
 

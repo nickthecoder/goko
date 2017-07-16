@@ -13,7 +13,7 @@ class Game(sizeX: Int, sizeY: Int) {
 
     val board = Board(sizeX, sizeY, this)
 
-    var playerToMove: Player
+    var playerToMove: Player = LocalPlayer(StoneColor.BLACK)
 
     var handicap = 0;
 
@@ -26,16 +26,15 @@ class Game(sizeX: Int, sizeY: Int) {
             Point(1, 1),
             Point(1, 0), Point(1, 2), Point(0, 1), Point(2, 1))
 
-    var root = SetupNode()
+    var root = SetupNode(playerToMove.color)
 
     var currentNode: GameNode = root
 
     init {
         metaData.boardSize = Math.max(sizeX, sizeY)
 
+        addPlayer(playerToMove)
         addPlayer(LocalPlayer(StoneColor.WHITE))
-        addPlayer(LocalPlayer(StoneColor.BLACK))
-        playerToMove = players.get(StoneColor.BLACK)!!
     }
 
     fun placeHandicap(n: Int) {
@@ -60,6 +59,9 @@ class Game(sizeX: Int, sizeY: Int) {
 
     fun addPlayer(player: Player) {
         players.put(player.color, player)
+        if (playerToMove.color == player.color) {
+            playerToMove = player
+        }
     }
 
     fun start() {
@@ -114,7 +116,7 @@ class Game(sizeX: Int, sizeY: Int) {
     }
 
     private fun addAndApplyNode(node: GameNode, byPlayer: Player?) {
-
+        autoPlay = true
         currentNode.children.forEach { child ->
             if (child.sameAs(node)) {
                 child.apply(this, null)
@@ -128,7 +130,7 @@ class Game(sizeX: Int, sizeY: Int) {
     }
 
     fun pass() {
-        val node = PassNode()
+        val node = PassNode(playerToMove.color.opposite())
         addAndApplyNode(node, null)
         if (currentNode is PassNode) {
             awaitingFinalCount = true
@@ -147,14 +149,20 @@ class Game(sizeX: Int, sizeY: Int) {
         addAndApplyNode(node, byPlayer)
     }
 
+    var autoPlay: Boolean = true
+
     internal fun moved() {
-        playerToMove = otherPlayer(playerToMove)
-        playerToMove.yourTurn()
+        val node = currentNode
+        playerToMove = players.get(node.colorToPlay)!!
         board.listeners.forEach {
             it.moved()
         }
         gameListeners.forEach {
             it.moved()
+        }
+        if (autoPlay) {
+            playerToMove.yourTurn()
+            autoPlay = false
         }
     }
 
@@ -201,6 +209,7 @@ class Game(sizeX: Int, sizeY: Int) {
             currentNode.takeBack(this)
             currentNode = parent
         }
+        moved()
     }
 
     fun moveForward() {
@@ -209,6 +218,7 @@ class Game(sizeX: Int, sizeY: Int) {
             nextNode.apply(this)
             currentNode = nextNode
         }
+        moved()
     }
 
     fun moveToStart() {
@@ -224,8 +234,10 @@ class Game(sizeX: Int, sizeY: Int) {
     }
 
     fun rewindTo(gameNode: GameNode) {
+        println("Rewinding. To play = ${playerToMove.color}")
         while (currentNode !== gameNode && currentNode !== root) {
             moveBack()
+            println("Moved back. To play = ${playerToMove.color}")
         }
     }
 
