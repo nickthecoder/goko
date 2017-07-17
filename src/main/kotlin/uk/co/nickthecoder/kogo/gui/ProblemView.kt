@@ -10,6 +10,8 @@ import javafx.scene.layout.VBox
 import uk.co.nickthecoder.kogo.ProblemPlayer
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
+import uk.co.nickthecoder.paratask.util.FileLister
+import java.io.File
 
 class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
 
@@ -32,9 +34,6 @@ class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWin
 
     private val problemResults = ProblemResults()
 
-    private val passB = Button("Pass")
-
-    private val restartB = Button("Restart")
 
     override val node = whole
 
@@ -64,10 +63,29 @@ class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWin
         commentsView.build()
         problemResults.build()
 
+        val passB = Button("Pass")
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
+
+        val restartB = Button("Restart")
         restartB.addEventHandler(ActionEvent.ACTION) { onRestart() }
 
         toolBar.items.addAll(passB, restartB)
+
+        val dir = game.file!!.parentFile
+        var lister = FileLister(extensions = listOf("sgf"))
+        var found = false
+        for (file in lister.listFiles(dir)) {
+            if (found) {
+                val nextProblemB = Button("Next Problem")
+                nextProblemB.addEventHandler(ActionEvent.ACTION) { showProblem(file) }
+                toolBar.items.add(nextProblemB)
+                break
+            }
+            if (file == game.file) {
+                found = true
+            }
+        }
+
 
         return this
     }
@@ -77,7 +95,16 @@ class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWin
     }
 
     fun onRestart() {
-        game.rewindTo(game.root)
+        showProblem(game.file!!)
+    }
+
+    fun showProblem(file: File) {
+        val reader = SGFReader(file)
+        val game = reader.read()
+
+        val view = ProblemView(mainWindow, game)
+        game.root.apply(game)
+        mainWindow.changeView(view)
     }
 
     override fun moved() {

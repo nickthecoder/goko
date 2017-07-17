@@ -86,11 +86,15 @@ class Board(val sizeX: Int, val sizeY: Int = sizeX, val game: Game) {
     fun removeTakenStones(point: Point, byPlayer: Player?): Set<Point> {
 
         fun removeTakenStonesQuarter(innerPoint: Point): Set<Point> {
-            val group = checkLiberties(innerPoint)
-            group?.forEach {
-                removeStoneAt(it, byPlayer)
+            if (contains(innerPoint) && getStoneAt(innerPoint) != getStoneAt(point)) {
+                val group = checkLiberties(innerPoint)
+                group?.forEach {
+                    removeStoneAt(it, byPlayer)
+                }
+                return group ?: setOf<Point>()
+            } else {
+                return setOf<Point>()
             }
-            return group ?: setOf<Point>()
         }
 
         val removedPoints = mutableSetOf<Point>()

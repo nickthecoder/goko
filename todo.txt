@@ -1,14 +1,10 @@
-
 Bugs
-	Comment not displayed when solving a Go problem (is the comment loaded?)
+	Snapbacks kill the player making the move BEFORE the snapback! See Easy problem 7
+
 
 Go Problems
-	When a point is chosen off-script, set the result to "Fail"
-	Auto-play the opponents moves (optional)
-	When the main line has been reached, set the result to "Completed"
-	Option to show black and/or white moves in the game tree (as marks)
 	Buttons to rate yourself, which is then shown in the ProblemsView grid
-	Save the time taken to solve (when rated as "solved")
+	Move to next problem
 
 Load game meta data, such as player names, ranks etc.
 
