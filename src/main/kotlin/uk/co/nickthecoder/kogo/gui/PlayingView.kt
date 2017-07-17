@@ -9,6 +9,7 @@ import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
+import uk.co.nickthecoder.kogo.model.Mark
 
 open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
 

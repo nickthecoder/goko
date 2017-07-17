@@ -154,9 +154,6 @@ class Game(sizeX: Int, sizeY: Int) {
     internal fun moved() {
         val node = currentNode
         playerToMove = players.get(node.colorToPlay)!!
-        board.listeners.forEach {
-            it.moved()
-        }
         gameListeners.forEach {
             it.moved()
         }
@@ -182,7 +179,19 @@ class Game(sizeX: Int, sizeY: Int) {
     }
 
     fun addMark(mark: Mark) {
+        currentNode.addMark(mark)
+        for (listener in gameListeners) {
+            listener.addedMark(mark)
+        }
+    }
 
+    fun removeMark(point: Point) {
+        val mark = currentNode.removeMark(point)
+        if (mark != null) {
+            for (listener in gameListeners) {
+                listener.removedMark(mark)
+            }
+        }
     }
 
     fun tidyUp() {

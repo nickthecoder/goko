@@ -4,6 +4,7 @@ import javafx.geometry.HPos
 import javafx.geometry.VPos
 import javafx.scene.layout.Pane
 import uk.co.nickthecoder.kogo.model.Board
+import uk.co.nickthecoder.kogo.model.Point
 
 /**
  * Shows a set of marks on the board or on top of stones.
@@ -11,6 +12,7 @@ import uk.co.nickthecoder.kogo.model.Board
  * displaying the latest stone placed, etc.
  */
 class MarksView(val board: Board) {
+
     val markViews = mutableListOf<MarkView>()
 
     val node = object : Pane() {
@@ -28,10 +30,24 @@ class MarksView(val board: Board) {
         node.styleClass.add("marks")
     }
 
+    fun clear() {
+        markViews.clear()
+        node.children.clear()
+    }
+
     fun add(markView: MarkView) {
         markViews.add(markView)
         markView.marksView = this
         node.children.add(markView)
+    }
+
+    fun remove(point: Point) {
+        for (mv in markViews) {
+            if (mv.point == point) {
+                remove(mv)
+                return
+            }
+        }
     }
 
     fun remove(markView: MarkView) {

@@ -18,6 +18,9 @@ object Preferences {
 
     val challengeMatchPreferences = ChallengeMatchPreferences()
 
+    val problemsPreferences = ProblemsPreferences()
+
+
 
     val yourName by basicPreferences.yourNameP
 
@@ -26,6 +29,11 @@ object Preferences {
     val gamesDirectory by basicPreferences.gamesDirectoryP
 
     val problemsDirectory by basicPreferences.problemsDirectoryP
+
+
+    val problemsShowContinuations by problemsPreferences.showContinuationsP
+
+    val problemsAutomaticOpponent by problemsPreferences.automaticOpponentP
 
 
     val preferencesFile = homeDirectory.child(".config", "kogo", "preferences.json")
@@ -41,6 +49,7 @@ object Preferences {
         addPreferenceTask(basicPreferences)
         addPreferenceTask(quickGamePreferences)
         addPreferenceTask(challengeMatchPreferences)
+        addPreferenceTask(problemsPreferences)
 
         if (preferencesFile.exists()) {
             load()

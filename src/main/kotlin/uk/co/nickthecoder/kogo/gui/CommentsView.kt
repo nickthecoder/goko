@@ -25,6 +25,8 @@ class CommentsView(val game: Game) : View, GameListener {
     val statusesPane = FlowPane()
 
     override fun build(): View {
+        whole.styleClass.add("comments")
+
         nameC.isEditable = false
         commentC.isEditable = false
 

@@ -10,7 +10,7 @@ import java.io.Writer
 /**
  * Interfaces with the GnuGo AI using gtp mode
  */
-class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 10) : Player, BoardListener {
+class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 10) : Player, GameListener {
 
     override val label = "Gnu Go level ${level}"
 
@@ -22,7 +22,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     var writer: Writer? = null
 
     fun start() {
-        game.board.listeners.add(this)
+        game.gameListeners.add(this)
         exec.outSink = object : BufferedSink() {
             override fun sink(line: String) {
                 parseLine(line)
@@ -129,7 +129,9 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     }
 
     override fun tidyUp() {
-        game.board.listeners.remove(this)
+        game.gameListeners.remove(this)
         exec.kill()
     }
+
+    override fun canClickToPlay() = false
 }

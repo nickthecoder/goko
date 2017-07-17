@@ -9,18 +9,19 @@ import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color
 import uk.co.nickthecoder.kogo.model.Board
+import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.kogo.model.Point
 
 
-class BoardView(val board: Board) {
+class BoardView(val board: Board) : GameListener {
 
-    val playingArea: PlayingArea = PlayingArea(this)
+    val stonesView: StonesView = StonesView(this)
 
     private val boardNode = StackPane()
 
     private val lines = Canvas((board.sizeX) * BoardView.pointSize, (board.sizeY) * BoardView.pointSize)
 
-    private val boardMarks = MarksView(board)
+    private val boardMarks = MarksView(board) // Star points and labels around the board
 
     private val scaledBoard = ScaledBoard()
 
@@ -28,6 +29,8 @@ class BoardView(val board: Board) {
         get() = scaledBoard
 
     init {
+        board.game.gameListeners.add(this)
+
         with(scaledBoard) {
             styleClass.add("board-container")
         }
@@ -35,7 +38,7 @@ class BoardView(val board: Board) {
         with(boardNode) {
             styleClass.add("board")
             drawLines()
-            children.addAll(lines, boardMarks.node, playingArea.node)
+            children.addAll(lines, boardMarks.node, stonesView.node)
         }
 
         for (x in 0..board.sizeX - 1) {
@@ -70,7 +73,7 @@ class BoardView(val board: Board) {
     fun starMarks(start: Int, n: Int, spacing: Int) {
         for (x in 0..n - 1) {
             for (y in 0..n - 1) {
-                val star = SymbolMark(Point(start + spacing * x, start + spacing * y), style = "star")
+                val star = SymbolMarkView(Point(start + spacing * x, start + spacing * y), style = "star")
                 boardMarks.add(star)
             }
         }

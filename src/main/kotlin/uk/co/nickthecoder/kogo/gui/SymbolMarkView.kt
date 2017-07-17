@@ -6,23 +6,30 @@ import javafx.css.Styleable
 import javafx.css.StyleableStringProperty
 import javafx.scene.control.Label
 import uk.co.nickthecoder.kogo.model.Point
+import uk.co.nickthecoder.kogo.model.SymbolMark
 
-class SymbolMark(point: Point, style: String) : MarkView(point, style) {
+class SymbolMarkView : MarkView {
 
     /**
      * Gets the -fx-symbol property from css.
      */
     var symbolProperty: StyleableStringProperty = object : StyleableStringProperty("") {
         override fun getName() = "symbolProperty"
-        override fun getBean() = this@SymbolMark
+        override fun getBean() = this@SymbolMarkView
 
-        override fun getCssMetaData(): CssMetaData<SymbolMark, String> {
+        override fun getCssMetaData(): CssMetaData<SymbolMarkView, String> {
             return SYMBOL_META_DATA
         }
 
         override fun invalidated() {
             requestLayout()
         }
+    }
+
+    constructor(point: Point, style: String) : super(point, style) {
+    }
+
+    constructor(mark: SymbolMark) : super(mark.point, mark.style) {
     }
 
     init {
@@ -37,11 +44,11 @@ class SymbolMark(point: Point, style: String) : MarkView(point, style) {
 
         internal val cssMetaDataList = mutableListOf<CssMetaData<out Styleable, *>>()
 
-        internal val SYMBOL_META_DATA = object : CssMetaData<SymbolMark, String>("-fx-symbol", StyleConverter.getStringConverter(), "") {
-            override fun isSettable(symbolMark: SymbolMark): Boolean = true
+        internal val SYMBOL_META_DATA = object : CssMetaData<SymbolMarkView, String>("-fx-symbol", StyleConverter.getStringConverter(), "") {
+            override fun isSettable(symbolMarkView: SymbolMarkView): Boolean = true
 
-            override fun getStyleableProperty(symbolMark: SymbolMark): StyleableStringProperty {
-                return symbolMark.symbolProperty
+            override fun getStyleableProperty(symbolMarkView: SymbolMarkView): StyleableStringProperty {
+                return symbolMarkView.symbolProperty
             }
         }
 

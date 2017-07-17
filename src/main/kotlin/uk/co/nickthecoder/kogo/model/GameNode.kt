@@ -14,13 +14,30 @@ abstract class GameNode(var colorToPlay: StoneColor) {
 
     var removedStones = mutableMapOf<Point, StoneColor>()
 
-    val marks = mutableListOf<Mark>()
+    private val mutableMarks = mutableListOf<Mark>()
+
+    val marks: List<Mark> = mutableMarks
 
     var comment: String = ""
 
     var name: String = ""
 
     var statuses = mutableSetOf<NodeStatus>()
+
+    fun addMark(mark: Mark) {
+        removeMark(mark.point)
+        mutableMarks.add(mark)
+    }
+
+    fun removeMark(point: Point): Mark? {
+        for (mark in mutableMarks) {
+            if (point == mark.point) {
+                mutableMarks.remove(mark)
+                return mark
+            }
+        }
+        return null
+    }
 
     fun addStoneOnly(board: Board, point: Point, color: StoneColor) {
         val oldColor = board.getStoneAt(point)

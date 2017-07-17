@@ -6,4 +6,6 @@ class LocalPlayer(override val color: StoneColor, val name: String = "Human", ov
 
     override val label
         get() = name
+
+    override fun canClickToPlay() = true
 }

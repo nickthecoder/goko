@@ -1,5 +1,7 @@
 package uk.co.nickthecoder.kogo.model
 
-open class Mark(val point: Point, val style: String) {
+import uk.co.nickthecoder.kogo.gui.MarkView
 
+abstract class Mark(val point: Point, val style: String) {
+    abstract fun createMarkView() : MarkView
 }
