@@ -98,7 +98,36 @@ class SGFReader(var file: File) {
         if (sgfNode.hasProperty("UC")) {
             currentNode.statuses.add(NodeStatus.UNCLEAR)
         }
-        // TODO Update other node data such as marks etc.
+
+
+        val labels = sgfNode.getPropertyValues("LB")
+        labels?.forEach { str ->
+            val mark = TextMark(toPoint(game.board, str.substring(0, 2)), str.substring(3))
+            currentNode.addMark(mark)
+        }
+        val circles = sgfNode.getPropertyValues("CR")
+        circles?.forEach { str ->
+            val mark = CircleMark(toPoint(game.board, str))
+            currentNode.addMark(mark)
+        }
+        val crosses = sgfNode.getPropertyValues("MA")
+        circles?.forEach { str ->
+            val mark = CrossMark(toPoint(game.board, str))
+            currentNode.addMark(mark)
+        }
+        val squares = sgfNode.getPropertyValues("SQ")
+        squares?.forEach { str ->
+            val mark = CircleMark(toPoint(game.board, str))
+            currentNode.addMark(mark)
+        }
+        val triangles = sgfNode.getPropertyValues("TR")
+        triangles?.forEach { str ->
+            val mark = TriangleMark(toPoint(game.board, str))
+            currentNode.addMark(mark)
+        }
+        // TODO "DD" to dim out the point
+        // TODO "LN" for lines
+        // TODO Update other node data.
     }
 
     fun addChildren(game: Game, sgfParent: SGFNode) {
@@ -120,6 +149,7 @@ class SGFReader(var file: File) {
             }
             game.addNode(gameNode)
             gameNode.apply(game, null)
+            updateNode(game, sgfChild)
             addChildren(game, sgfChild)
         }
     }

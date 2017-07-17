@@ -254,7 +254,7 @@ class Game(sizeX: Int, sizeY: Int) {
 
         fun dump(indent: Int, node: GameNode) {
             print(" ".repeat(indent * 4))
-            println(node)
+            println("$node ${node.comment}")
             for (child in node.children) {
                 dump(indent + 1, child)
             }

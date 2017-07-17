@@ -88,7 +88,7 @@
 .marks > .circle {
     -fx-symbol: "○";
 }
-.marks > .circle {
+.marks > .triangle {
     -fx-symbol: "△";
 }
 .marks > .cross {
