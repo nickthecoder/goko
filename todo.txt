@@ -1,10 +1,8 @@
 Bugs
-	Snapbacks kill the player making the move BEFORE the snapback! See Easy problem 7
-
+	Nex problem from 8 throws exceptions and hangs.
 
 Go Problems
 	Buttons to rate yourself, which is then shown in the ProblemsView grid
-	Move to next problem
 
 Load game meta data, such as player names, ranks etc.
 

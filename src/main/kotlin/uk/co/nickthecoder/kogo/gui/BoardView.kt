@@ -13,7 +13,7 @@ import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.kogo.model.Point
 
 
-class BoardView(val board: Board) : GameListener {
+class BoardView(val board: Board) : View, GameListener {
 
     val stonesView: StonesView = StonesView(this)
 
@@ -25,15 +25,17 @@ class BoardView(val board: Board) : GameListener {
 
     private val scaledBoard = ScaledBoard()
 
-    val node: Parent
+    override val node: Parent
         get() = scaledBoard
 
-    init {
+    override fun build() : View {
         board.game.gameListeners.add(this)
 
         with(scaledBoard) {
             styleClass.add("board-container")
         }
+
+        lines
 
         with(boardNode) {
             styleClass.add("board")
@@ -64,6 +66,12 @@ class BoardView(val board: Board) : GameListener {
         } else if (board.sizeX == 9 && board.sizeY == 9) {
             starMarks(2, 3, 2)
         }
+
+        return this
+    }
+
+    override fun tidyUp() {
+        boardNode.children.clear()
     }
 
     fun toBoardPoint(x: Double, y: Double): Point {

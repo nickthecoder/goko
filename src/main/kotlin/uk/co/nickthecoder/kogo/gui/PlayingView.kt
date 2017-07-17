@@ -35,6 +35,7 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
     override val node = whole
 
     override fun build(): View {
+        boardView.build()
         whole.top = toolBar
         whole.center = split
 
@@ -73,5 +74,6 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
 
     override fun tidyUp() {
         game.tidyUp()
+        boardView.tidyUp()
     }
 }

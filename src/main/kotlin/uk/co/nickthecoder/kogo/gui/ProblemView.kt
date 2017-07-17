@@ -47,6 +47,8 @@ class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWin
     }
 
     override fun build(): View {
+        boardView.build()
+
         with(rightPane) {
             center = commentsView.node
             bottom = problemResults
@@ -123,6 +125,7 @@ class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWin
 
     override fun tidyUp() {
         game.tidyUp()
+        boardView.tidyUp()
     }
 
 
