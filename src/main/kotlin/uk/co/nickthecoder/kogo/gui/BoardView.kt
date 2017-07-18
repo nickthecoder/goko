@@ -19,7 +19,7 @@ class BoardView(val board: Board) : View, GameListener {
 
     private val boardNode = StackPane()
 
-    private val lines = Canvas((board.sizeX) * BoardView.pointSize, (board.sizeY) * BoardView.pointSize)
+    private var lines = Canvas((board.sizeX) * BoardView.pointSize, (board.sizeY) * BoardView.pointSize)
 
     private val boardMarks = MarksView(board) // Star points and labels around the board
 
@@ -28,7 +28,7 @@ class BoardView(val board: Board) : View, GameListener {
     override val node: Parent
         get() = scaledBoard
 
-    override fun build() : View {
+    override fun build(): View {
         board.game.gameListeners.add(this)
 
         with(scaledBoard) {
@@ -71,6 +71,8 @@ class BoardView(val board: Board) : View, GameListener {
     }
 
     override fun tidyUp() {
+        // Allow the LARGE canvas to be gc'd as quickly as possible!
+        lines = Canvas(1.0, 1.0)
         boardNode.children.clear()
     }
 
