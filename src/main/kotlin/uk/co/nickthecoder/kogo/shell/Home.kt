@@ -17,7 +17,7 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow) {
             add(createButton("Two Player Game", "two-player-game", TwoPlayerGameTask(mainWindow)))
             add(createButton("Challenge Match", "challenge-match", ChallengeMatchTask(mainWindow)))
             add(createButton("Open SGF File", "open-file", OpenFileTask(mainWindow)))
-            add(createButton("Problems", "problems") { ProblemSetsView(mainWindow) })
+            add(createButton("Problems", "problems") { ProblemsView(mainWindow) })
             add(createButton("Preferences", "preferences") { PreferencesView(mainWindow) })
         }
     }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="kogo:main" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="uk.co.nickthecoder" external.system.module.type="sourceSet" external.system.module.version="0.1" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="3" platform="JVM 1.6" useProjectSettings="false">
+        <compilerSettings />
+        <compilerArguments>
+          <option name="destination" value="$MODULE_DIR$/build/kotlin-classes/main" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.1.2-2/2b22828f027e103dcd45f3aa240338bfdb53d16b/kotlin-stdlib-1.1.2-2.jar:/home/nick/.m2/repository/uk/co/nickthecoder/paratask/0.1/paratask-0.1.jar:/home/nick/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar:/home/nick/.gradle/caches/modules-2/files-2.1/mysql/mysql-connector-java/5.1.6/380ef5226de2c85ff3b38cbfefeea881c5fce09d/mysql-connector-java-5.1.6.jar:/home/nick/.gradle/caches/modules-2/files-2.1/org.fxmisc.richtext/richtextfx/0.6.10/a7206807bd6657b56dff7c9677bfdfc8df3912b4/richtextfx-0.6.10.jar:/home/nick/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.9/3334e99a8baae12d6e014d444149e337ceb99a00/groovy-all-2.4.9.jar:/home/nick/.gradle/caches/modules-2/files-2.1/com.eclipsesource.minimal-json/minimal-json/0.9.4/d6e7dd22569de97c2697a4af301a623f35028972/minimal-json-0.9.4.jar:/home/nick/.gradle/caches/modules-2/files-2.1/org.reactfx/reactfx/2.0-M4u1/c48f5055fc1295a90edbe753a8c9fc3869fd046f/reactfx-2.0-M4u1.jar:/home/nick/.gradle/caches/modules-2/files-2.1/org.fxmisc.undo/undofx/1.2/73c7ab2672ff3c32daa0e82e61554840ba7290bd/undofx-1.2.jar:/home/nick/.gradle/caches/modules-2/files-2.1/org.fxmisc.flowless/flowless/0.4.5/ca986e8f18962f0e85879424eeff2e21b2b0afc1/flowless-0.4.5.jar:/home/nick/.gradle/caches/modules-2/files-2.1/org.fxmisc.wellbehaved/wellbehavedfx/0.1.1/bb43719bbc27439d7ab6164b7a75dfcb7e651d7e/wellbehavedfx-0.1.1.jar" />
+          <option name="noStdlib" value="true" />
+          <option name="noReflect" value="true" />
+          <option name="moduleName" value="kogo_main" />
+          <option name="jvmTarget" value="1.6" />
+          <option name="addCompilerBuiltIns" value="true" />
+          <option name="loadBuiltInsFromDependencies" value="true" />
+          <option name="languageVersion" value="1.1" />
+          <option name="apiVersion" value="1.1" />
+          <option name="pluginOptions">
+            <array />
+          </option>
+          <option name="pluginClasspaths">
+            <array />
+          </option>
+        </compilerArguments>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/build/classes/main" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/src/main">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/kotlin" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.1.2-2" level="project" />
+    <orderEntry type="library" name="Gradle: uk.co.nickthecoder:paratask:0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:5.1.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.fxmisc.richtext:richtextfx:0.6.10" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-all:2.4.9" level="project" />
+    <orderEntry type="library" name="Gradle: com.eclipsesource.minimal-json:minimal-json:0.9.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.reactfx:reactfx:2.0-M4u1" level="project" />
+    <orderEntry type="library" name="Gradle: org.fxmisc.undo:undofx:1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.fxmisc.flowless:flowless:0.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.fxmisc.wellbehaved:wellbehavedfx:0.1.1" level="project" />
+  </component>
+</module>

@@ -1,19 +1,19 @@
 package uk.co.nickthecoder.kogo.gui
 
 import javafx.event.ActionEvent
-import javafx.scene.control.Button
-import javafx.scene.control.Label
-import javafx.scene.control.SplitPane
-import javafx.scene.control.ToolBar
+import javafx.scene.control.*
+import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
+import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.ProblemPlayer
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
-import uk.co.nickthecoder.paratask.util.FileLister
-import java.io.File
 
-class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
+class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(mainWindow), GameListener {
+
+    val game = problem.load()
 
     override val title = "Problem ${game.file!!.nameWithoutExtension}"
 
@@ -73,21 +73,7 @@ class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWin
 
         toolBar.items.addAll(passB, restartB)
 
-        val dir = game.file!!.parentFile
-        var lister = FileLister(extensions = listOf("sgf"))
-        var found = false
-        for (file in lister.listFiles(dir)) {
-            if (found) {
-                val nextProblemB = Button("Next Problem")
-                nextProblemB.addEventHandler(ActionEvent.ACTION) { showProblem(file) }
-                toolBar.items.add(nextProblemB)
-                break
-            }
-            if (file == game.file) {
-                found = true
-            }
-        }
-
+        game.root.apply(game)
 
         return this
     }
@@ -97,15 +83,11 @@ class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWin
     }
 
     fun onRestart() {
-        showProblem(game.file!!)
+        showProblem(problem)
     }
 
-    fun showProblem(file: File) {
-        val reader = SGFReader(file)
-        val game = reader.read()
-
-        val view = ProblemView(mainWindow, game)
-        game.root.apply(game)
+    fun showProblem(problem: Problem) {
+        val view = ProblemView(mainWindow, problem)
         mainWindow.changeView(view)
     }
 
@@ -128,14 +110,53 @@ class ProblemView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWin
         boardView.tidyUp()
     }
 
-
-    class ProblemResults : VBox() {
-        // TODO Add buttons to allow self-appraisal.
-
-        fun build() {
-            styleClass.add("problem-results")
-            children.add(Label("Results"))
-        }
+    fun saveResult(result: ProblemResult) {
+        problem.saveResult(result)
     }
 
+    inner class ProblemResults : VBox() {
+        // TODO Add buttons to allow self-appraisal.
+
+        val group = ToggleGroup()
+
+        fun build() {
+            val failB = createRadioButton("Failed", ProblemResult.FAILED)
+            val uncertainB = createRadioButton("Hmm, not sure!", ProblemResult.UNCERTAIN)
+            val winB = createRadioButton("Solved", ProblemResult.SOLVED)
+
+            val box = HBox()
+            box.styleClass.add("problem-result")
+            box.children.addAll(failB, uncertainB, winB)
+
+            styleClass.add("problem-results")
+            children.addAll(Label("Rate yourself"), box)
+
+
+            val nextProblem = problem.next()
+            if (nextProblem != null) {
+                val nextProblemB = Button()
+                nextProblemB.graphic = ImageView(KoGo.imageResource("go-next.png"))
+                nextProblemB.tooltip = Tooltip("Next Problem")
+                nextProblemB.addEventHandler(ActionEvent.ACTION) { showProblem(nextProblem) }
+                box.children.add(nextProblemB)
+            }
+        }
+
+
+        fun createRadioButton(tooltipStr: String, result: ProblemResult): ToggleButton {
+            val button = ToggleButton()
+            with(button) {
+                graphic = ImageView(result.image())
+                addEventHandler(ActionEvent.ACTION) { problem.saveResult(result) }
+                toggleGroup = group
+                tooltip = Tooltip(tooltipStr)
+                if (problem.getResult() == result) {
+                    button.setSelected(true)
+                }
+            }
+
+            return button
+        }
+
+    }
 }

@@ -21,7 +21,6 @@ object Preferences {
     val problemsPreferences = ProblemsPreferences()
 
 
-
     val yourName by basicPreferences.yourNameP
 
     val yourRank by basicPreferences.yourRankP
@@ -37,6 +36,9 @@ object Preferences {
 
 
     val preferencesFile = homeDirectory.child(".config", "kogo", "preferences.json")
+
+    val problemResultsDirectory = homeDirectory.child(".config", "kogo", "problems")
+
 
     val preferenceTasksMap = mutableMapOf<String, Task>()
 

@@ -120,6 +120,29 @@
     -fx-padding: 6px;
 }
 
+.problem-result > .toggle-button {
+    -fx-opacity: 0.5;
+}
+
+.problem-result > .toggle-button:selected {
+    -fx-opacity: 1.0;
+}
+
+.problem-set .button {
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.problem-set .button.solved {
+    -fx-background-image: url( 'solved.png' )
+}
+.problem-set .button.failed {
+    -fx-background-image: url( 'failed.png' )
+}
+.problem-set .button.uncertain {
+    -fx-background-image: url( 'uncertain.png' )
+}
+
 /***********************************************************************************
 
 *************************************************************************************/

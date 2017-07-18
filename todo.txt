@@ -1,5 +1,5 @@
 Bugs
-	Nex problem from 8 throws exceptions and hangs.
+	Easy 71 - Labels aren't displayed at the solution.
 
 Go Problems
 	Buttons to rate yourself, which is then shown in the ProblemsView grid

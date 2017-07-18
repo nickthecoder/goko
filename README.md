@@ -56,3 +56,15 @@ Home Page
 =========
 
 http://nickthecoder.co.uk/wiki/view/software/Kogo
+
+Go Problems
+===========
+You may like to download some Go problems to use with Kogo :
+
+https://gogameguru.com/i/go-problems/download/weekly-go-problems.zip
+
+Create a directory called "Go Problems" anywhere you like, and unzip the file.
+Update the Go Problems Preferences in Kogo to point to the "Go Problems" directory.
+
+I strongly recommend renaming the directories to make them look nicer in Kogo.
+e.g. "Weekly Go Problems/Easy" instead of "weekly-go-problems/easy"

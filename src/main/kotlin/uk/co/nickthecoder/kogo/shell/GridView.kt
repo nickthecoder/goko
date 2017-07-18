@@ -40,11 +40,16 @@ abstract class GridView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
         grid.styleClass.add("grid")
 
         addButtons()
+        buildButtons()
+        return this
+    }
 
+    fun buildButtons() {
         // Arrange the buttons in a square(ish) shape
         val columns = Math.ceil(Math.sqrt(buttons.size.toDouble())).toInt()
         var column = 0
         var row = 0
+
         buttons.forEach { button ->
             grid.add(button, column, row)
             column++
@@ -53,7 +58,6 @@ abstract class GridView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
                 row++
             }
         }
-        return this
     }
 
     abstract fun addButtons()
