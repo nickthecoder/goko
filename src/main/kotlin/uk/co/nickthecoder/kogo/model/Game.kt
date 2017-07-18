@@ -243,10 +243,8 @@ class Game(sizeX: Int, sizeY: Int) {
     }
 
     fun rewindTo(gameNode: GameNode) {
-        println("Rewinding. To play = ${playerToMove.color}")
         while (currentNode !== gameNode && currentNode !== root) {
             moveBack()
-            println("Moved back. To play = ${playerToMove.color}")
         }
     }
 
@@ -254,7 +252,7 @@ class Game(sizeX: Int, sizeY: Int) {
 
         fun dump(indent: Int, node: GameNode) {
             print(" ".repeat(indent * 4))
-            println("$node ${node.comment}")
+            println(node)
             for (child in node.children) {
                 dump(indent + 1, child)
             }

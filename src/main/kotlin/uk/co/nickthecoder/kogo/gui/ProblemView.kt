@@ -106,8 +106,10 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
     }
 
     override fun tidyUp() {
+        println("Tidying up ProblemView")
         game.tidyUp()
         boardView.tidyUp()
+        println("Tidied up ProblemView")
     }
 
     fun saveResult(result: ProblemResult) {

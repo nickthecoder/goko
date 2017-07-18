@@ -31,7 +31,7 @@ class SGFReader(var file: File) {
         updateRootNode(game, sgfRoot)
         addChildren(game, sgfRoot)
 
-        game.dumpTree()
+        //game.dumpTree()
         game.file = file
         game.rewindTo(game.root)
 
@@ -111,7 +111,7 @@ class SGFReader(var file: File) {
             currentNode.addMark(mark)
         }
         val crosses = sgfNode.getPropertyValues("MA")
-        circles?.forEach { str ->
+        crosses?.forEach { str ->
             val mark = CrossMark(toPoint(game.board, str))
             currentNode.addMark(mark)
         }
@@ -316,9 +316,9 @@ class SGFReader(var file: File) {
 
     fun dumpTree(sgfNode: SGFNode) {
 
-        fun dumpTree(indent: Int, sgfNode: SGFNode) {
+        fun dumpTree(indent: Int, sgfNode2: SGFNode) {
             print(" ".repeat(indent * 4))
-            for (child in sgfNode.chldren) {
+            for (child in sgfNode2.chldren) {
                 dumpTree(indent + 1, child)
             }
         }

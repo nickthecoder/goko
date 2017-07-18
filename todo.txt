@@ -1,8 +1,14 @@
 Bugs
 	Easy 71 - Labels aren't displayed at the solution.
+	Replace view puts it FIRST (when its last).
+	When replacing a view, tidyup happens AFTER the new view has been created (and built???)
+		Therefore there are two large canvases in memory.
 
 Go Problems
 	Buttons to rate yourself, which is then shown in the ProblemsView grid
+
+Icons on the tabs
+Drag tabs to re-arrange them (paratask).
 
 Load game meta data, such as player names, ranks etc.
 
@@ -12,6 +18,14 @@ Game editor/review needs a LOT of work
 	Show the game tree.
 
 Images for each of the Home view's buttons
+
+Review games after playing them
+	Edit whole game tree
+	Get hints from GnuGo
+
+Replace the scaled canvas with a fixed size canvas.
+	It will be smaller, and allow for single pixel width lines
+	No need for the blur to make the lines appear uniform ;-)
 
 Multiple directories for Go problems, so that Kogo can ship with its own problems AND let the user point to their own collection(s).
 	Maybe I should recurse through the directory tree.
@@ -42,4 +56,8 @@ Hidden Stone Go (via client server)
 	Parameter for showing your own hidden stones
 
 One Color Go
+
+Joseki
+	Load Kogo's joseki database (not related to my software - oops, perhaps I should rename mine!)
+	Allow board to be rotated/reflected
 

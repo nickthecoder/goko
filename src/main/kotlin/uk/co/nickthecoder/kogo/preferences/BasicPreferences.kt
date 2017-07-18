@@ -17,10 +17,8 @@ class BasicPreferences : AbstractTask() {
 
     val gamesDirectoryP = FileParameter("gamesDirectory", expectFile = false, value = currentDirectory)
 
-    val problemsDirectoryP = FileParameter("problemsDirectory", expectFile = false, value = currentDirectory)
-
     init {
-        taskD.addParameters(yourNameP, yourRankP, gamesDirectoryP, problemsDirectoryP)
+        taskD.addParameters(yourNameP, yourRankP, gamesDirectoryP)
         yourNameP.value = homeDirectory.name
     }
 

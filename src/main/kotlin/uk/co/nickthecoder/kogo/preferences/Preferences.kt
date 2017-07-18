@@ -27,8 +27,9 @@ object Preferences {
 
     val gamesDirectory by basicPreferences.gamesDirectoryP
 
-    val problemsDirectory by basicPreferences.problemsDirectoryP
 
+
+    val problemsDirectory by problemsPreferences.directoryP
 
     val problemsShowContinuations by problemsPreferences.showContinuationsP
 
