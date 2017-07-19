@@ -1,4 +1,4 @@
 package uk.co.nickthecoder.kogo.model
 
-class DeadMark(point: Point) : SymbolMark(point, "dead", null) {
+class DeadMark(point: Point, stoneColor: StoneColor) : SymbolMark(point, "dead", null) {
 }

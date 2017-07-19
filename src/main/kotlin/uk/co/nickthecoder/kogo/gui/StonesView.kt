@@ -3,7 +3,6 @@ package uk.co.nickthecoder.kogo.gui
 import javafx.scene.Node
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.StackPane
-import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.Player
 import uk.co.nickthecoder.kogo.model.*
 
@@ -45,7 +44,7 @@ class StonesView(val boardView: BoardView) : GameListener {
 
         stack.addEventHandler(MouseEvent.MOUSE_MOVED) { onMouseMoved(it) }
         stack.addEventHandler(MouseEvent.MOUSE_CLICKED) { onMouseClicked(it) }
-        stack.addEventHandler(MouseEvent.MOUSE_EXITED) { onMouseExited(it) }
+        stack.addEventHandler(MouseEvent.MOUSE_EXITED) { onMouseExited() }
 
         game.gameListeners.add(this)
     }
@@ -59,7 +58,7 @@ class StonesView(val boardView: BoardView) : GameListener {
         }
     }
 
-    fun onMouseExited(event: MouseEvent) {
+    fun onMouseExited() {
         mouseMark.point = OFF_SCREEN
     }
 
@@ -82,12 +81,12 @@ class StonesView(val boardView: BoardView) : GameListener {
     }
 
     override fun moved() {
-        mouseMark.color(game.playerToMove.color)
+        mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
 
         val currentNode = game.currentNode
         if (currentNode is MoveNode) {
             latestMark.point = currentNode.point
-            latestMark.color(currentNode.color.opposite())
+            latestMark.colorWhite(currentNode.color == StoneColor.BLACK)
         } else {
             latestMark.point = OFF_SCREEN
         }

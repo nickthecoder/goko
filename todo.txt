@@ -1,15 +1,19 @@
 Bugs
 	A pass from Go Problems invokes the game scoring algorithm!
 		Also, why is it doing it after a SINGLE pass? Hmm.
+	Ko not tested for, and then trows exception when a ko is played.
 
 Go Problems
-	Either create a tool to split a multi-game sgf file, or automatically unpack them.
 	Notification when straying outside of the solution's game tree.
+	Cheat mode to highlight the main line of play.
+
+SFGReader
+	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.
 
 Use Line class instead of Canvas to render the board lines.
 Render stones anti-aliased - this may mean I abandon the current method of showing them.
 
-Icons on the tabs
+Icons on the tabs?
 Drag tabs to re-arrange them (paratask).
 
 Load game meta data, such as player names, ranks etc.

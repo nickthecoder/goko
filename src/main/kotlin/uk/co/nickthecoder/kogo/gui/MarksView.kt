@@ -5,6 +5,7 @@ import javafx.geometry.VPos
 import javafx.scene.layout.Pane
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Point
+import uk.co.nickthecoder.kogo.model.StoneColor
 
 /**
  * Shows a set of marks on the board or on top of stones.
@@ -36,6 +37,8 @@ class MarksView(val board: Board) {
     }
 
     fun add(markView: MarkView) {
+        val stone = board.getStoneAt(markView.point)
+        markView.colorWhite(stone == StoneColor.BLACK)
         markViews.add(markView)
         markView.marksView = this
         node.children.add(markView)

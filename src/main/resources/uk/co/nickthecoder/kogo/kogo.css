@@ -96,7 +96,7 @@
 }
 
 .marks > .label-mark {
-    -fx-padding: 0 0 0 0;
+    -fx-padding: 0;
 }
 
 .marks > .stoneW {
@@ -106,6 +106,15 @@
 .marks > .stoneB {
     -fx-graphic: url( "stoneB.png" );
     -fx-padding: 2px;
+}
+
+.marks > .territory {
+    -fx-symbol: "●";
+    -fx-opacity: 0.5;
+}
+.marks > .dead {
+    -fx-symbol: "✕";
+    -fx-padding: 0;
 }
 
 /***********************************************************************************

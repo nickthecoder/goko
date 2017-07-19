@@ -16,7 +16,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
     override val rank = ""
 
-    val exec = Exec("gnugo", "--mode", "gtp", "--level", level)
+    val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.sizeX)
     // TODO Add options --komi <n>, --chinese-rules, --japanese-rules
 
     var writer: Writer? = null
@@ -32,8 +32,6 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
         writer = OutputStreamWriter(exec.process!!.outputStream)
 
-        // TODO Send the board size and other data not passed to the Process
-
         println("Started GnuGo")
     }
 
@@ -42,8 +40,6 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     }
 
     private fun command(command: String) {
-        // TODO Delay until the previous reply has been sent.
-        //println("Sending command '$command'")
         writer?.let {
             println("Sending command '$command'")
             it.appendln(command)
@@ -60,7 +56,9 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
                 return
             }
             if (line.startsWith("=1 PASS")) {
-                game.pass()
+                Platform.runLater {
+                    game.pass()
+                }
                 return
             }
             val point = Point.fromString(line.substring(3))
@@ -71,10 +69,10 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
         } else if (line.startsWith("=2 ")) {
             game.countedEndGame(line.substring(2).trim())
 
-        } else if (line.startsWith("=3 ")) {
+        } else if (line.startsWith("=3")) {
 
             val data = line.substring(2)
-            val space = line.indexOf(" ")
+            val space = data.indexOf(" ")
             if (space > 0) {
                 val pointNumber = Integer.parseInt(data.substring(0, space))
                 val y = pointNumber / game.board.sizeX
@@ -90,17 +88,12 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
     fun markBoard(point: Point, status: String) {
         // Status is one of : "alive", "dead", "seki", "white_territory", "black_territory", or "dame"
-        val stone = game.board.getStoneAt(point)
-        if (stone == StoneColor.NONE) {
-            if (status == "white_territory") {
-                game.addMark(TerritoryMark(point, StoneColor.WHITE))
-            } else if (status == "black_territory") {
-                game.addMark(TerritoryMark(point, StoneColor.BLACK))
-            }
-        } else {
-            if (status == "dead") {
-                game.addMark(DeadMark(point))
-            }
+        if (status == "white_territory") {
+            game.addMark(TerritoryMark(point, StoneColor.WHITE))
+        } else if (status == "black_territory") {
+            game.addMark(TerritoryMark(point, StoneColor.BLACK))
+        } else if (status == "dead") {
+            game.addMark(DeadMark(point, game.board.getStoneAt(point)))
         }
     }
 
