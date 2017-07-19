@@ -44,7 +44,7 @@
 .board {
     -fx-border-color: #666;
     -fx-border-width: 6px;
-    -fx-background-color: #c84;
+    -fx-background-color: #F5CC7A;
     -fx-padding: 128px;
 }
 
@@ -93,6 +93,10 @@
 }
 .marks > .cross {
     -fx-symbol: "✕";
+}
+
+.marks > .label-mark {
+    -fx-padding: 0 0 0 0;
 }
 
 .marks > .stoneW {

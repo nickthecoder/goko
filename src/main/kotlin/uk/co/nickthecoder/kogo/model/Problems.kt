@@ -52,7 +52,9 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
     val listeners = mutableListOf<ProblemSetListener>()
 
     /*
-     * Has the problem been solved? Filename -> true/false/null
+     * Has the problem been solved?
+     * The key is either the Filename (when each problem is within its own sgf file), or a the problemNumber + 1
+     * (as a string) when the problems are all stored in a single sgf file.
      */
     var results: MutableMap<String, ProblemResult>? = null
 
@@ -60,29 +62,48 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
         val lister = FileLister(extensions = listOf("sgf"))
         val list = lister.listFiles(directory)
 
-        for (i in (page * Problems.pageSize)..(-1 + Math.min((page + 1) * Problems.pageSize, list.size))) {
-            problems.add(Problem(this, list[i]))
+        val count: Int
+
+        if (list.size == 1) {
+            // Lets assume that the sgf file contains multiple games
+            val reader = SGFReader(list[0])
+            val games = reader.readMultipleGames()
+            count = games.size
+            var previousProblem: ProblemWithinCompoundFile? = null
+            for (i in (page * Problems.pageSize)..(-1 + Math.min((page + 1) * Problems.pageSize, games.size))) {
+                val problem = ProblemWithinCompoundFile(this, list[0], i)
+                problems.add(problem)
+                previousProblem?.nextProblem = problem
+                previousProblem = problem
+            }
+
+        } else {
+            // Read only one game from each sgf file
+            count = list.size
+            for (i in (page * Problems.pageSize)..(-1 + Math.min((page + 1) * Problems.pageSize, list.size))) {
+                problems.add(OneProblemPerFile(this, list[i]))
+            }
         }
 
-        this.label = if (list.size > Problems.pageSize) {
+        this.label = if (count > Problems.pageSize) {
             "$label Part ${page + 1}"
         } else {
             label
         }
     }
 
-    fun result(file: File): ProblemResult {
+    fun result(label: String): ProblemResult {
         if (results == null) {
             loadResults()
         }
-        return results?.get(file.name) ?: ProblemResult.UNTRIED
+        return results?.get(label) ?: ProblemResult.UNTRIED
     }
 
-    fun setResult(file: File, result: ProblemResult) {
+    fun setResult(label: String, result: ProblemResult) {
         if (results == null) {
             loadResults()
         }
-        results?.put(file.name, result)
+        results?.put(label, result)
     }
 
     fun resultsFile(): File = File(Preferences.problemResultsDirectory, "$label.json")
@@ -97,11 +118,11 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
 
             for (jresult1 in jresults) {
                 val jresult = jresult1.asObject()
-                val name = jresult.getString("name", "")
+                val label = jresult.getString("label", "")
                 if (jresult.get("result") != null) {
                     val str = jresult.getString("result", "")
                     val result = ProblemResult.safeValueOf(str)
-                    results.put(name, result)
+                    results.put(label, result)
                 }
             }
         }
@@ -117,7 +138,7 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
 
             results.forEach { key, value ->
                 val jresult = JsonObject()
-                jresult.add("name", key)
+                jresult.add("label", key)
                 jresult.add("result", value.toString())
                 jresults.add(jresult)
             }
@@ -142,16 +163,45 @@ interface ProblemSetListener {
     fun updated()
 }
 
-class Problem(val problemSet: ProblemSet, val file: File) {
+abstract class Problem(val problemSet: ProblemSet) {
+
+    abstract val label: String
 
     fun saveResult(result: ProblemResult) {
-        problemSet.setResult(file, result)
+        problemSet.setResult(label, result)
         problemSet.saveResults()
     }
 
-    fun load(): Game = SGFReader(file).read()
+    abstract fun load(): Game
 
-    fun next(): Problem? {
+    abstract fun next(): Problem?
+
+    fun getResult() = problemSet.result(label)
+}
+
+class ProblemWithinCompoundFile(problemSet: ProblemSet, val file: File, val problemNumber: Int) : Problem(problemSet) {
+
+    override val label = (problemNumber + 1).toString()
+
+    var nextProblem: Problem? = null
+
+
+    override fun load(): Game {
+        val reader = SGFReader(file)
+        val games = reader.readMultipleGames()
+        return games[problemNumber]
+    }
+
+    override fun next(): Problem? = nextProblem
+}
+
+class OneProblemPerFile(problemSet: ProblemSet, val file: File) : Problem(problemSet) {
+
+    override val label = file.nameWithoutExtension
+
+    override fun load(): Game = SGFReader(file).read()
+
+    override fun next(): Problem? {
         var found = false
         for (problem in problemSet.problems) {
             if (found) {
@@ -163,8 +213,6 @@ class Problem(val problemSet: ProblemSet, val file: File) {
         }
         return null
     }
-
-    fun getResult() = problemSet.result(this.file)
 }
 
 enum class ProblemResult {

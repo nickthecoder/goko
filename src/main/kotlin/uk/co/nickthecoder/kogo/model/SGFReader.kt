@@ -18,20 +18,51 @@ class SGFReader(var file: File) {
 
     var size = 19
 
+    /**
+     * Reads an sgf file, returning a list of games, each game is represented as a tree of SGFNodes
+     */
+    fun readMultipleGames(): List<Game> {
+        val result = mutableListOf<Game>()
+        reader = file.bufferedReader()
+
+        while (true) {
+            val sgfRoot = readTree()
+            if (sgfRoot == null) {
+                break
+            }
+            val game = Game(size, size)
+            updateRootNode(game, sgfRoot)
+            addChildren(game, sgfRoot)
+
+            //game.dumpTree()
+            game.rewindTo(game.root)
+            result.add(game)
+        }
+        reader.close()
+        return result
+    }
+
+    /**
+     * Reads an sgf file, returning a single Game (if the sgf file contains more than one game, then the first is
+     * loaded, and the rest are silently ignored.
+     */
     fun read(): Game {
 
         reader = file.bufferedReader()
 
         val sgfRoot = readTree()
+        if (sgfRoot == null) {
+            throw IOException("No game data found")
+        }
         reader.close()
 
-        dumpTree(sgfRoot)
+        // dumpTree(sgfRoot)
 
         val game = Game(size, size)
         updateRootNode(game, sgfRoot)
         addChildren(game, sgfRoot)
 
-        //game.dumpTree()
+        game.dumpTree()
         game.file = file
         game.rewindTo(game.root)
 
@@ -39,10 +70,6 @@ class SGFReader(var file: File) {
     }
 
     fun updateRootNode(game: Game, sgfNode: SGFNode) {
-        val toPlay = toStoneColor(sgfNode.getPropertyValue("PL"))
-        if (toPlay != null) {
-            game.playerToMove = game.players.get(toPlay)!!
-        }
 
         // TODO Add meta data such as play names, ranks etc
 
@@ -51,6 +78,13 @@ class SGFReader(var file: File) {
 
     fun updateNode(game: Game, sgfNode: SGFNode) {
         val currentNode = game.currentNode
+
+        // I've seen PL properties in non-root nodes, so let's put it here, rather than updateRootNode. Grr.
+        val toPlay = toStoneColor(sgfNode.getPropertyValue("PL"))
+        if (toPlay != null) {
+            game.currentNode.colorToPlay = toPlay
+            game.playerToMove = game.players.get(toPlay)!!
+        }
 
         val whites = sgfNode.getPropertyValues("AW")
         if (whites != null) {
@@ -77,7 +111,6 @@ class SGFReader(var file: File) {
 
         sgfNode.getPropertyValue("C")?.let {
             currentNode.comment = it
-            println("Added comment $it")
         }
         sgfNode.getPropertyValue("N")?.let {
             currentNode.name = it
@@ -102,7 +135,7 @@ class SGFReader(var file: File) {
 
         val labels = sgfNode.getPropertyValues("LB")
         labels?.forEach { str ->
-            val mark = TextMark(toPoint(game.board, str.substring(0, 2)), str.substring(3))
+            val mark = LabelMark(toPoint(game.board, str.substring(0, 2)), str.substring(3))
             currentNode.addMark(mark)
         }
         val circles = sgfNode.getPropertyValues("CR")
@@ -137,7 +170,7 @@ class SGFReader(var file: File) {
         for (sgfChild in sgfParent.chldren) {
             game.rewindTo(fromNode) // Will do nothing for the first child in the list
 
-            val gameNode = createGameNode(game, sgfChild)
+            var gameNode = createGameNode(game, sgfChild)
             if (gameNode is MoveNode && fromNode is MoveNode && gameNode.color == fromNode.color) {
                 // Add an extra Pass node (SGF does not have a concept of a pass node!
                 // But only add ONE pass node, if there are many variations after the pass.
@@ -147,9 +180,17 @@ class SGFReader(var file: File) {
                 }
                 passNode.apply(game, null)
             }
-            game.addNode(gameNode)
-            gameNode.apply(game, null)
-            updateNode(game, sgfChild)
+            if (gameNode is SetupNode && game.currentNode is SetupNode) {
+                // There are two setup nodes in a row, which seems pointless, so lets merge them into one node.
+                gameNode = game.currentNode
+                updateNode(game, sgfChild)
+                game.moveBack()
+                game.moveForward()
+            } else {
+                game.addNode(gameNode)
+                gameNode.apply(game, null)
+                updateNode(game, sgfChild)
+            }
             addChildren(game, sgfChild)
         }
     }
@@ -167,9 +208,10 @@ class SGFReader(var file: File) {
     }
 
     fun toStoneColor(str: String?): StoneColor? {
-        if (str == "B") {
+        // The spec says that only B and W are allowed, but I've seen 1 and 2 used. Grr.
+        if (str == "B" || str == "1") {
             return StoneColor.BLACK
-        } else if (str == "W") {
+        } else if (str == "W" || str == "2") {
             return StoneColor.WHITE
         }
         return null
@@ -181,16 +223,24 @@ class SGFReader(var file: File) {
         return Point(x, y)
     }
 
-    fun readTree(): SGFNode {
+    fun readTree(): SGFNode? {
 
-        val c = readCharSkippingWhiteSpace()
-        if (c == '(') {
-            val branch = SGFNode()
-            readBranch(branch)
-            return branch
-            // Notes, a single SGF file can contain multiple games, but this code only reads the first.
+        // Skip ahead till the first "(;" is found. Some sgf files contain comments at the top, which is NOT
+        // in the spec, but hey, what can you do!
+        var c = readCharSkippingWhiteSpace()
+        while (c != null) {
+            if (c == '(') {
+                c = readChar()
+                if (c == ';') {
+                    unreadChar(c)
+                    val branch = SGFNode()
+                    readBranch(branch)
+                    return branch
+                }
+            }
+            c = readCharSkippingWhiteSpace()
         }
-        throw IOException("Exptected '(', but found '$c'")
+        return null
     }
 
     fun readBranch(branch: SGFNode) {

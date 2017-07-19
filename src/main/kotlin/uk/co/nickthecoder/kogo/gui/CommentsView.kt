@@ -29,6 +29,7 @@ class CommentsView(val game: Game) : View, GameListener {
 
         nameC.isEditable = false
         commentC.isEditable = false
+        commentC.isWrapText = true
 
         whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, statusesPane)
 

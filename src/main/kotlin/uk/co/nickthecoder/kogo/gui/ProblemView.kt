@@ -15,7 +15,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
 
     val game = problem.load()
 
-    override val title = "Problem ${game.file!!.nameWithoutExtension}"
+    override val title = "Problem ${problem.label}"
 
     val board: Board
         get() = game.board
@@ -106,18 +106,11 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
     }
 
     override fun tidyUp() {
-        println("Tidying up ProblemView")
         game.tidyUp()
         boardView.tidyUp()
-        println("Tidied up ProblemView")
-    }
-
-    fun saveResult(result: ProblemResult) {
-        problem.saveResult(result)
     }
 
     inner class ProblemResults : VBox() {
-        // TODO Add buttons to allow self-appraisal.
 
         val group = ToggleGroup()
 
@@ -159,6 +152,5 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
 
             return button
         }
-
     }
 }

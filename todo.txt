@@ -1,11 +1,13 @@
 Bugs
-	Easy 71 - Labels aren't displayed at the solution.
-	Replace view puts it FIRST (when its last).
-	When replacing a view, tidyup happens AFTER the new view has been created (and built???)
-		Therefore there are two large canvases in memory.
+	A pass from Go Problems invokes the game scoring algorithm!
+		Also, why is it doing it after a SINGLE pass? Hmm.
 
 Go Problems
-	Buttons to rate yourself, which is then shown in the ProblemsView grid
+	Either create a tool to split a multi-game sgf file, or automatically unpack them.
+	Notification when straying outside of the solution's game tree.
+
+Use Line class instead of Canvas to render the board lines.
+Render stones anti-aliased - this may mean I abandon the current method of showing them.
 
 Icons on the tabs
 Drag tabs to re-arrange them (paratask).

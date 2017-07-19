@@ -2,6 +2,8 @@ package uk.co.nickthecoder.kogo.model
 
 import uk.co.nickthecoder.kogo.gui.MarkView
 
-class TextMark(point: Point, style: String, val text: String = "") : Mark(point, style) {
+class LabelMark(point: Point, val text: String) : Mark(point, "label-mark") {
     override fun createMarkView() = MarkView(this)
+
+    override fun toString() = "Label @ $point = '$text'"
 }
