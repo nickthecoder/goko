@@ -110,7 +110,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     }
 
     fun countGame() {
-        command("2  final_score")
+        command("2 final_score")
 
         for (y in 0..game.board.sizeY - 1) {
             for (x in 0..game.board.sizeX - 1) {
