@@ -1,11 +1,10 @@
 package uk.co.nickthecoder.kogo
 
-import uk.co.nickthecoder.kogo.gui.ProblemView
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.Point
 import uk.co.nickthecoder.kogo.model.StoneColor
 
-class ProblemPlayer(game: Game, color: StoneColor, val problemView: ProblemView) : LocalPlayer(game, color) {
+class ProblemPlayer(game: Game, color: StoneColor) : LocalPlayer(game, color) {
 
     override fun makeMove(point: Point) {
         val node = game.currentNode

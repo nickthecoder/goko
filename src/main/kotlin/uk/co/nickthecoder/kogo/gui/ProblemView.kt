@@ -38,7 +38,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
 
     override val node = whole
 
-    val firstPlayer = ProblemPlayer(game, game.playerToMove.color, this)
+    val firstPlayer = ProblemPlayer(game, game.playerToMove.color)
 
     val secondPlayer = ProblemOpponent(game, firstPlayer.color.opposite(), this)
 
