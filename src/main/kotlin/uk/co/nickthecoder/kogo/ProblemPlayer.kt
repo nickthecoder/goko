@@ -2,28 +2,28 @@ package uk.co.nickthecoder.kogo
 
 import uk.co.nickthecoder.kogo.gui.ProblemView
 import uk.co.nickthecoder.kogo.model.Game
+import uk.co.nickthecoder.kogo.model.Point
 import uk.co.nickthecoder.kogo.model.StoneColor
-import uk.co.nickthecoder.kogo.preferences.Preferences
 
-/**
- * Automatically play the opponents moves when solving Go problems
- */
-class ProblemPlayer(val game: Game, override val color: StoneColor, val problemView: ProblemView) : Player {
+class ProblemPlayer(game: Game, color: StoneColor, val problemView: ProblemView) : LocalPlayer(game, color) {
 
-    override val label = "Opponent"
-
-    override val rank = ""
-
-    override fun yourTurn() {
-        if (Preferences.problemsAutomaticOpponent == true) {
-            val currentNode = game.currentNode
-            val nextNode = currentNode.children.firstOrNull()
-
-            nextNode?.let {
-                it.apply(game, this)
-            }
+    override fun makeMove(point: Point) {
+        val node = game.currentNode
+        val count = node.children.size
+        super.makeMove(point)
+        if (node.children.size != count) {
+            game.currentNode.comment = "Hmm, that move's not not part of the solution!"
+            game.updatedCurrentNode()
         }
     }
 
-    override fun canClickToPlay() = true
+    override fun pass() {
+        val node = game.currentNode
+        val count = node.children.size
+        super.pass()
+        if (node.children.size != count) {
+            game.currentNode.comment = "Hmm, You passed? That's not part of the solution!"
+            game.updatedCurrentNode()
+        }
+    }
 }

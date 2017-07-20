@@ -54,4 +54,8 @@ class CommentsView(val game: Game) : View, GameListener {
     override fun moved() {
         update()
     }
+
+    override fun updatedCurrentNode() {
+        update()
+    }
 }

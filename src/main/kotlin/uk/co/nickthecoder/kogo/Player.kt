@@ -1,5 +1,6 @@
 package uk.co.nickthecoder.kogo
 
+import uk.co.nickthecoder.kogo.model.Point
 import uk.co.nickthecoder.kogo.model.StoneColor
 
 interface Player {
@@ -17,5 +18,7 @@ interface Player {
 
     fun yourTurn() {}
 
-    fun canClickToPlay() : Boolean
+    fun makeMove(point: Point)
+
+    fun pass()
 }

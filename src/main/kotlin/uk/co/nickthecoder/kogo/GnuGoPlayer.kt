@@ -60,7 +60,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
             }
             if (line.startsWith("=1 PASS")) {
                 Platform.runLater {
-                    game.pass()
+                    game.pass(this)
                 }
                 return
             }
@@ -129,5 +129,11 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
         exec.kill()
     }
 
-    override fun canClickToPlay() = false
+    override fun makeMove(point: Point) {
+        throw IllegalStateException("It's GnuGoPlayer's turn!")
+    }
+
+    override fun pass() {
+        throw IllegalStateException("It's GnuGoPlayer's turn!")
+    }
 }

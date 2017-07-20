@@ -7,6 +7,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import uk.co.nickthecoder.kogo.KoGo
+import uk.co.nickthecoder.kogo.ProblemOpponent
 import uk.co.nickthecoder.kogo.ProblemPlayer
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
@@ -37,11 +38,12 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
 
     override val node = whole
 
-    val firstPlayer = game.playerToMove
+    val firstPlayer = ProblemPlayer(game, game.playerToMove.color, this)
 
-    val secondPlayer = ProblemPlayer(game, firstPlayer.color.opposite(), this)
+    val secondPlayer = ProblemOpponent(game, firstPlayer.color.opposite(), this)
 
     init {
+        game.addPlayer(firstPlayer)
         game.addPlayer(secondPlayer)
         game.gameListeners.add(this)
     }
@@ -79,7 +81,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
     }
 
     fun onPass() {
-        game.pass()
+        firstPlayer.pass()
     }
 
     fun onRestart() {

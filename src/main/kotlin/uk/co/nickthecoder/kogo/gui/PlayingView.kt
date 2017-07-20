@@ -9,7 +9,6 @@ import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
-import uk.co.nickthecoder.kogo.model.Mark
 
 open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
 
@@ -39,7 +38,7 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
         whole.top = toolBar
         whole.center = split
 
-        split.items.add(boardView.node) // TODO Add a status are on the right
+        split.items.add(boardView.node) // TODO Add a status area on the right
 
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
         resignB.addEventHandler(ActionEvent.ACTION) { onResign() }
@@ -52,7 +51,7 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
 
     fun onPass() {
         if (game.playerToMove is LocalPlayer) {
-            game.pass()
+            game.playerToMove.pass()
         }
     }
 

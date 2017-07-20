@@ -6,6 +6,8 @@ import javafx.scene.image.Image
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.paratask.ParaTaskApp
+import java.io.InputStream
+import java.net.URL
 
 class KoGo : Application() {
 
@@ -28,6 +30,10 @@ class KoGo : Application() {
             val paratask = ParaTaskApp::class.java.getResource("paratask.css")
             scene.stylesheets.add(kogo.toExternalForm())
             scene.stylesheets.add(paratask.toExternalForm())
+        }
+
+        fun resource(name: String): InputStream? {
+            return KoGo::class.java.getResourceAsStream(name)
         }
 
         fun imageResource(name: String): Image? {

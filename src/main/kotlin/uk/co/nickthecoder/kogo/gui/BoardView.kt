@@ -10,7 +10,6 @@ import javafx.scene.shape.Circle
 import javafx.scene.shape.LineTo
 import javafx.scene.shape.MoveTo
 import javafx.scene.shape.Path
-import uk.co.nickthecoder.kogo.Player
 import uk.co.nickthecoder.kogo.model.*
 
 
@@ -20,7 +19,11 @@ class BoardView(val game: Game) : View {
 
     private val container = StackPane()
 
-    val stones = MarksViewArray(board)
+    var scale: Double = 1.0
+
+    var oldScale: Double = 0.0
+
+    val stones = StonesView(this)
 
     val playerView: PlayerView = PlayerView(this@BoardView)
 
@@ -68,8 +71,6 @@ class BoardView(val game: Game) : View {
 
         private val wood = Region()
 
-        var scale: Double = 1.0
-
         init {
             board.game.gameListeners.add(this)
 
@@ -78,7 +79,7 @@ class BoardView(val game: Game) : View {
         }
 
         fun build() {
-            children.addAll(wood, lines, starPoints, boardMarks.node, stones.node, marks.node, specialMarks.node, playerView.node)
+            children.addAll(wood, lines, starPoints, boardMarks.node, stones, marks.node, specialMarks.node, playerView.node)
 
             with(wood) {
                 styleClass.add("wood")
@@ -108,7 +109,7 @@ class BoardView(val game: Game) : View {
 
             val marginTop: Double
             val marginLeft: Double
-            val size: Double
+            var size: Double
 
             if (width > height) {
                 size = height
@@ -119,7 +120,16 @@ class BoardView(val game: Game) : View {
                 marginLeft = 0.0
                 marginTop = (height - width) / 2
             }
-            scale = size / (board.sizeX + 2)
+            // By flooring the scale, the lines of the grid will always be aligned to pixels on the screen, and therefore
+            // won't need antialiasing, which can give inellegant results. The only down side, is that the board scales in
+            // jumps when the view is resized by dragging.
+            scale = Math.floor(size / (board.sizeX + 2))
+            size = scale * (board.sizeX + 2)
+
+            if ( scale == oldScale) {
+                return
+            }
+            oldScale = scale
 
             val playingSize = scale * board.sizeX
             val logicalSize = (board.sizeX + 2) * pointSize
@@ -127,19 +137,13 @@ class BoardView(val game: Game) : View {
             layoutInArea(wood, marginLeft, marginTop, size, size, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(boardMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(starPoints, marginLeft + scale * 1.5, marginTop + scale * 1.5, playingSize, playingSize, 0.0, HPos.LEFT, VPos.TOP)
-            layoutInArea(stones.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(marks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(specialMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(playerView.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
 
-            with(boardMarks.node) {
-                translateX = (size - logicalSize) / 2
-                translateY = translateX
-                scaleX = scale / pointSize
-                scaleY = scaleX
-            }
+            layoutInArea(stones, marginLeft + scale, marginTop + scale, size, size, 0.0, HPos.LEFT, VPos.TOP)
 
-            with(stones.node) {
+            with(boardMarks.node) {
                 translateX = (size - logicalSize) / 2
                 translateY = translateX
                 scaleX = scale / pointSize
@@ -201,16 +205,6 @@ class BoardView(val game: Game) : View {
                         starPoints.children.add(circle)
                     }
                 }
-            }
-        }
-
-
-        override fun stoneChanged(point: Point, byPlayer: Player?) {
-            val color = board.getStoneAt(point)
-            if (color == StoneColor.NONE) {
-                stones.removeAt(point)
-            } else {
-                stones.add(SymbolMarkView(point, "stone" + if (color == StoneColor.WHITE) "W" else "B"))
             }
         }
 

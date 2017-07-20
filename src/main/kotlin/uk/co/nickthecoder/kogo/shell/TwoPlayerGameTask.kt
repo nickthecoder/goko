@@ -37,8 +37,8 @@ class TwoPlayerGameTask(val mainWindow: MainWindow) : AbstractTask() {
         val view = PlayingView(mainWindow, game)
         game.placeHandicap(handicapP.value!!)
 
-        val blackPlayer = LocalPlayer(StoneColor.BLACK, blackPlayerP.value)
-        val whitePlayer = LocalPlayer(StoneColor.WHITE, whitePlayerP.value)
+        val blackPlayer = LocalPlayer(game, StoneColor.BLACK, blackPlayerP.value)
+        val whitePlayer = LocalPlayer(game, StoneColor.WHITE, whitePlayerP.value)
 
         game.addPlayer(blackPlayer)
         game.addPlayer(whitePlayer)
@@ -46,5 +46,4 @@ class TwoPlayerGameTask(val mainWindow: MainWindow) : AbstractTask() {
         mainWindow.changeView(view)
         game.start()
     }
-
 }

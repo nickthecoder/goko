@@ -20,7 +20,7 @@ class QuickGameTask(val mainWindow: MainWindow) : QuickGamePreferences() {
         val game = Game(sizeX = boardSizeP.value!!, sizeY = boardSizeP.value!!)
         val view = PlayingView(mainWindow, game)
 
-        val human = LocalPlayer(StoneColor.opposite(computerPlaysP.value!!), Preferences.yourName, Preferences.yourRank)
+        val human = LocalPlayer(game, StoneColor.opposite(computerPlaysP.value!!), Preferences.yourName, Preferences.yourRank)
 
         val gnuGo = GnuGoPlayer(game, computerPlaysP.value!!)
         gnuGo.start()

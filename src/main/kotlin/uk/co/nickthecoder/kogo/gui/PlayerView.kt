@@ -3,6 +3,7 @@ package uk.co.nickthecoder.kogo.gui
 import javafx.scene.Node
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.StackPane
+import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
@@ -51,8 +52,8 @@ class PlayerView(val boardView: BoardView) : GameListener {
         val point = boardView.toBoardPoint(event.x, event.y)
         val player = game.playerToMove
 
-        if (player.canClickToPlay() && game.canPlayAt(point)) {
-            game.move(point, game.playerToMove.color, game.playerToMove)
+        if (player is LocalPlayer && game.canPlayAt(point)) {
+            player.makeMove(point)
         }
     }
 

@@ -13,7 +13,7 @@ class Game(sizeX: Int, sizeY: Int) {
 
     val board = Board(sizeX, sizeY, this)
 
-    var playerToMove: Player = LocalPlayer(StoneColor.BLACK)
+    var playerToMove: Player = LocalPlayer(this, StoneColor.BLACK)
 
     var handicap = 0;
 
@@ -34,7 +34,7 @@ class Game(sizeX: Int, sizeY: Int) {
         metaData.boardSize = Math.max(sizeX, sizeY)
 
         addPlayer(playerToMove)
-        addPlayer(LocalPlayer(StoneColor.WHITE))
+        addPlayer(LocalPlayer(this, StoneColor.WHITE))
     }
 
     fun placeHandicap(n: Int) {
@@ -129,9 +129,9 @@ class Game(sizeX: Int, sizeY: Int) {
         node.apply(this, byPlayer)
     }
 
-    fun pass() {
+    fun pass(byPlayer: Player) {
         val node = PassNode(playerToMove.color.opposite())
-        addAndApplyNode(node, null)
+        addAndApplyNode(node, byPlayer)
         if (currentNode is PassNode) {
             awaitingFinalCount = true
             countEndGame()
@@ -168,7 +168,7 @@ class Game(sizeX: Int, sizeY: Int) {
             return false
         }
         val copy = board.copy()
-        val dummyPlayer = LocalPlayer(StoneColor.NONE)
+        val dummyPlayer = LocalPlayer(this, StoneColor.NONE)
         copy.setStoneAt(point, playerToMove.color, dummyPlayer)
         copy.removeTakenStones(point, dummyPlayer)
         if (copy.checkLiberties(point) != null) {
@@ -191,6 +191,12 @@ class Game(sizeX: Int, sizeY: Int) {
             for (listener in gameListeners) {
                 listener.removedMark(mark)
             }
+        }
+    }
+
+    fun updatedCurrentNode() {
+        for (listener in gameListeners) {
+            listener.updatedCurrentNode()
         }
     }
 
