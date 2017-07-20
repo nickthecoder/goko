@@ -4,7 +4,6 @@ Bugs
 	Ko not tested for, and then trows exception when a ko is played.
 
 Go Problems
-	Notification when straying outside of the solution's game tree.
 	Cheat mode to highlight the main line of play.
 
 SFGReader

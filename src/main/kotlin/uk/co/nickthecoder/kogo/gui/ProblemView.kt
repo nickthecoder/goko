@@ -12,7 +12,8 @@ import uk.co.nickthecoder.kogo.ProblemPlayer
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 
-class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(mainWindow), GameListener {
+class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boolean = false)
+    : TopLevelView(mainWindow), GameListener {
 
     val game = problem.load()
 
@@ -72,8 +73,12 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
 
         val restartB = Button("Restart")
         restartB.addEventHandler(ActionEvent.ACTION) { onRestart() }
+        passB.addEventHandler(ActionEvent.ACTION) { onPass() }
 
-        toolBar.items.addAll(passB, restartB)
+        val giveUpB = Button("Give Up")
+        giveUpB.addEventHandler(ActionEvent.ACTION) { onGiveUp() }
+
+        toolBar.items.addAll(passB, restartB, giveUpB)
 
         game.root.apply(game)
 
@@ -88,14 +93,27 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
         showProblem(problem)
     }
 
-    fun showProblem(problem: Problem) {
-        val view = ProblemView(mainWindow, problem)
+    fun onGiveUp() {
+        problem.saveResult(ProblemResult.FAILED)
+        showProblem(problem, cheat = true)
+    }
+
+    fun showProblem(problem: Problem, cheat: Boolean = false) {
+        val view = ProblemView(mainWindow, problem, cheat)
         mainWindow.changeView(view)
     }
 
     override fun moved() {
-        if (Preferences.problemsShowContinuations == true) {
-            val currentNode = game.currentNode
+        val currentNode = game.currentNode
+
+        if (cheat) {
+            currentNode.children.firstOrNull().let { node ->
+                if (node is MoveNode) {
+                    val mark = CircleMark(node.point)
+                    game.addMark(mark)
+                }
+            }
+        } else if (Preferences.problemsShowContinuations == true) {
             if (currentNode.children.size > 1) {
                 for (child in currentNode.children) {
                     if (child is MoveNode) {
@@ -144,7 +162,13 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
             val button = ToggleButton()
             with(button) {
                 graphic = ImageView(result.image())
-                addEventHandler(ActionEvent.ACTION) { problem.saveResult(result) }
+                addEventHandler(ActionEvent.ACTION) {
+                    if (button.isSelected) {
+                        problem.saveResult(result)
+                    } else {
+                        problem.saveResult(ProblemResult.UNTRIED)
+                    }
+                }
                 toggleGroup = group
                 tooltip = Tooltip(tooltipStr)
                 if (problem.getResult() == result) {
