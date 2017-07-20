@@ -7,6 +7,8 @@ class Board(val sizeX: Int, val sizeY: Int = sizeX, val game: Game) {
 
     private val points = array2d<StoneColor>(sizeX, sizeY) { StoneColor.NONE }
 
+    private var isCopy = false
+
     fun contains(x: Int, y: Int) = x >= 0 && y >= 0 && x < sizeX && y < sizeY
 
     fun contains(point: Point) = point.x >= 0 && point.y >= 0 && point.x < sizeX && point.y < sizeY
@@ -35,8 +37,10 @@ class Board(val sizeX: Int, val sizeY: Int = sizeX, val game: Game) {
     fun setStoneAt(point: Point, color: StoneColor, byPlayer: Player? = null) {
         if (contains(point)) {
             points[point.x][point.y] = color
-            game.gameListeners.forEach { listener ->
-                listener.stoneChanged(point, byPlayer)
+            if (!isCopy) {
+                game.gameListeners.forEach { listener ->
+                    listener.stoneChanged(point, byPlayer)
+                }
             }
         }
     }
@@ -46,8 +50,10 @@ class Board(val sizeX: Int, val sizeY: Int = sizeX, val game: Game) {
      */
     fun removeStoneAt(point: Point, byPlayer: Player? = null) {
         points[point.x][point.y] = StoneColor.NONE
-        game.gameListeners.forEach {
-            it.stoneChanged(point, byPlayer)
+        if (!isCopy) {
+            game.gameListeners.forEach { listener ->
+                listener.stoneChanged(point, byPlayer)
+            }
         }
     }
 
@@ -108,10 +114,11 @@ class Board(val sizeX: Int, val sizeY: Int = sizeX, val game: Game) {
 
     fun copy(): Board {
         val result = Board(sizeX, sizeY, game)
+        result.isCopy = true
         for (x in 0..sizeX - 1) {
             for (y in 0..sizeY - 1) {
                 val point = Point(x, y)
-                result.setStoneAt(point, getStoneAt(point), null)
+                points[point.x][point.y] = getStoneAt(point)
             }
         }
         return result

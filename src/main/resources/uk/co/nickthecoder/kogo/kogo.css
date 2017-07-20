@@ -28,27 +28,19 @@
 }
 
 /***********************************************************************************
-    The board container is NOT scaled (unlike board), and therefore the
-    pixel values are REAL pixels.
 ************************************************************************************/
 
 .board-container {
     -fx-padding: 20px;
 }
 
-/***********************************************************************************
-    The nodes of .board, and its children are SCALED, so the CSS can assume that
-    a point on the board is 128px wide, and it will be scaled to fit the view.
-************************************************************************************/
-
-.board {
+.wood {
     -fx-border-color: #666;
-    -fx-border-width: 6px;
+    -fx-border-width: 1px;
     -fx-background-color: #F5CC7A;
-    -fx-padding: 128px;
 }
 
-.playing-area {
+.board-marks {
 }
 
 /***********************************************************************************
@@ -59,11 +51,6 @@
 .marks > .mark {
     -fx-font-size: 100px;
     -fx-padding: 0 0 0.25em 0;
-}
-/* The star points, such as the 4x4 point */
-.marks > .star {
-    -fx-font-size: 45px;
-    -fx-symbol: "●";
 }
 .marks > .white {
     -fx-text-fill: #fff;

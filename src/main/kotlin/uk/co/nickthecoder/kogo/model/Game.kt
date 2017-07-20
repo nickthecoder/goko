@@ -119,7 +119,7 @@ class Game(sizeX: Int, sizeY: Int) {
         autoPlay = true
         currentNode.children.forEach { child ->
             if (child.sameAs(node)) {
-                child.apply(this, null)
+                child.apply(this, byPlayer)
                 return
             }
         }

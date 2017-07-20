@@ -48,7 +48,10 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     }
 
     private fun parseLine(line: String) {
-        println("Parsing reply $line")
+        if (line == "" || line == "= ") {
+            return
+        }
+        println("Parsing reply '$line'")
 
         if (line.startsWith("=1 ") && line.length >= 5) {
             if (line.startsWith("=1 resign")) {

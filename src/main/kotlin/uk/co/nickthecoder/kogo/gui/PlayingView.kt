@@ -24,7 +24,7 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
 
     protected val split = SplitPane()
 
-    protected val boardView = BoardView(board)
+    protected val boardView = BoardView(game)
 
     protected val passB = Button("Pass")
 

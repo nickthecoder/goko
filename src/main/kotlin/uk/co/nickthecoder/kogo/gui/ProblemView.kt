@@ -28,7 +28,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem) : TopLevelView(m
 
     private val rightPane = BorderPane()
 
-    private val boardView = BoardView(board)
+    private val boardView = BoardView(game)
 
     private val commentsView = CommentsView(game)
 
