@@ -193,7 +193,7 @@ class SGFReader(var file: File) {
 
             val gameNode = createGameNode(game, sgfChild)
             if (gameNode is MoveNode && fromNode is MoveNode && gameNode.color == fromNode.color) {
-                // Add an extra Pass node (SGF does not have a concept of a pass node!
+                // The same player has moved again, so add an extra Pass node
                 // But only add ONE pass node, if there are many variations after the pass.
                 if (passNode == null) {
                     passNode = PassNode(game.playerToMove.color.opposite())
@@ -219,14 +219,18 @@ class SGFReader(var file: File) {
         val white = sgfNode.getPropertyValue("W")
         if (white != null) {
             val point = toPoint(game.board, white)
-            if (point != null) {
+            if (point == null) {
+                return PassNode(StoneColor.BLACK)
+            } else {
                 return MoveNode(point, StoneColor.WHITE)
             }
         }
         val black = sgfNode.getPropertyValue("B")
         if (black != null) {
             val point = toPoint(game.board, black)
-            if (point != null) {
+            if (point == null) {
+                return PassNode(StoneColor.WHITE)
+            } else {
                 return MoveNode(point, StoneColor.BLACK)
             }
         }
@@ -244,6 +248,10 @@ class SGFReader(var file: File) {
     }
 
     fun toPoint(board: Board, str: String): Point? {
+        if (str == "" || (str == "tt" && board.sizeX <= 19)) {
+            // A pass node - just return null and let the caller handle it.
+            return null
+        }
         try {
             val x: Int = str[0].toLowerCase() - 'a'
             val y: Int = board.sizeY - (str[1].toLowerCase() - 'a') - 1

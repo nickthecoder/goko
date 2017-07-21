@@ -30,6 +30,7 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
 
     private val commentsView = CommentsView(game)
 
+    private var history = mutableListOf<GameNode>()
 
     override val node = whole
 
@@ -57,11 +58,17 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
         val passB = Button("Pass")
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
 
-        val restartB = Button("Restart")
+        val restartB = Button("<<")
         restartB.addEventHandler(ActionEvent.ACTION) { onRestart() }
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
 
-        toolBar.items.addAll(passB, restartB)
+        val backB = Button("<")
+        backB.addEventHandler(ActionEvent.ACTION) { onBack() }
+
+        val forwardB = Button(">")
+        forwardB.addEventHandler(ActionEvent.ACTION) { onForward() }
+
+        toolBar.items.addAll(passB, restartB, backB, forwardB)
 
         game.root.apply(game)
 
@@ -76,13 +83,47 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
         game.rewindTo(game.root)
     }
 
+    fun onBack() {
+        game.moveBack()
+    }
+
+    fun onForward() {
+        val i = history.indexOf(game.currentNode)
+        println("forward i=$i size = ${history.size}")
+        if (i >= 0 && i < history.size - 1) {
+            val node = history[i + 1]
+            node.apply(game, null)
+        } else {
+            game.moveForward()
+        }
+    }
+
     override fun moved() {
+
         val currentNode = game.currentNode
+
+        val c = history.indexOf(currentNode)
+        if (c < 0) {
+            val p = history.indexOf(currentNode.parent)
+            if (p >= 0) {
+                history = history.subList(0, p + 1)
+                history.add(currentNode)
+            } else {
+                history.clear()
+                var node: GameNode? = currentNode
+                while (node != null) {
+                    history.add(0, node)
+                    node = node.parent
+                }
+            }
+        }
 
         for (child in currentNode.children) {
             if (child is MoveNode) {
-                val mark = SquareMark(child.point)
-                game.addMark(mark)
+                if (!currentNode.hasMarkAt(child.point)) {
+                    val mark = SquareMark(child.point)
+                    game.addMark(mark)
+                }
             }
         }
     }

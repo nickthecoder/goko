@@ -33,4 +33,11 @@ class ProblemOpponent(val game: Game, override val color: StoneColor, val proble
     override fun pass() {
         game.pass(this)
     }
+
+    override fun canClickToPlay() : Boolean {
+        if (game.currentNode.children.isEmpty()) {
+            return true
+        }
+        return false
+    }
 }

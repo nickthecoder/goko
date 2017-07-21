@@ -17,10 +17,8 @@ class BasicPreferences : AbstractTask() {
 
     val gamesDirectoryP = FileParameter("gamesDirectory", expectFile = false, value = currentDirectory)
 
-    val josekiDictionaryP = FileParameter(name = "josekiDictionary", extensions = listOf("sgf"), required = false)
-
     init {
-        taskD.addParameters(yourNameP, yourRankP, gamesDirectoryP, josekiDictionaryP)
+        taskD.addParameters(yourNameP, yourRankP, gamesDirectoryP)
         yourNameP.value = homeDirectory.name
     }
 

@@ -18,6 +18,8 @@ interface Player {
 
     fun yourTurn() {}
 
+    fun canClickToPlay() : Boolean
+
     fun makeMove(point: Point)
 
     fun pass()

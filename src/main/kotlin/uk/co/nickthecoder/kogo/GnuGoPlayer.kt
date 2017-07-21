@@ -136,4 +136,6 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     override fun pass() {
         throw IllegalStateException("It's GnuGoPlayer's turn!")
     }
+
+    override fun canClickToPlay() = false
 }

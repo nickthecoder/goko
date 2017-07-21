@@ -10,9 +10,10 @@ import uk.co.nickthecoder.kogo.gui.View
 import uk.co.nickthecoder.kogo.gui.ViewTab
 import uk.co.nickthecoder.kogo.shell.Home
 import uk.co.nickthecoder.kogo.shell.PromptTaskView
+import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.util.MyTabPane
 
-class PreferencesView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
+class PreferencesView(mainWindow: MainWindow, val initialPage: Task? = null) : TopLevelView(mainWindow) {
 
     private val tabs = MyTabPane()
 
@@ -36,6 +37,9 @@ class PreferencesView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
             view.build()
             val tab = ViewTab(view)
             tabs.add(tab)
+            if ( task === initialPage ) {
+                tabs.selectedTab = tab
+            }
         }
 
         return this

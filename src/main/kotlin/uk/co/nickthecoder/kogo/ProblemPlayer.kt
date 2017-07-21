@@ -25,4 +25,6 @@ class ProblemPlayer(game: Game, color: StoneColor) : LocalPlayer(game, color) {
             game.updatedCurrentNode()
         }
     }
+
+    override fun canClickToPlay() = true
 }

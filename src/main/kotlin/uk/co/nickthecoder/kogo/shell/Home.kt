@@ -14,16 +14,21 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow) {
     override val viewStyle = "home"
 
     override fun addButtons() {
+
         with(buttons) {
             add(createButton("Quick Game", "quick-game", QuickGameTask(mainWindow)))
             add(createButton("Two Player Game", "two-player-game", TwoPlayerGameTask(mainWindow)))
             add(createButton("Challenge Match", "challenge-match", ChallengeMatchTask(mainWindow)))
             add(createButton("Open SGF File", "open-file", OpenFileTask(mainWindow)))
             add(createButton("Problems", "problems") { ProblemsView(mainWindow) })
-            val joseki = Preferences.josekiDirectionary
-            if (joseki != null) {
-                add(createButton("Joseki Dictionary", "joseki") { JosekiView(mainWindow, joseki) })
-            }
+            add(createButton("Joseki Dictionary", "joseki") {
+                val joseki = Preferences.josekiDirectionary
+                if (joseki != null) {
+                    JosekiView(mainWindow, joseki)
+                } else {
+                    PreferencesView(mainWindow, Preferences.josekiPreferences)
+                }
+            })
             add(createButton("Preferences", "preferences") { PreferencesView(mainWindow) })
         }
     }

@@ -28,9 +28,11 @@ class CommentsView(val game: Game) : View, GameListener {
         whole.styleClass.add("comments")
 
         nameC.isEditable = false
-        commentC.isEditable = false
-        commentC.isWrapText = true
-
+        with(commentC) {
+            isEditable = false
+            isWrapText = true
+            prefRowCount = 20
+        }
         whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, statusesPane)
 
         update()

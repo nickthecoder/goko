@@ -20,6 +20,8 @@ object Preferences {
 
     val problemsPreferences = ProblemsPreferences()
 
+    val josekiPreferences = JosekiPreferences()
+
 
     val yourName by basicPreferences.yourNameP
 
@@ -27,7 +29,7 @@ object Preferences {
 
     val gamesDirectory by basicPreferences.gamesDirectoryP
 
-    val josekiDirectionary by basicPreferences.josekiDictionaryP
+    val josekiDirectionary by josekiPreferences.josekiDictionaryP
 
 
     val problemsDirectory by problemsPreferences.directoryP
@@ -54,6 +56,7 @@ object Preferences {
         addPreferenceTask(quickGamePreferences)
         addPreferenceTask(challengeMatchPreferences)
         addPreferenceTask(problemsPreferences)
+        addPreferenceTask(josekiPreferences)
 
         if (preferencesFile.exists()) {
             load()

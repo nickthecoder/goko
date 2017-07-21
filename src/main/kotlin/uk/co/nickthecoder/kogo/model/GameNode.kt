@@ -39,6 +39,15 @@ abstract class GameNode(var colorToPlay: StoneColor) {
         return null
     }
 
+    fun hasMarkAt(point: Point): Boolean {
+        for (mark in mutableMarks) {
+            if (point == mark.point) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun addStoneOnly(board: Board, point: Point, color: StoneColor) {
         val oldColor = board.getStoneAt(point)
         if (oldColor.isStone()) {

@@ -17,4 +17,6 @@ open class LocalPlayer(val game: Game, override val color: StoneColor, val name:
     override fun pass() {
         game.pass(this)
     }
+
+    override fun canClickToPlay() = true
 }
