@@ -3,45 +3,38 @@ Bugs
 		Also, why is it doing it after a SINGLE pass? Hmm.
 	Ko not tested for, and then trows exception when a ko is played.
 
-Go Problems
-	Cheat mode to highlight the main line of play.
+Joseki
+	Load Kogo's joseki database (not related to my software - oops, perhaps I should rename mine!)
+	Allow board to be rotated/reflected
 
 SFGReader
 	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.
 
-Use Line class instead of Canvas to render the board lines.
-Render stones anti-aliased - this may mean I abandon the current method of showing them.
-
 Icons on the tabs?
 Drag tabs to re-arrange them (paratask).
 
-Load game meta data, such as player names, ranks etc.
-
-Load and show marked points
+Build a list of all sgf properties in SGFReader including supported,partial,unsupported.
 
 Game editor/review needs a LOT of work
 	Show the game tree.
+
+Save .sgf files
 
 Images for each of the Home view's buttons
 
 Review games after playing them
 	Edit whole game tree
 	Get hints from GnuGo
-
-Replace the scaled canvas with a fixed size canvas.
-	It will be smaller, and allow for single pixel width lines
-	No need for the blur to make the lines appear uniform ;-)
+		Perhaps there should always be a spare GNUGo instance, for hints and game scoring
+		Split GNUGo into two, one part interacts with the gnugo command, the other is a Player
+		Then have a third which does this hints. i.e.finds a good move, and then marks instead of moves.
+		Maybe asks 2 or three times
+		Add the mark to the node directly, not through game, just in case the currentNode changes before
+			the answer is found.
+		Ahh, but this implies that the spare is not synced with Game, and therefore cannot use the
+			listeners in the same way to change its state. Hmmm. tricky.
 
 Multiple directories for Go problems, so that Kogo can ship with its own problems AND let the user point to their own collection(s).
-	Maybe I should recurse through the directory tree.
-	e.g. "Weekly Go Problems/Easy/Part 1" gets flattened to a label of "Weekly Go Problems Easy Part 1"
-	Maybe I should automatically split large directories, so that "Part N" is done automatically.
-	Don't use the file name as a label, but use a number instead.
-		Doing all of the above would allow the weakly go problems to be used without modification.
-
-Save .sgf files
-
-Auto scoring doesn't work (I think I need to wait for a response from GNU Go before sending the next query).
 
 Allow for manual placing of handicap stones
 
@@ -49,8 +42,10 @@ When playing against GnuGo, set time limits similar to those on the servers.
 	e.g. 15 minutes, then 30s per move with 3 "extras".
 	Countdown timers, with human voice and progress bar.
 	Make it obvious when a countdown is vital (i.e. you will lose the game).
+	A Pause button when time is not limitless (for comfort breaks, phone calls etc).
 
 All games automatically saved in a stadard place.
+	Autosave option in preferences, and save directory
 	File names are automatic - Server_YYYY-MM-DD_HH-MM.s
 
 Use a cut-down version of GoTextProtocol to set up a client/server game across a LAN.
@@ -62,7 +57,4 @@ Hidden Stone Go (via client server)
 
 One Color Go
 
-Joseki
-	Load Kogo's joseki database (not related to my software - oops, perhaps I should rename mine!)
-	Allow board to be rotated/reflected
 

@@ -90,14 +90,18 @@ class SGFReader(var file: File) {
         if (whites != null) {
             whites.forEach { str ->
                 val point = toPoint(game.board, str)
-                currentNode.addStoneOnly(game.board, point, StoneColor.WHITE)
+                if (point != null) {
+                    currentNode.addStoneOnly(game.board, point, StoneColor.WHITE)
+                }
             }
         }
         val blacks = sgfNode.getPropertyValues("AB")
         if (blacks != null) {
             blacks.forEach { str ->
                 val point = toPoint(game.board, str)
-                currentNode.addStoneOnly(game.board, point, StoneColor.BLACK)
+                if (point != null) {
+                    currentNode.addStoneOnly(game.board, point, StoneColor.BLACK)
+                }
             }
         }
 
@@ -105,7 +109,9 @@ class SGFReader(var file: File) {
         if (removed != null) {
             removed.forEach { str ->
                 val point = toPoint(game.board, str)
-                currentNode.removeStoneOnly(game.board, point)
+                if (point != null) {
+                    currentNode.removeStoneOnly(game.board, point)
+                }
             }
         }
 
@@ -135,28 +141,43 @@ class SGFReader(var file: File) {
 
         val labels = sgfNode.getPropertyValues("LB")
         labels?.forEach { str ->
-            val mark = LabelMark(toPoint(game.board, str.substring(0, 2)), str.substring(3))
-            currentNode.addMark(mark)
+            val point = toPoint(game.board, str.substring(0, 2))
+            if (point != null) {
+                val mark = LabelMark(point, str.substring(3))
+                currentNode.addMark(mark)
+            }
         }
         val circles = sgfNode.getPropertyValues("CR")
         circles?.forEach { str ->
-            val mark = CircleMark(toPoint(game.board, str))
-            currentNode.addMark(mark)
+            val point = toPoint(game.board, str.substring(0, 2))
+            if (point != null) {
+                val mark = CircleMark(point)
+                currentNode.addMark(mark)
+            }
         }
         val crosses = sgfNode.getPropertyValues("MA")
         crosses?.forEach { str ->
-            val mark = CrossMark(toPoint(game.board, str))
-            currentNode.addMark(mark)
+            val point = toPoint(game.board, str.substring(0, 2))
+            if (point != null) {
+                val mark = CrossMark(point)
+                currentNode.addMark(mark)
+            }
         }
         val squares = sgfNode.getPropertyValues("SQ")
         squares?.forEach { str ->
-            val mark = CircleMark(toPoint(game.board, str))
-            currentNode.addMark(mark)
+            val point = toPoint(game.board, str.substring(0, 2))
+            if (point != null) {
+                val mark = CircleMark(point)
+                currentNode.addMark(mark)
+            }
         }
         val triangles = sgfNode.getPropertyValues("TR")
         triangles?.forEach { str ->
-            val mark = TriangleMark(toPoint(game.board, str))
-            currentNode.addMark(mark)
+            val point = toPoint(game.board, str.substring(0, 2))
+            if (point != null) {
+                val mark = TriangleMark(point)
+                currentNode.addMark(mark)
+            }
         }
         // TODO "DD" to dim out the point
         // TODO "LN" for lines
@@ -170,7 +191,7 @@ class SGFReader(var file: File) {
         for (sgfChild in sgfParent.chldren) {
             game.rewindTo(fromNode) // Will do nothing for the first child in the list
 
-            var gameNode = createGameNode(game, sgfChild)
+            val gameNode = createGameNode(game, sgfChild)
             if (gameNode is MoveNode && fromNode is MoveNode && gameNode.color == fromNode.color) {
                 // Add an extra Pass node (SGF does not have a concept of a pass node!
                 // But only add ONE pass node, if there are many variations after the pass.
@@ -182,7 +203,6 @@ class SGFReader(var file: File) {
             }
             if (gameNode is SetupNode && game.currentNode is SetupNode) {
                 // There are two setup nodes in a row, which seems pointless, so lets merge them into one node.
-                gameNode = game.currentNode
                 updateNode(game, sgfChild)
                 game.moveBack()
                 game.moveForward()
@@ -198,11 +218,17 @@ class SGFReader(var file: File) {
     fun createGameNode(game: Game, sgfNode: SGFNode): GameNode {
         val white = sgfNode.getPropertyValue("W")
         if (white != null) {
-            return MoveNode(toPoint(game.board, white), StoneColor.WHITE)
+            val point = toPoint(game.board, white)
+            if (point != null) {
+                return MoveNode(point, StoneColor.WHITE)
+            }
         }
         val black = sgfNode.getPropertyValue("B")
         if (black != null) {
-            return MoveNode(toPoint(game.board, black), StoneColor.BLACK)
+            val point = toPoint(game.board, black)
+            if (point != null) {
+                return MoveNode(point, StoneColor.BLACK)
+            }
         }
         return SetupNode(game.playerToMove.color)
     }
@@ -217,10 +243,15 @@ class SGFReader(var file: File) {
         return null
     }
 
-    fun toPoint(board: Board, str: String): Point {
-        val x: Int = str[0].toLowerCase() - 'a'
-        val y: Int = board.sizeY - (str[1].toLowerCase() - 'a') - 1
-        return Point(x, y)
+    fun toPoint(board: Board, str: String): Point? {
+        try {
+            val x: Int = str[0].toLowerCase() - 'a'
+            val y: Int = board.sizeY - (str[1].toLowerCase() - 'a') - 1
+            return Point(x, y)
+        } catch (e: Exception) {
+            println("Invalid sgf point : '$str'")
+            return null
+        }
     }
 
     fun readTree(): SGFNode? {
@@ -317,7 +348,7 @@ class SGFReader(var file: File) {
         var escaped = false
 
         while (true) {
-            var c = readChar()
+            val c = readChar()
             if (c == null) {
                 throw IOException("End of file while reading property value")
             }

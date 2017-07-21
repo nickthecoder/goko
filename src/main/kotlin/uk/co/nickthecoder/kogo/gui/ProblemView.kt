@@ -157,7 +157,6 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
             }
         }
 
-
         fun createRadioButton(tooltipStr: String, result: ProblemResult): ToggleButton {
             val button = ToggleButton()
             with(button) {

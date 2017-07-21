@@ -27,6 +27,7 @@ object Preferences {
 
     val gamesDirectory by basicPreferences.gamesDirectoryP
 
+    val josekiDirectionary by basicPreferences.josekiDictionaryP
 
 
     val problemsDirectory by problemsPreferences.directoryP
