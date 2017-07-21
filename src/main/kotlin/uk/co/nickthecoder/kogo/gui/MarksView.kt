@@ -38,7 +38,9 @@ class MarksView(val board: Board) {
 
     fun add(markView: MarkView) {
         val stone = board.getStoneAt(markView.point)
-        markView.colorWhite(stone == StoneColor.BLACK)
+        if (stone != StoneColor.NONE) {
+            markView.colorWhite(stone == StoneColor.BLACK)
+        }
         markViews.add(markView)
         markView.marksView = this
         node.children.add(markView)

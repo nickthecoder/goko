@@ -86,15 +86,6 @@
     -fx-padding: 0;
 }
 
-.marks > .stoneW {
-    -fx-graphic: url( "stoneW.png" );
-    -fx-padding: 2px;
-}
-.marks > .stoneB {
-    -fx-graphic: url( "stoneB.png" );
-    -fx-padding: 2px;
-}
-
 .marks > .territory {
     -fx-symbol: "●";
     -fx-opacity: 0.5;

@@ -1,4 +1,5 @@
 Bugs
+	White territory showing as black
 	A pass from Go Problems invokes the game scoring algorithm!
 		Also, why is it doing it after a SINGLE pass? Hmm.
 	Ko not tested for, and then trows exception when a ko is played.
