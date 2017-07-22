@@ -1,12 +1,7 @@
 Bugs
-	White territory showing as black
 	A pass from Go Problems invokes the game scoring algorithm!
 		Also, why is it doing it after a SINGLE pass? Hmm.
 	Ko not tested for, and then trows exception when a ko is played.
-
-Joseki
-	Load Kogo's joseki database (not related to my software - oops, perhaps I should rename mine!)
-	Allow board to be rotated/reflected
 
 SFGReader
 	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.

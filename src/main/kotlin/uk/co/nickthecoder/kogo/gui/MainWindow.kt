@@ -19,12 +19,31 @@ class MainWindow(val stage: Stage) {
         addView(home)
 
         whole.center = tabs
-        stage.scene = Scene(whole, 700.0, 700.0)
+        stage.scene = Scene(whole, 1000.0, 700.0)
         KoGo.style(stage.scene)
         stage.show()
     }
 
-    fun addView(view: TopLevelView, index: Int = -1) {
+    fun indexOf(view: TopLevelView): Int {
+        for (i in 0..tabs.tabs.size - 1) {
+            val tab = tabs.tabs[i]
+            if (tab is ViewTab && tab.view === view) {
+                return i
+            }
+        }
+        return -1
+    }
+
+    fun addViewAfter(afterView: TopLevelView, view: TopLevelView, selectTab: Boolean = true) {
+        val i = indexOf(afterView)
+        if (i < 0) {
+            addView(view, selectTab = selectTab)
+        } else {
+            addView(view, i + 1, selectTab = selectTab)
+        }
+    }
+
+    fun addView(view: TopLevelView, index: Int = -1, selectTab: Boolean = true) {
         view.build()
         val tab = ViewTab(view)
         if (index < 0) {
@@ -32,7 +51,9 @@ class MainWindow(val stage: Stage) {
         } else {
             tabs.add(index, tab)
         }
-        tabs.selectedTab = tab
+        if (selectTab) {
+            tabs.selectedTab = tab
+        }
     }
 
     fun changeView(view: TopLevelView) {

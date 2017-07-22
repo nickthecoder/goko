@@ -1,16 +1,32 @@
 package uk.co.nickthecoder.kogo.model
 
-import java.io.File
-import java.io.IOException
-import java.io.Reader
+import java.io.*
 
 /**
  * Reads a .sgf file.
- * See http://www.red-bean.com/sgf/sgf4.html
+ * See http://www.red-bean.com/sgf/index.html
  */
-class SGFReader(var file: File) {
 
-    lateinit var reader: Reader
+/*
+Here's a list all sgf properties.
+Those currently unsupported by this class are marked using (x)
+Those partially supported are mark using (p)
+
+Move Properties   B, KO (x), MN (x), W
+Setup Properties 	AB, AE, AW, PL
+Node Annotation Properties 	C, DM (x), GB (x), GW (x), HO (x), N (x), UC (x), V (x)
+Move Annotation Properties 	BM (x), DO (x), IT (x), TE (x)
+Markup Properties 	AR (x), CR, DD (x), LB, LN (x), MA, SL (x), SQ, TR
+Root Properties 	AP (x), CA (x), FF (x), GM (x), ST (x), SZ
+Game Info Properties 	AN (x), BR (x), BT (x), CP (x), DT (x), EV (x), GN (x), GC (x), ON (x), OT (x), PB (x), PC (x), PW (x), RE (x), RO (x), RU (x), SO (x), TM (x), US (x), WR (x), WT (x)
+Timing Properties 	BL (x), OB (x), OW (x), WL (x)
+Miscellaneous Properties 	FG (x), PM (x), VW (x)
+*/
+class SGFReader {
+
+    var file: File? = null
+
+    var reader: Reader
 
     val buffer = charArrayOf(' ')
 
@@ -18,28 +34,40 @@ class SGFReader(var file: File) {
 
     var size = 19
 
+    constructor(input: InputStream) {
+        this.reader = BufferedReader(InputStreamReader(input))
+    }
+
+    constructor(file: File) {
+        this.file = file
+        this.reader = file.bufferedReader()
+    }
+
     /**
      * Reads an sgf file, returning a list of games, each game is represented as a tree of SGFNodes
      */
     fun readMultipleGames(): List<Game> {
-        val result = mutableListOf<Game>()
-        reader = file.bufferedReader()
+        try {
+            val result = mutableListOf<Game>()
 
-        while (true) {
-            val sgfRoot = readTree()
-            if (sgfRoot == null) {
-                break
+            while (true) {
+                val sgfRoot = readTree()
+                if (sgfRoot == null) {
+                    break
+                }
+                val game = Game(size, size)
+                updateRootNode(game, sgfRoot)
+                addChildren(game, sgfRoot)
+
+                //game.dumpTree()
+                game.rewindTo(game.root)
+                result.add(game)
             }
-            val game = Game(size, size)
-            updateRootNode(game, sgfRoot)
-            addChildren(game, sgfRoot)
+            return result
 
-            //game.dumpTree()
-            game.rewindTo(game.root)
-            result.add(game)
+        } finally {
+            reader.close()
         }
-        reader.close()
-        return result
     }
 
     /**
@@ -48,35 +76,37 @@ class SGFReader(var file: File) {
      */
     fun read(): Game {
 
-        reader = file.bufferedReader()
+        try {
+            val sgfRoot = readTree()
+            if (sgfRoot == null) {
+                throw IOException("No game data found")
+            }
 
-        val sgfRoot = readTree()
-        if (sgfRoot == null) {
-            throw IOException("No game data found")
+            // dumpTree(sgfRoot)
+
+            val game = Game(size, size)
+            updateRootNode(game, sgfRoot)
+            addChildren(game, sgfRoot)
+
+            // game.dumpTree()
+
+            game.file = file
+            game.rewindTo(game.root)
+
+            return game
+        } finally {
+            reader.close()
         }
-        reader.close()
-
-        // dumpTree(sgfRoot)
-
-        val game = Game(size, size)
-        updateRootNode(game, sgfRoot)
-        addChildren(game, sgfRoot)
-
-        game.dumpTree()
-        game.file = file
-        game.rewindTo(game.root)
-
-        return game
     }
 
-    fun updateRootNode(game: Game, sgfNode: SGFNode) {
+    private fun updateRootNode(game: Game, sgfNode: SGFNode) {
 
         // TODO Add meta data such as play names, ranks etc
 
         updateNode(game, sgfNode)
     }
 
-    fun updateNode(game: Game, sgfNode: SGFNode) {
+    private fun updateNode(game: Game, sgfNode: SGFNode) {
         val currentNode = game.currentNode
 
         // I've seen PL properties in non-root nodes, so let's put it here, rather than updateRootNode. Grr.
@@ -184,7 +214,7 @@ class SGFReader(var file: File) {
         // TODO Update other node data.
     }
 
-    fun addChildren(game: Game, sgfParent: SGFNode) {
+    private fun addChildren(game: Game, sgfParent: SGFNode) {
         val fromNode = game.currentNode
         var passNode: PassNode? = null
 
@@ -215,7 +245,7 @@ class SGFReader(var file: File) {
         }
     }
 
-    fun createGameNode(game: Game, sgfNode: SGFNode): GameNode {
+    private fun createGameNode(game: Game, sgfNode: SGFNode): GameNode {
         val white = sgfNode.getPropertyValue("W")
         if (white != null) {
             val point = toPoint(game.board, white)
@@ -237,7 +267,7 @@ class SGFReader(var file: File) {
         return SetupNode(game.playerToMove.color)
     }
 
-    fun toStoneColor(str: String?): StoneColor? {
+    private fun toStoneColor(str: String?): StoneColor? {
         // The spec says that only B and W are allowed, but I've seen 1 and 2 used. Grr.
         if (str == "B" || str == "1") {
             return StoneColor.BLACK
@@ -247,7 +277,7 @@ class SGFReader(var file: File) {
         return null
     }
 
-    fun toPoint(board: Board, str: String): Point? {
+    private fun toPoint(board: Board, str: String): Point? {
         if (str == "" || (str == "tt" && board.sizeX <= 19)) {
             // A pass node - just return null and let the caller handle it.
             return null
@@ -262,7 +292,7 @@ class SGFReader(var file: File) {
         }
     }
 
-    fun readTree(): SGFNode? {
+    private fun readTree(): SGFNode? {
 
         // Skip ahead till the first "(;" is found. Some sgf files contain comments at the top, which is NOT
         // in the spec, but hey, what can you do!
@@ -282,7 +312,7 @@ class SGFReader(var file: File) {
         return null
     }
 
-    fun readBranch(branch: SGFNode) {
+    private fun readBranch(branch: SGFNode) {
 
         var first = true
         var node = branch
@@ -307,7 +337,7 @@ class SGFReader(var file: File) {
         }
     }
 
-    fun readBranches(parent: SGFNode) {
+    private fun readBranches(parent: SGFNode) {
         while (true) {
             val newNode = SGFNode()
             parent.chldren.add(newNode)
@@ -320,7 +350,7 @@ class SGFReader(var file: File) {
         }
     }
 
-    fun readProperties(node: SGFNode) {
+    private fun readProperties(node: SGFNode) {
 
         while (true) {
             var ident = ""
@@ -351,7 +381,7 @@ class SGFReader(var file: File) {
         }
     }
 
-    fun readPropertyValue(): String {
+    private fun readPropertyValue(): String {
         var str = ""
         var escaped = false
 
@@ -375,7 +405,7 @@ class SGFReader(var file: File) {
         }
     }
 
-    fun readCharSkippingWhiteSpace(): Char? {
+    private fun readCharSkippingWhiteSpace(): Char? {
         var symbol = readChar()
         while (symbol?.isWhitespace() == true) {
             symbol = readChar()
@@ -383,11 +413,11 @@ class SGFReader(var file: File) {
         return symbol
     }
 
-    fun unreadChar(c: Char?) {
+    private fun unreadChar(c: Char?) {
         unread = c
     }
 
-    fun readChar(): Char? {
+    private fun readChar(): Char? {
         if (unread != null) {
             val tmp = unread
             unread = null
@@ -403,7 +433,7 @@ class SGFReader(var file: File) {
     }
 
 
-    fun dumpTree(sgfNode: SGFNode) {
+    private fun dumpTree(sgfNode: SGFNode) {
 
         fun dumpTree(indent: Int, sgfNode2: SGFNode) {
             print(" ".repeat(indent * 4))

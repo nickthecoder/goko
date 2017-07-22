@@ -66,6 +66,13 @@
 .marks > .latest {
     -fx-symbol: "✩";
 }
+.marks > .main-line {
+    -fx-symbol: "◈";
+}
+.marks > .alternate {
+    -fx-symbol: "◇";
+}
+
 .marks > .latest.white {
     -fx-text-fill: #ccc;
 }

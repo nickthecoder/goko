@@ -3,7 +3,7 @@ package uk.co.nickthecoder.kogo.model
 import uk.co.nickthecoder.kogo.GnuGoPlayer
 import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.Player
-import java.io.File
+import java.io.*
 
 class Game(sizeX: Int, sizeY: Int) {
 
@@ -264,5 +264,18 @@ class Game(sizeX: Int, sizeY: Int) {
             }
         }
         dump(0, root)
+    }
+
+    fun copy(): Game {
+        val baos = ByteArrayOutputStream()
+        val writer = SGFWriter(baos)
+
+        writer.write(this)
+
+        val reader = SGFReader(ByteArrayInputStream(baos.toByteArray()))
+        val result = reader.read()
+        result.file = this.file
+
+        return result
     }
 }

@@ -126,7 +126,7 @@ class BoardView(val game: Game) : View {
             scale = Math.floor(size / (board.sizeX + 2))
             size = scale * (board.sizeX + 2)
 
-            if ( scale == oldScale) {
+            if (scale == oldScale) {
                 return
             }
             oldScale = scale

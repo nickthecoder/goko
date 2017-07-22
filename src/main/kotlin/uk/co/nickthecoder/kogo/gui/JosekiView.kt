@@ -30,16 +30,19 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
 
     private val commentsView = CommentsView(game)
 
-    private var history = mutableListOf<GameNode>()
-
     override val node = whole
+
+    val history = History(game)
+
 
     init {
         game.gameListeners.add(this)
     }
 
     override fun build(): View {
+        println("Building joseki view")
         boardView.build()
+        println("Built board view")
 
         with(rightPane) {
             center = commentsView.node
@@ -59,18 +62,19 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
 
         val restartB = Button("<<")
-        restartB.addEventHandler(ActionEvent.ACTION) { onRestart() }
+        restartB.addEventHandler(ActionEvent.ACTION) { game.rewindTo(game.root) }
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
 
         val backB = Button("<")
-        backB.addEventHandler(ActionEvent.ACTION) { onBack() }
+        backB.addEventHandler(ActionEvent.ACTION) { game.moveBack() }
 
         val forwardB = Button(">")
-        forwardB.addEventHandler(ActionEvent.ACTION) { onForward() }
+        forwardB.addEventHandler(ActionEvent.ACTION) { history.forward() }
 
         toolBar.items.addAll(passB, restartB, backB, forwardB)
 
         game.root.apply(game)
+        println("Built joseki view")
 
         return this
     }
@@ -79,49 +83,14 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
         game.pass(game.playerToMove)
     }
 
-    fun onRestart() {
-        game.rewindTo(game.root)
-    }
-
-    fun onBack() {
-        game.moveBack()
-    }
-
-    fun onForward() {
-        val i = history.indexOf(game.currentNode)
-        println("forward i=$i size = ${history.size}")
-        if (i >= 0 && i < history.size - 1) {
-            val node = history[i + 1]
-            node.apply(game, null)
-        } else {
-            game.moveForward()
-        }
-    }
-
     override fun moved() {
 
         val currentNode = game.currentNode
 
-        val c = history.indexOf(currentNode)
-        if (c < 0) {
-            val p = history.indexOf(currentNode.parent)
-            if (p >= 0) {
-                history = history.subList(0, p + 1)
-                history.add(currentNode)
-            } else {
-                history.clear()
-                var node: GameNode? = currentNode
-                while (node != null) {
-                    history.add(0, node)
-                    node = node.parent
-                }
-            }
-        }
-
         for (child in currentNode.children) {
             if (child is MoveNode) {
                 if (!currentNode.hasMarkAt(child.point)) {
-                    val mark = SquareMark(child.point)
+                    val mark = AlternateMark(child.point)
                     game.addMark(mark)
                 }
             }

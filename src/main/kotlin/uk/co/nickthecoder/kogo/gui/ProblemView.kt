@@ -78,7 +78,10 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         val giveUpB = Button("Give Up")
         giveUpB.addEventHandler(ActionEvent.ACTION) { onGiveUp() }
 
-        toolBar.items.addAll(passB, restartB, giveUpB)
+        val editB = Button("Edit")
+        editB.addEventHandler(ActionEvent.ACTION) { onEdit() }
+
+        toolBar.items.addAll(passB, restartB, giveUpB, editB)
 
         game.root.apply(game)
 
@@ -96,6 +99,13 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
     fun onGiveUp() {
         problem.saveResult(ProblemResult.FAILED)
         showProblem(problem, cheat = true)
+    }
+
+    fun onEdit() {
+        // NOTE, Currently this will NOT allow you to save the edited game if the problem is part of a multi-game .sgf file.
+        val copy = problem.load()
+        val view = EditGameView(mainWindow, copy)
+        mainWindow.addViewAfter(this, view)
     }
 
     fun showProblem(problem: Problem, cheat: Boolean = false) {
