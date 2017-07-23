@@ -4,7 +4,7 @@ import uk.co.nickthecoder.kogo.gui.MarkView
 import uk.co.nickthecoder.kogo.gui.SymbolMarkView
 
 abstract class Mark(val point: Point, val style: String) {
-    abstract fun createMarkView() : MarkView
+    abstract fun createMarkView(): MarkView
 }
 
 abstract class SymbolMark(point: Point, style: String) : Mark(point, style) {
@@ -16,10 +16,9 @@ class MouseMark(point: Point) : SymbolMark(point, "mouse")
 
 class LatestMark(point: Point) : SymbolMark(point, "latest")
 
-class MainLineMark( point : Point ) : SymbolMark(point, "main-line")
+class MainLineMark(point: Point) : SymbolMark(point, "main-line")
 
-class AlternateMark( point : Point ) : SymbolMark(point, "alternate")
-
+class AlternateMark(point: Point) : SymbolMark(point, "alternate")
 
 
 class CircleMark(point: Point) : SymbolMark(point, "circle")
@@ -49,4 +48,15 @@ class LabelMark(point: Point, val text: String) : Mark(point, "label-mark") {
     override fun createMarkView() = MarkView(this)
 
     override fun toString() = "Label @ $point = '$text'"
+
+    fun number(): Int? {
+        try {
+            val i = Integer.parseInt(text)
+            if (i > 0) {
+                return i
+            }
+        } catch (e: Exception) {
+        }
+        return null
+    }
 }

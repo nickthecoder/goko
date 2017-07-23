@@ -91,6 +91,7 @@
 
 .marks > .label-mark {
     -fx-padding: 0;
+    -fx-font-size: 70px;
 }
 
 .marks > .territory {

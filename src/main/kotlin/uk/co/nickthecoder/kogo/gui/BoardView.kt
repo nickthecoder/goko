@@ -25,7 +25,7 @@ class BoardView(val game: Game) : View {
 
     val stones = StonesView(this)
 
-    val playerView: PlayerView = PlayerView(this@BoardView)
+    var clickBoardView: ClickBoardView = ClickBoardView(this@BoardView)
 
     val specialMarks = MarksView(board)
 
@@ -79,7 +79,7 @@ class BoardView(val game: Game) : View {
         }
 
         fun build() {
-            children.addAll(wood, lines, starPoints, boardMarks.node, stones, marks.node, specialMarks.node, playerView.node)
+            children.addAll(wood, lines, starPoints, boardMarks.node, stones, marks.node, specialMarks.node, clickBoardView.node)
 
             with(wood) {
                 styleClass.add("wood")
@@ -139,7 +139,7 @@ class BoardView(val game: Game) : View {
             layoutInArea(starPoints, marginLeft + scale * 1.5, marginTop + scale * 1.5, playingSize, playingSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(marks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(specialMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
-            layoutInArea(playerView.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
+            layoutInArea(clickBoardView.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
 
             layoutInArea(stones, marginLeft + scale, marginTop + scale, size, size, 0.0, HPos.LEFT, VPos.TOP)
 
@@ -164,7 +164,7 @@ class BoardView(val game: Game) : View {
                 scaleY = scaleX
             }
 
-            with(playerView.node) {
+            with(clickBoardView.node) {
                 translateX = (size - logicalSize) / 2
                 translateY = translateX
                 scaleX = scale / pointSize

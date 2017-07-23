@@ -179,6 +179,7 @@ class Game(sizeX: Int, sizeY: Int) {
     }
 
     fun addMark(mark: Mark) {
+        removeMark(mark.point)
         currentNode.addMark(mark)
         for (listener in gameListeners) {
             listener.addedMark(mark)

@@ -6,8 +6,9 @@ import javafx.scene.layout.StackPane
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
+import uk.co.nickthecoder.kogo.model.Point
 
-class PlayerView(val boardView: BoardView) : GameListener {
+class ClickBoardView(val boardView: BoardView) : GameListener {
 
     private val stack = StackPane()
 
@@ -19,6 +20,14 @@ class PlayerView(val boardView: BoardView) : GameListener {
 
     val game: Game
         get() = boardView.board.game
+
+    var onClickedPoint: (Point) -> Unit = { point ->
+        val player = game.playerToMove
+
+        if (player.canClickToPlay() && game.canPlayAt(point)) {
+            player.makeMove(point)
+        }
+    }
 
     init {
         with(stack) {
@@ -32,6 +41,7 @@ class PlayerView(val boardView: BoardView) : GameListener {
         stack.addEventHandler(MouseEvent.MOUSE_EXITED) { onMouseExited() }
 
         game.gameListeners.add(this)
+
     }
 
     fun onMouseMoved(event: MouseEvent) {
@@ -49,10 +59,8 @@ class PlayerView(val boardView: BoardView) : GameListener {
 
     fun onMouseClicked(event: MouseEvent) {
         val point = boardView.toBoardPoint(event.x, event.y)
-        val player = game.playerToMove
-
-        if (player.canClickToPlay() && game.canPlayAt(point)) {
-            player.makeMove(point)
+        if (board.contains(point)) {
+            onClickedPoint(point)
         }
     }
 

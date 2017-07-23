@@ -39,6 +39,15 @@ abstract class GameNode(var colorToPlay: StoneColor) {
         return null
     }
 
+    fun hasLabelMark( text:String ) : Boolean {
+        for (mark in marks) {
+            if (mark is LabelMark && mark.text == text ) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun hasMarkAt(point: Point): Boolean {
         for (mark in mutableMarks) {
             if (point == mark.point) {
