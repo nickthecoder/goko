@@ -12,13 +12,15 @@ class History(val game: Game) : GameListener {
         game.gameListeners.add(this)
     }
 
-    fun forward() {
-        val i = history.indexOf(game.currentNode)
-        if (i >= 0 && i < history.size - 1) {
-            val node = history[i + 1]
-            node.apply(game, null)
-        } else {
-            game.moveForward()
+    fun forward(n: Int = 1) {
+        for ( foo in 1..n ) {
+            val i = history.indexOf(game.currentNode)
+            if (i >= 0 && i < history.size - 1) {
+                val node = history[i + 1]
+                node.apply(game, null)
+            } else {
+                game.moveForward()
+            }
         }
     }
 

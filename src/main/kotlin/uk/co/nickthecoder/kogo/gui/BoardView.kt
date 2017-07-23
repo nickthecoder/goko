@@ -31,9 +31,17 @@ class BoardView(val game: Game) : View {
 
     val marks = MarksView(board)
 
+    val moveNumbers = MarksView(board)
+
     val mouseMark = SymbolMarkView(Point(-10, -10), "mouse")
 
     val latestMark = SymbolMarkView(Point(-10, -10), "latest") // Initially off-screen
+
+    var showMoveNumbers: Int = 0
+        set(v) {
+            field = v
+            updateMoveNumbers()
+        }
 
     override val node: Parent
         get() = container
@@ -55,6 +63,36 @@ class BoardView(val game: Game) : View {
 
     fun toBoardPoint(x: Double, y: Double): Point {
         return Point((x / pointSize).toInt(), board.sizeY - (y / pointSize).toInt() - 1)
+    }
+
+    fun updateMoveNumbers() {
+        moveNumbers.clear()
+        val currentNode = game.currentNode
+        latestMark.point = OFF_SCREEN
+
+        if (showMoveNumbers == 0) {
+            if (currentNode is MoveNode) {
+                if (!currentNode.hasMarkAt(currentNode.point)) {
+                    latestMark.point = currentNode.point
+                    latestMark.colorWhite(currentNode.color == StoneColor.BLACK)
+                }
+            }
+        }
+
+        var node = currentNode
+        for (i in 1..showMoveNumbers) {
+            if (node is MoveNode) {
+                if (!currentNode.hasMarkAt(node.point)) {
+                    val mv = MarkView(LabelMark(node.point, node.moveNumber.toString()))
+                    moveNumbers.add(mv)
+                }
+            }
+            if (node.parent == null) {
+                break
+            } else {
+                node = node.parent!!
+            }
+        }
     }
 
     companion object {
@@ -79,7 +117,7 @@ class BoardView(val game: Game) : View {
         }
 
         fun build() {
-            children.addAll(wood, lines, starPoints, boardMarks.node, stones, marks.node, specialMarks.node, clickBoardView.node)
+            children.addAll(wood, lines, starPoints, boardMarks.node, stones, moveNumbers.node, marks.node, specialMarks.node, clickBoardView.node)
 
             with(wood) {
                 styleClass.add("wood")
@@ -137,6 +175,7 @@ class BoardView(val game: Game) : View {
             layoutInArea(wood, marginLeft, marginTop, size, size, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(boardMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(starPoints, marginLeft + scale * 1.5, marginTop + scale * 1.5, playingSize, playingSize, 0.0, HPos.LEFT, VPos.TOP)
+            layoutInArea(moveNumbers.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(marks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(specialMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(clickBoardView.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
@@ -144,6 +183,13 @@ class BoardView(val game: Game) : View {
             layoutInArea(stones, marginLeft + scale, marginTop + scale, size, size, 0.0, HPos.LEFT, VPos.TOP)
 
             with(boardMarks.node) {
+                translateX = (size - logicalSize) / 2
+                translateY = translateX
+                scaleX = scale / pointSize
+                scaleY = scaleX
+            }
+
+            with(moveNumbers.node) {
                 translateX = (size - logicalSize) / 2
                 translateY = translateX
                 scaleX = scale / pointSize
@@ -212,20 +258,16 @@ class BoardView(val game: Game) : View {
             mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
 
             val currentNode = board.game.currentNode
-            if (currentNode is MoveNode) {
-                latestMark.point = currentNode.point
-                latestMark.colorWhite(currentNode.color == StoneColor.BLACK)
-            } else {
-                latestMark.point = OFF_SCREEN
-            }
             marks.clear()
             for (mark in board.game.currentNode.marks) {
                 marks.add(mark.createMarkView())
             }
+            updateMoveNumbers()
         }
 
         override fun addedMark(mark: Mark) {
             marks.add(mark.createMarkView())
+            updateMoveNumbers()
         }
 
         override fun removedMark(mark: Mark) {

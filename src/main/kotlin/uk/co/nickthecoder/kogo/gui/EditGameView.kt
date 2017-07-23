@@ -6,9 +6,12 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.model.*
+import uk.co.nickthecoder.kogo.preferences.Preferences
+import uk.co.nickthecoder.kogo.preferences.PreferencesListener
+import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.CompoundButtons
 
-class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
+class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener, PreferencesListener {
 
     override val title = "Edit"
 
@@ -45,6 +48,10 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
 
+        val preferencesB = Button()
+        preferencesB.graphic = ImageView(KoGo.imageResource("preferences-16.png"))
+        preferencesB.addEventHandler(ActionEvent.ACTION) { mainWindow.addView(PreferencesView(mainWindow, Preferences.editGamePreferences)) }
+
         val restartB = Button()
         restartB.graphic = ImageView(KoGo.imageResource("go-first-16.png"))
         restartB.addEventHandler(ActionEvent.ACTION) { game.rewindTo(game.root) }
@@ -53,9 +60,17 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         backB.graphic = ImageView(KoGo.imageResource("go-previous-16.png"))
         backB.addEventHandler(ActionEvent.ACTION) { game.moveBack() }
 
+        val rewindB = Button()
+        rewindB.graphic = ImageView(KoGo.imageResource("go-rew-16.png"))
+        rewindB.addEventHandler(ActionEvent.ACTION) { game.moveBack(10) }
+
         val forwardB = Button()
         forwardB.graphic = ImageView(KoGo.imageResource("go-next-16.png"))
         forwardB.addEventHandler(ActionEvent.ACTION) { history.forward() }
+
+        val fastForwardB = Button()
+        fastForwardB.graphic = ImageView(KoGo.imageResource("go-ff-16.png"))
+        fastForwardB.addEventHandler(ActionEvent.ACTION) { history.forward(10) }
 
         val endB = Button()
         endB.graphic = ImageView(KoGo.imageResource("go-last-16.png"))
@@ -63,7 +78,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
 
 
         val navigation = CompoundButtons()
-        navigation.children.addAll(restartB, backB, forwardB, endB)
+        navigation.children.addAll(restartB, rewindB, backB, forwardB, fastForwardB, endB)
 
         val mainLineB = Button("Main Line")
         mainLineB.addEventHandler(ActionEvent.ACTION) { history.mainLine() }
@@ -122,9 +137,11 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         modes.children.addAll(moveModeB, blackModeB, whiteModeB, squareModeB, triangleModeB, circleModeB, numberModeB, letterModeB, remwoveMarkModeB)
         modes.createToggleGroup()
 
-        toolBar.items.addAll(modes, navigation, mainLineB, passB)
+        toolBar.items.addAll(preferencesB, modes, navigation, mainLineB, passB)
 
         labelContinuations()
+        preferencesChanged()
+        Preferences.listeners.add(this)
 
         return this
     }
@@ -202,8 +219,10 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
     override fun tidyUp() {
         game.tidyUp()
         boardView.tidyUp()
+        Preferences.listeners.remove(this)
     }
 
+    override fun preferencesChanged() {
+        boardView.showMoveNumbers = Preferences.editGameShowMoveNumber!!
+    }
 }
-
-

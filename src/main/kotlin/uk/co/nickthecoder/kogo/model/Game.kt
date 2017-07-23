@@ -3,7 +3,9 @@ package uk.co.nickthecoder.kogo.model
 import uk.co.nickthecoder.kogo.GnuGoPlayer
 import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.Player
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
 
 class Game(sizeX: Int, sizeY: Int) {
 
@@ -115,20 +117,6 @@ class Game(sizeX: Int, sizeY: Int) {
         return players.get(nextColor)!!
     }
 
-    private fun addAndApplyNode(node: GameNode, byPlayer: Player?) {
-        autoPlay = true
-        currentNode.children.forEach { child ->
-            if (child.sameAs(node)) {
-                child.apply(this, byPlayer)
-                return
-            }
-        }
-
-        currentNode.children.add(node)
-        node.parent = currentNode
-        node.apply(this, byPlayer)
-    }
-
     fun pass(byPlayer: Player) {
         val node = PassNode(playerToMove.color.opposite())
         addAndApplyNode(node, byPlayer)
@@ -213,28 +201,46 @@ class Game(sizeX: Int, sizeY: Int) {
         currentNode.children.add(node)
     }
 
+    private fun addAndApplyNode(node: GameNode, byPlayer: Player?) {
+        autoPlay = true
+        currentNode.children.forEach { child ->
+            if (child.sameAs(node)) {
+                child.apply(this, byPlayer)
+                return
+            }
+        }
+        addNode(node)
+        node.apply(this, byPlayer)
+    }
+
     fun undo() {
         // TODO move If it is a non-local player to move, ensure their move is ignored.
         // (This may have already happened, or may happen soon!)
         moveBack()
     }
 
-    fun moveBack() {
-        val parent = currentNode.parent
-        if (parent != null) {
+    fun moveBack(n: Int = 1) {
+        for (foo in 1..n) {
+            val parent = currentNode.parent
+            if (parent == null) {
+                return
+            }
             currentNode.takeBack(this)
             currentNode = parent
+            moved()
         }
-        moved()
     }
 
-    fun moveForward() {
-        if (currentNode.children.isNotEmpty()) {
+    fun moveForward(n: Int = 1) {
+        for (foo in 1..n) {
+            if (currentNode.children.isEmpty()) {
+                return
+            }
             val nextNode = currentNode.children[0]
             nextNode.apply(this)
             currentNode = nextNode
+            moved()
         }
-        moved()
     }
 
     fun moveToStart() {

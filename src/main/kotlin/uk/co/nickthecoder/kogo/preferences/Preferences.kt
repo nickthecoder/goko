@@ -22,6 +22,8 @@ object Preferences {
 
     val josekiPreferences = JosekiPreferences()
 
+    val editGamePreferences = EditGamePreferences()
+
 
     val yourName by basicPreferences.yourNameP
 
@@ -29,7 +31,11 @@ object Preferences {
 
     val gamesDirectory by basicPreferences.gamesDirectoryP
 
+
     val josekiDirectionary by josekiPreferences.josekiDictionaryP
+
+
+    val editGameShowMoveNumber by editGamePreferences.showMoveNumbersP
 
 
     val problemsDirectory by problemsPreferences.directoryP
@@ -47,6 +53,8 @@ object Preferences {
     val preferenceTasksMap = mutableMapOf<String, Task>()
 
 
+    val listeners = mutableListOf<PreferencesListener>()
+
     private fun addPreferenceTask(task: Task) {
         preferenceTasksMap.put(task.taskD.name, task)
     }
@@ -57,6 +65,7 @@ object Preferences {
         addPreferenceTask(challengeMatchPreferences)
         addPreferenceTask(problemsPreferences)
         addPreferenceTask(josekiPreferences)
+        addPreferenceTask(editGamePreferences)
 
         if (preferencesFile.exists()) {
             load()
@@ -122,6 +131,10 @@ object Preferences {
         BufferedWriter(OutputStreamWriter(FileOutputStream(preferencesFile))).use {
             jroot.writeTo(it, PrettyPrint.indentWithSpaces(4))
         }
+
+        for (listener in listeners) {
+            listener.preferencesChanged()
+        }
     }
 
     private fun jsonTask(parent: JsonObject, task: Task): JsonObject {
@@ -141,4 +154,9 @@ object Preferences {
 
         return jtask
     }
+}
+
+interface PreferencesListener {
+
+    fun preferencesChanged()
 }

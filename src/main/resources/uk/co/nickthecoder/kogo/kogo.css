@@ -83,6 +83,7 @@
     -fx-symbol: "○";
 }
 .marks > .triangle {
+    -fx-padding: 0 0 0.4em 0;
     -fx-symbol: "△";
 }
 .marks > .cross {
