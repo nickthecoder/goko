@@ -41,9 +41,11 @@ Each time you play, the the handicap will change based on your previous results.
 
     val losesP = IntParameter("loses", value = 0)
 
+    val timeLimitP = Preferences.timeLimitPreferences.createTimeLimitChoice()
+
     init {
         taskD.addParameters(boardSizeP, computerPlaysP, computerLevelP, handicapP, promotionThresholdP, demotionThresholdP,
-                winsP, losesP
+                winsP, losesP, timeLimitP
         )
     }
 

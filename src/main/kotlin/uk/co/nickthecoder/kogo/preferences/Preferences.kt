@@ -4,8 +4,11 @@ import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonArray
 import com.eclipsesource.json.JsonObject
 import com.eclipsesource.json.PrettyPrint
+import uk.co.nickthecoder.kogo.model.NoTimeLimit
+import uk.co.nickthecoder.kogo.model.TimeLimit
+import uk.co.nickthecoder.kogo.model.TimedLimit
 import uk.co.nickthecoder.paratask.Task
-import uk.co.nickthecoder.paratask.parameters.ValueParameter
+import uk.co.nickthecoder.paratask.parameters.*
 import uk.co.nickthecoder.paratask.util.child
 import uk.co.nickthecoder.paratask.util.homeDirectory
 import java.io.*
@@ -13,36 +16,29 @@ import java.io.*
 object Preferences {
 
     val basicPreferences = BasicPreferences()
+    val yourName by basicPreferences.yourNameP
+    val yourRank by basicPreferences.yourRankP
+    val gamesDirectory by basicPreferences.gamesDirectoryP
+
+    val timeLimitPreferences = TimeLimitPreferences()
 
     val quickGamePreferences = QuickGamePreferences()
 
     val challengeMatchPreferences = ChallengeMatchPreferences()
 
+    val twoPlayerGamePreferences = TwoPlayerGamePreferences()
+
     val problemsPreferences = ProblemsPreferences()
+    val problemsDirectory by problemsPreferences.directoryP
+    val problemsShowContinuations by problemsPreferences.showContinuationsP
+    val problemsAutomaticOpponent by problemsPreferences.automaticOpponentP
 
     val josekiPreferences = JosekiPreferences()
-
-    val editGamePreferences = EditGamePreferences()
-
-
-    val yourName by basicPreferences.yourNameP
-
-    val yourRank by basicPreferences.yourRankP
-
-    val gamesDirectory by basicPreferences.gamesDirectoryP
-
-
     val josekiDirectionary by josekiPreferences.josekiDictionaryP
 
-
+    val editGamePreferences = EditGamePreferences()
     val editGameShowMoveNumber by editGamePreferences.showMoveNumbersP
 
-
-    val problemsDirectory by problemsPreferences.directoryP
-
-    val problemsShowContinuations by problemsPreferences.showContinuationsP
-
-    val problemsAutomaticOpponent by problemsPreferences.automaticOpponentP
 
 
     val preferencesFile = homeDirectory.child(".config", "kogo", "preferences.json")
@@ -63,13 +59,16 @@ object Preferences {
         addPreferenceTask(basicPreferences)
         addPreferenceTask(quickGamePreferences)
         addPreferenceTask(challengeMatchPreferences)
+        addPreferenceTask(twoPlayerGamePreferences)
         addPreferenceTask(problemsPreferences)
         addPreferenceTask(josekiPreferences)
         addPreferenceTask(editGamePreferences)
+        addPreferenceTask(timeLimitPreferences)
 
         if (preferencesFile.exists()) {
             load()
         }
+
     }
 
     /**
@@ -98,7 +97,7 @@ object Preferences {
         for (jtask1 in jpreferences) {
             val jtask = jtask1.asObject()
             val taskName = jtask.getString("name", "")
-            val task = preferenceTasksMap.get(taskName)
+            val task = preferenceTasksMap[taskName]
             if (task != null) {
                 val jparams = jtask.get("parameters").asArray()
                 for (jparam1 in jparams) {
@@ -135,6 +134,9 @@ object Preferences {
         for (listener in listeners) {
             listener.preferencesChanged()
         }
+
+        timeLimitPreferences.updateTimeLimitChoice(quickGamePreferences.timeLimitP)
+        timeLimitPreferences.updateTimeLimitChoice(challengeMatchPreferences.timeLimitP)
     }
 
     private fun jsonTask(task: Task): JsonObject {

@@ -2,12 +2,15 @@ package uk.co.nickthecoder.kogo
 
 import uk.co.nickthecoder.kogo.model.Point
 import uk.co.nickthecoder.kogo.model.StoneColor
+import uk.co.nickthecoder.kogo.model.TimeLimit
 
 interface Player {
 
     val label: String
 
     val rank: String
+
+    val timeRemaining: TimeLimit
 
     val color: StoneColor
 
@@ -18,7 +21,7 @@ interface Player {
 
     fun yourTurn() {}
 
-    fun canClickToPlay() : Boolean
+    fun canClickToPlay(): Boolean
 
     fun makeMove(point: Point)
 

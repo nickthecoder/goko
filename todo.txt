@@ -10,10 +10,6 @@ Time limits for games (Difference preferences for each type of game)
 	Create a TimePrefence in paratask, allowing pick of hours, minute or seconds
 		ScaledDoublePreference, takes a set of scaling values for each type of units, shown as combobox
 
-Don't allow the Home tab to be removed
-	Use generics for tab type
-	Don't show the close button!
-
 Edit games
 	Add comments, node name
 	Edit meta-data

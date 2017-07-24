@@ -16,6 +16,8 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
     override val rank = ""
 
+    override val timeRemaining = NoTimeLimit()
+
     val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size)
     // TODO Add options --komi <n>, --chinese-rules, --japanese-rules
 

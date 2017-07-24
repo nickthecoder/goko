@@ -11,7 +11,7 @@ class Game(size: Int) {
 
     var file: File? = null
 
-    val metaData = GameMetaData()
+    val metaData = GameMetaData(this)
 
     val board = Board(size, this)
 

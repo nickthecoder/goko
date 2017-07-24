@@ -1,9 +1,7 @@
 package uk.co.nickthecoder.kogo
 
 import uk.co.nickthecoder.kogo.gui.ProblemView
-import uk.co.nickthecoder.kogo.model.Game
-import uk.co.nickthecoder.kogo.model.Point
-import uk.co.nickthecoder.kogo.model.StoneColor
+import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 
 /**
@@ -12,6 +10,8 @@ import uk.co.nickthecoder.kogo.preferences.Preferences
 class ProblemOpponent(val game: Game, override val color: StoneColor, val problemView: ProblemView) : Player {
 
     override val label = "Opponent"
+
+    override val timeRemaining = NoTimeLimit()
 
     override val rank = ""
 
@@ -34,7 +34,7 @@ class ProblemOpponent(val game: Game, override val color: StoneColor, val proble
         game.pass(this)
     }
 
-    override fun canClickToPlay() : Boolean {
+    override fun canClickToPlay(): Boolean {
         if (game.currentNode.children.isEmpty()) {
             return true
         }
