@@ -226,7 +226,7 @@ class SGFReader {
                 // The same player has moved again, so add an extra Pass node
                 // But only add ONE pass node, if there are many variations after the pass.
                 if (passNode == null) {
-                    passNode = PassNode(game.playerToMove.color.opposite())
+                    passNode = PassNode(game.playerToMove.color)
                     game.addNode(passNode)
                 }
                 passNode.apply(game, null)
@@ -250,7 +250,7 @@ class SGFReader {
         if (white != null) {
             val point = toPoint(game.board, white)
             if (point == null) {
-                return PassNode(StoneColor.BLACK)
+                return PassNode(StoneColor.WHITE)
             } else {
                 return MoveNode(point, StoneColor.WHITE)
             }
@@ -259,7 +259,7 @@ class SGFReader {
         if (black != null) {
             val point = toPoint(game.board, black)
             if (point == null) {
-                return PassNode(StoneColor.WHITE)
+                return PassNode(StoneColor.BLACK)
             } else {
                 return MoveNode(point, StoneColor.BLACK)
             }

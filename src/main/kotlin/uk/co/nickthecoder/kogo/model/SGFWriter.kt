@@ -18,11 +18,11 @@ Those partially supported are mark using (p)
 
 
 Move Properties 	B, KO (x), MN (x), W
-Setup Properties 	AB, AE (x), AW, PL (x)
-Node Annotation Properties 	C (x), DM (x), GB (x), GW (x), HO (x), N (x), UC (x), V (x)
+Setup Properties 	AB, AE, AW, PL
+Node Annotation Properties 	C, DM (x), GB (x), GW (x), HO (x), N, UC (x), V (x)
 Move Annotation Properties 	BM (x), DO (x), IT (x), TE (x)
 Markup Properties 	AR (x), CR, DD (x), LB, LN (x), MA, SL (x), SQ, TR
-Root Properties 	AP (x), CA (x), FF (x), GM (x), ST (x), SZ (x)
+Root Properties 	AP (x), CA, FF, GM, ST (x), SZ
 Game Info Properties 	AN(x), BR(x), BT(x), CP(x), DT(x), EV(x), GN(x), GC(x), ON(x), OT(x), PB(x), PC(x), PW(x), RE(x), RO(x), RU(x), SO(x), TM(x), US(x), WR(x), WT(x)
 Timing Properties 	BL(x), OB(x), OW(x), WL(x)
 Miscellaneous Properties 	FG(x), PM(x), VW(x)
@@ -59,17 +59,21 @@ class SGFWriter {
     private fun writeSingleGame(game: Game) {
         this.game = game
         writer.write("(;GM[1]FF[4]")
-        writer.write("\n")
 
         writeGameMetaData()
 
         writeNode(game.root)
 
-        writer.write(")\n")
+        writer.write("\n)\n")
     }
 
     private fun writeGameMetaData() {
+        writeProperty("PL", game.root.colorToPlay)
+        writeProperty("SZ", game.board.sizeX)
+        writeProperty("CA", "utf-8")
+
         // Players names, ranks, board size etc
+        writer.write("\n")
     }
 
     private fun writeNode(node: GameNode) {
@@ -100,19 +104,19 @@ class SGFWriter {
     }
 
     private fun writeMoveNode(node: MoveNode) {
-        val col = if (node.colorToPlay == StoneColor.WHITE) "W" else "B"
-        val pt = fromPoint(node.point)
-        writer.write("$col[$pt]")
+        val col = if (node.color == StoneColor.WHITE) "W" else "B"
+        writeProperty(col, node.point)
     }
 
     private fun writePassNode(node: PassNode) {
-        val col = if (node.colorToPlay == StoneColor.WHITE) "W" else "B"
+        val col = if (node.color == StoneColor.WHITE) "W" else "B"
         writer.write("$col[]")
     }
 
     private fun writeSetupNode(node: SetupNode) {
         writePoints("AW", node.addedStones.filter { (_, color) -> color == StoneColor.WHITE }.map { (point, _) -> point })
         writePoints("AB", node.addedStones.filter { (_, color) -> color == StoneColor.BLACK }.map { (point, _) -> point })
+        writePoints("AE", node.removedStones.map { (point, _) -> point })
     }
 
     private fun writePoints(property: String, points: List<Point>) {
@@ -141,6 +145,13 @@ class SGFWriter {
         writePoints("TR", node.marks.filter { it is TriangleMark }.map { it.point })
         writePoints("MA", node.marks.filter { it is CrossMark }.map { it.point })
         writeLabelledPoints("LB", node.marks.filter { it is LabelMark }.map { it as LabelMark })
+
+        if (node.name.isNotBlank()) {
+            writeProperty("N", node.name)
+        }
+        if (node.comment.isNotBlank()) {
+            writeProperty("C", node.comment)
+        }
     }
 
     private fun fromPoint(point: Point): String {
@@ -148,5 +159,21 @@ class SGFWriter {
         val y = 'a' + (game.board.sizeY - 1 - point.y)
 
         return "$x$y"
+    }
+
+    private fun writeProperty(name: String, value: StoneColor) {
+        writeProperty(name, if (value == StoneColor.BLACK) "B" else "W")
+    }
+
+    private fun writeProperty(name: String, value: Point) {
+        writeProperty(name, fromPoint(value))
+    }
+
+    private fun writeProperty(name: String, value: Int) {
+        writeProperty(name, value.toString())
+    }
+
+    private fun writeProperty(name: String, value: String) {
+        writer.write("${name}[$value]")
     }
 }

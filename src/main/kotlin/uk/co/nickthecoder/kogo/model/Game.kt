@@ -118,7 +118,7 @@ class Game(sizeX: Int, sizeY: Int) {
     }
 
     fun pass(byPlayer: Player) {
-        val node = PassNode(playerToMove.color.opposite())
+        val node = PassNode(playerToMove.color)
         addAndApplyNode(node, byPlayer)
         if (currentNode is PassNode) {
             awaitingFinalCount = true
@@ -278,6 +278,8 @@ class Game(sizeX: Int, sizeY: Int) {
         val writer = SGFWriter(baos)
 
         writer.write(this)
+
+        println(baos)
 
         val reader = SGFReader(ByteArrayInputStream(baos.toByteArray()))
         val result = reader.read()

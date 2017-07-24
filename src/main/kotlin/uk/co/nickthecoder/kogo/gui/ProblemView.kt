@@ -6,13 +6,12 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
-import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.ProblemOpponent
 import uk.co.nickthecoder.kogo.ProblemPlayer
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.PreferencesView
-import uk.co.nickthecoder.paratask.project.ShortcutHelper
+import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 
 class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boolean = false)
     : TopLevelView(mainWindow), GameListener {
@@ -117,7 +116,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         if (cheat) {
             currentNode.children.firstOrNull().let { node ->
                 if (node is MoveNode) {
-                    val mark = CircleMark(node.point)
+                    val mark = MainLineMark(node.point)
                     game.addMark(mark)
                 }
             }
@@ -125,7 +124,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
             if (currentNode.children.size > 1) {
                 for (child in currentNode.children) {
                     if (child is MoveNode) {
-                        val mark = SquareMark(child.point)
+                        val mark = AlternateMark(child.point)
                         game.addMark(mark)
                     }
                 }

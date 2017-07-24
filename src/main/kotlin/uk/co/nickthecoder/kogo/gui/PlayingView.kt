@@ -29,7 +29,7 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
 
     protected val resignB = Button("Resign")
 
-    protected val reviewB = Button("Review")
+    protected val editB = Button("Edit Game")
 
     protected val undoB = Button("Undo")
 
@@ -45,9 +45,9 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
         resignB.addEventHandler(ActionEvent.ACTION) { onResign() }
         undoB.addEventHandler(ActionEvent.ACTION) { onUndo() }
-        reviewB.addEventHandler(ActionEvent.ACTION) { onReview() }
+        editB.addEventHandler(ActionEvent.ACTION) { onEditGame() }
 
-        toolBar.items.addAll(passB, resignB, reviewB)
+        toolBar.items.addAll(passB, resignB, editB)
 
         return this
     }
@@ -68,7 +68,7 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
         game.undo()
     }
 
-    fun onReview() {
+    fun onEditGame() {
         val copy = game.copy()
         val view = EditGameView(mainWindow, copy)
         mainWindow.addViewAfter(this, view)

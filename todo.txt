@@ -5,9 +5,6 @@ Bugs
 
 What should happen when setup stones are added, and then later nodes are invalid moves?
 
-Keyboard shortcuts
-	Arrow keys are important for EditGameView!
-
 Time limits for games (Difference preferences for each type of game)
 	Have some standard times, and also "Custom"
 	Create a TimePrefence in paratask, allowing pick of hours, minute or seconds

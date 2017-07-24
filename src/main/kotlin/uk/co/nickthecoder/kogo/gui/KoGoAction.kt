@@ -3,8 +3,7 @@ package uk.co.nickthecoder.kogo.gui
 import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import uk.co.nickthecoder.kogo.KoGo
-import uk.co.nickthecoder.paratask.ParaTaskApp
-import uk.co.nickthecoder.paratask.project.AbstractAction
+import uk.co.nickthecoder.paratask.gui.ApplicationAction
 
 class KoGoAction(
         name: String,
@@ -15,7 +14,7 @@ class KoGoAction(
         meta: Boolean? = false,
         shortcut: Boolean? = false,
         tooltip: String? = null,
-        label: String? = null) : AbstractAction(name, keyCode, shift, control, alt, meta, shortcut, tooltip, label) {
+        label: String? = null) : ApplicationAction(name, keyCode, shift, control, alt, meta, shortcut, tooltip, label) {
 
     override val image: Image? = KoGo.imageResource("buttons/$name.png")
 

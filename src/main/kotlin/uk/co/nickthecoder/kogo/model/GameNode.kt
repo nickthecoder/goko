@@ -39,9 +39,9 @@ abstract class GameNode(var colorToPlay: StoneColor) {
         return null
     }
 
-    fun hasLabelMark( text:String ) : Boolean {
+    fun hasLabelMark(text: String): Boolean {
         for (mark in marks) {
-            if (mark is LabelMark && mark.text == text ) {
+            if (mark is LabelMark && mark.text == text) {
                 return true
             }
         }
@@ -128,16 +128,17 @@ abstract class GameNode(var colorToPlay: StoneColor) {
     open fun sameAs(node: GameNode) = false
 }
 
-class PassNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
-
-    override fun sameAs(node: GameNode) = node is PassNode
-
-    override fun toString() = "#$moveNumber PassNode"
-}
 
 class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
 
     override fun toString() = "#$moveNumber SetupNode" // TODO count of stones added
+}
+
+class PassNode(val color: StoneColor) : GameNode(color.opposite()) {
+
+    override fun sameAs(node: GameNode) = node is PassNode
+
+    override fun toString() = "#$moveNumber PassNode"
 }
 
 class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposite()) {

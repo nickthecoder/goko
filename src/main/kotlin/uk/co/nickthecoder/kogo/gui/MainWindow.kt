@@ -5,12 +5,13 @@ import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.shell.Home
-import uk.co.nickthecoder.paratask.project.ShortcutHelper
-import uk.co.nickthecoder.paratask.util.MyTabPane
+import uk.co.nickthecoder.paratask.gui.MyTab
+import uk.co.nickthecoder.paratask.gui.ShortcutHelper
+import uk.co.nickthecoder.paratask.gui.MyTabPane
 
 class MainWindow(val stage: Stage) {
 
-    var tabs = MyTabPane()
+    var tabs = MyTabPane<MyTab>()
 
     val whole = BorderPane()
 
@@ -26,7 +27,11 @@ class MainWindow(val stage: Stage) {
         KoGo.style(stage.scene)
         stage.show()
 
-        shortcuts.add(KoGoActions.CLOSE_TAB) { tabs.selectedTab?.close() }
+        shortcuts.add(KoGoActions.CLOSE_TAB) {
+            if (tabs.selectedTab?.canClose == true) {
+                tabs.selectedTab?.remove()
+            }
+        }
     }
 
     fun indexOf(view: TopLevelView): Int {
@@ -58,6 +63,9 @@ class MainWindow(val stage: Stage) {
         }
         if (selectTab) {
             tabs.selectedTab = tab
+        }
+        if (view is Home) {
+            tab.canClose = false
         }
     }
 

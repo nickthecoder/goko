@@ -8,7 +8,7 @@ import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.PreferencesListener
 import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.CompoundButtons
-import uk.co.nickthecoder.paratask.project.ShortcutHelper
+import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 
 class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener, PreferencesListener {
 
