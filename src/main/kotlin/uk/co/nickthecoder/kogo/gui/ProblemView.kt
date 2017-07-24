@@ -11,6 +11,8 @@ import uk.co.nickthecoder.kogo.ProblemOpponent
 import uk.co.nickthecoder.kogo.ProblemPlayer
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
+import uk.co.nickthecoder.kogo.preferences.PreferencesView
+import uk.co.nickthecoder.paratask.project.ShortcutHelper
 
 class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boolean = false)
     : TopLevelView(mainWindow), GameListener {
@@ -43,6 +45,8 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
 
     val secondPlayer = ProblemOpponent(game, firstPlayer.color.opposite(), this)
 
+    val shortcuts = ShortcutHelper("ProblemView", node)
+
     init {
         game.addPlayer(firstPlayer)
         game.addPlayer(secondPlayer)
@@ -68,20 +72,14 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         commentsView.build()
         problemResults.build()
 
-        val passB = Button("Pass")
-        passB.addEventHandler(ActionEvent.ACTION) { onPass() }
+        val preferencesB = KoGoActions.PREFERENCES.createButton { mainWindow.addView(PreferencesView(mainWindow, Preferences.problemsPreferences)) }
 
-        val restartB = Button("Restart")
-        restartB.addEventHandler(ActionEvent.ACTION) { onRestart() }
-        passB.addEventHandler(ActionEvent.ACTION) { onPass() }
+        val passB = KoGoActions.PASS.createButton(shortcuts) { onPass() }
+        val restartB = KoGoActions.PROBLEM_RESTART.createButton(shortcuts) { onRestart() }
+        val giveUpB = KoGoActions.PROBLEM_GIVE_UP.createButton(shortcuts) { onGiveUp() }
+        val editB = KoGoActions.EDIT.createButton(shortcuts) { onEdit() }
 
-        val giveUpB = Button("Give Up")
-        giveUpB.addEventHandler(ActionEvent.ACTION) { onGiveUp() }
-
-        val editB = Button("Edit")
-        editB.addEventHandler(ActionEvent.ACTION) { onEdit() }
-
-        toolBar.items.addAll(passB, restartB, giveUpB, editB)
+        toolBar.items.addAll(preferencesB, restartB, giveUpB, editB, passB)
 
         game.root.apply(game)
 
@@ -159,10 +157,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
 
             val nextProblem = problem.next()
             if (nextProblem != null) {
-                val nextProblemB = Button()
-                nextProblemB.graphic = ImageView(KoGo.imageResource("go-next.png"))
-                nextProblemB.tooltip = Tooltip("Next Problem")
-                nextProblemB.addEventHandler(ActionEvent.ACTION) { showProblem(nextProblem) }
+                val nextProblemB = KoGoActions.PROBLEM_NEXT.createButton(shortcuts) { showProblem(nextProblem) }
                 box.children.add(nextProblemB)
             }
         }

@@ -1,10 +1,24 @@
 Bugs
 	A pass from Go Problems invokes the game scoring algorithm!
 		Also, why is it doing it after a SINGLE pass? Hmm.
-	Ko not tested for, and then trows exception when a ko is played.
+	Ko not tested for, and then throws exception when the ko point is played.
+
+What should happen when setup stones are added, and then later nodes are invalid moves?
+
+Keyboard shortcuts
+	Arrow keys are important for EditGameView!
+
+Time limits for games (Difference preferences for each type of game)
+	Have some standard times, and also "Custom"
+	Create a TimePrefence in paratask, allowing pick of hours, minute or seconds
+		ScaledDoublePreference, takes a set of scaling values for each type of units, shown as combobox
+
+Don't allow the Home tab to be removed
+	Use generics for tab type
+	Don't show the close button!
 
 Edit games
-	Add Marks (symbols, numbers and letters), comments, node name
+	Add comments, node name
 	Edit meta-data
 	Delete branch (warn when deleting main line)
 	Show pass (and allow the pass branch to be deleted)
@@ -14,9 +28,12 @@ Edit games
 		Create a "NodeNavigation" class?
 		Or just use the original's node tree
 			GameNode.equals should be able to compare nodes for different games.
+	listen to the game being reviewed, and add nodes to the reviewing game as moves are played.
+		Add them as the main line in the copy.
 
-Keyboard shortcuts
-	Arrow keys are important for EditGameView!
+Undo option when playing games (separate preference for each type of game)
+	When playing a new move, make it the main line, but keep the old node (adding a "Undone" comment).
+	When playing against a computer, undo TWO moves
 
 SFGReader
 	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.

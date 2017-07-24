@@ -219,7 +219,7 @@ enum class ProblemResult {
     UNTRIED, FAILED, SOLVED, UNCERTAIN;
 
     fun image(): Image? {
-        return KoGo.imageResource(toString().toLowerCase() + ".png")
+        return KoGo.imageResource("buttons/problem-${toString().toLowerCase()}.png")
     }
 
     fun style(): String {

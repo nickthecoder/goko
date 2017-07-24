@@ -134,13 +134,13 @@
 }
 
 .problem-set .button.solved {
-    -fx-background-image: url( 'solved.png' )
+    -fx-background-image: url( 'buttons/problem-solved.png' )
 }
 .problem-set .button.failed {
-    -fx-background-image: url( 'failed.png' )
+    -fx-background-image: url( 'buttons/problem-failed.png' )
 }
 .problem-set .button.uncertain {
-    -fx-background-image: url( 'uncertain.png' )
+    -fx-background-image: url( 'buttons/problem-uncertain.png' )
 }
 
 /***********************************************************************************
