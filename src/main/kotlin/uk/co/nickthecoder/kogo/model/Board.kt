@@ -3,15 +3,15 @@ package uk.co.nickthecoder.kogo.model
 import uk.co.nickthecoder.kogo.Player
 import uk.co.nickthecoder.kogo.util.array2d
 
-class Board(val sizeX: Int, val sizeY: Int = sizeX, val game: Game) {
+class Board(val size: Int, val game: Game) {
 
-    private val points = array2d<StoneColor>(sizeX, sizeY) { StoneColor.NONE }
+    private val points = array2d<StoneColor>(size, size) { StoneColor.NONE }
 
     private var isCopy = false
 
-    fun contains(x: Int, y: Int) = x >= 0 && y >= 0 && x < sizeX && y < sizeY
+    fun contains(x: Int, y: Int) = x >= 0 && y >= 0 && x < size && y < size
 
-    fun contains(point: Point) = point.x >= 0 && point.y >= 0 && point.x < sizeX && point.y < sizeY
+    fun contains(point: Point) = point.x >= 0 && point.y >= 0 && point.x < size && point.y < size
 
     fun getStoneAt(x: Int, y: Int): StoneColor {
         if (contains(x, y)) {
@@ -113,10 +113,10 @@ class Board(val sizeX: Int, val sizeY: Int = sizeX, val game: Game) {
     }
 
     fun copy(): Board {
-        val result = Board(sizeX, sizeY, game)
+        val result = Board(size, game)
         result.isCopy = true
-        for (x in 0..sizeX - 1) {
-            for (y in 0..sizeY - 1) {
+        for (x in 0..size - 1) {
+            for (y in 0..size - 1) {
                 val point = Point(x, y)
                 points[point.x][point.y] = getStoneAt(point)
             }

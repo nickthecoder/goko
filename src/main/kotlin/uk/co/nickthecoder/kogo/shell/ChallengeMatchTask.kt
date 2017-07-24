@@ -19,7 +19,7 @@ class ChallengeMatchTask(val mainWindow: MainWindow) : ChallengeMatchPreferences
 
         Preferences.challengeMatchPreferences.taskD.copyValuesFrom(taskD)
 
-        val game = Game(sizeX = boardSizeP.value!!, sizeY = boardSizeP.value!!)
+        val game = Game(size = boardSizeP.value!!)
         val view = PlayingView(mainWindow, game)
 
         val human = LocalPlayer(game, StoneColor.opposite(computerPlaysP.value!!), Preferences.yourName, Preferences.yourRank)

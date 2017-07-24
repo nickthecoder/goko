@@ -97,16 +97,16 @@ object Preferences {
 
         for (jtask1 in jpreferences) {
             val jtask = jtask1.asObject()
-            val name = jtask.getString("name", "")
-            val task = preferenceTasksMap.get(name)
+            val taskName = jtask.getString("name", "")
+            val task = preferenceTasksMap.get(taskName)
             if (task != null) {
                 val jparams = jtask.get("parameters").asArray()
                 for (jparam1 in jparams) {
                     val jparam = jparam1.asObject()
-                    val name = jparam.getString("name", "")
+                    val paramName = jparam.getString("name", "")
                     val stringValue = jparam.getString("value", "")
 
-                    val parameter = task.taskD.root.find(name)
+                    val parameter = task.taskD.root.find(paramName)
                     if (parameter != null && parameter is ValueParameter<*>) {
                         parameter.stringValue = stringValue
                     }
@@ -124,7 +124,7 @@ object Preferences {
         jroot.add("preferences", jpreferences)
 
         preferenceTasksMap.values.forEach { task ->
-            val jtask = jsonTask(jroot, task)
+            val jtask = jsonTask(task)
             jpreferences.add(jtask)
         }
 
@@ -137,7 +137,7 @@ object Preferences {
         }
     }
 
-    private fun jsonTask(parent: JsonObject, task: Task): JsonObject {
+    private fun jsonTask(task: Task): JsonObject {
 
         val jtask = JsonObject()
 

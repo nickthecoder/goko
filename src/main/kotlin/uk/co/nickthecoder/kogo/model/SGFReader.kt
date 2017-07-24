@@ -55,7 +55,7 @@ class SGFReader {
                 if (sgfRoot == null) {
                     break
                 }
-                val game = Game(size, size)
+                val game = Game(size)
                 updateRootNode(game, sgfRoot)
                 addChildren(game, sgfRoot)
 
@@ -84,7 +84,7 @@ class SGFReader {
 
             // dumpTree(sgfRoot)
 
-            val game = Game(size, size)
+            val game = Game(size)
             updateRootNode(game, sgfRoot)
             addChildren(game, sgfRoot)
 
@@ -278,13 +278,13 @@ class SGFReader {
     }
 
     private fun toPoint(board: Board, str: String): Point? {
-        if (str == "" || (str == "tt" && board.sizeX <= 19)) {
+        if (str == "" || (str == "tt" && board.size <= 19)) {
             // A pass node - just return null and let the caller handle it.
             return null
         }
         try {
             val x: Int = str[0].toLowerCase() - 'a'
-            val y: Int = board.sizeY - (str[1].toLowerCase() - 'a') - 1
+            val y: Int = board.size - (str[1].toLowerCase() - 'a') - 1
             return Point(x, y)
         } catch (e: Exception) {
             println("Invalid sgf point : '$str'")

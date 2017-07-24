@@ -32,8 +32,8 @@ class ClickBoardView(val boardView: BoardView) : GameListener {
     init {
         with(stack) {
             styleClass.add("playing-area")
-            prefWidth = boardView.board.sizeX * BoardView.pointSize
-            prefHeight = boardView.board.sizeY * BoardView.pointSize
+            prefWidth = boardView.board.size * BoardView.pointSize
+            prefHeight = boardView.board.size * BoardView.pointSize
         }
 
         stack.addEventHandler(MouseEvent.MOUSE_MOVED) { onMouseMoved(it) }

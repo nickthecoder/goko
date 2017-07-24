@@ -8,5 +8,5 @@ class GameMetaData {
 
     var handicap: Int = 0
 
-    var boardSize: Int = 19
+    var matchResult: String = ""
 }

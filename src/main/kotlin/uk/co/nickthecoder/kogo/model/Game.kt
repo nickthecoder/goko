@@ -7,13 +7,13 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-class Game(sizeX: Int, sizeY: Int) {
+class Game(size: Int) {
 
     var file: File? = null
 
     val metaData = GameMetaData()
 
-    val board = Board(sizeX, sizeY, this)
+    val board = Board(size, this)
 
     var playerToMove: Player = LocalPlayer(this, StoneColor.BLACK)
 
@@ -33,8 +33,6 @@ class Game(sizeX: Int, sizeY: Int) {
     var currentNode: GameNode = root
 
     init {
-        metaData.boardSize = Math.max(sizeX, sizeY)
-
         addPlayer(playerToMove)
         addPlayer(LocalPlayer(this, StoneColor.WHITE))
     }
@@ -42,8 +40,8 @@ class Game(sizeX: Int, sizeY: Int) {
     fun placeHandicap(n: Int) {
         var start = 3
         var jump = 6
-        if (board.sizeX < 19) {
-            if (board.sizeX < 13) {
+        if (board.size < 19) {
+            if (board.size < 13) {
                 start = 1
                 jump = 4
             } else {
@@ -81,6 +79,7 @@ class Game(sizeX: Int, sizeY: Int) {
     }
 
     fun gameFinished(winner: Player?, matchResult: String = "") {
+        metaData.matchResult = matchResult
         gameListeners.forEach {
             it.matchResult(this, winner)
         }
@@ -92,8 +91,8 @@ class Game(sizeX: Int, sizeY: Int) {
         val counter = GnuGoPlayer(this, StoneColor.NONE)
         counter.start()
         // Tell the counter where the stones are
-        for (x in 0..board.sizeX - 1) {
-            for (y in 0..board.sizeY - 1) {
+        for (x in 0..board.size - 1) {
+            for (y in 0..board.size - 1) {
                 val color = board.getStoneAt(x, y)
                 if (color != StoneColor.NONE) {
                     counter.stoneChanged(Point(x, y), null)

@@ -62,7 +62,7 @@ class BoardView(val game: Game) : View {
     }
 
     fun toBoardPoint(x: Double, y: Double): Point {
-        return Point((x / pointSize).toInt(), board.sizeY - (y / pointSize).toInt() - 1)
+        return Point((x / pointSize).toInt(), board.size - (y / pointSize).toInt() - 1)
     }
 
     fun updateMoveNumbers() {
@@ -125,18 +125,18 @@ class BoardView(val game: Game) : View {
 
             with(boardMarks) {
                 styleClass.add("board-marks")
-                for (x in 0..board.sizeX - 1) {
+                for (x in 0..board.size - 1) {
                     val text = Point.labelX(x)
                     val bottomLabel = MarkView(Point(x, -1), "coordinate", text)
-                    val topLabel = MarkView(Point(x, board.sizeY), "coordinate", text)
+                    val topLabel = MarkView(Point(x, board.size), "coordinate", text)
                     add(topLabel)
                     add(bottomLabel)
                 }
 
-                for (y in 0..board.sizeY - 1) {
+                for (y in 0..board.size - 1) {
                     val text = Point.labelY(y)
                     val leftLabel = MarkView(Point(-1, y), "coordinate", text)
-                    val rightLabel = MarkView(Point(board.sizeX, y), "coordinate", text)
+                    val rightLabel = MarkView(Point(board.size, y), "coordinate", text)
                     add(leftLabel)
                     add(rightLabel)
                 }
@@ -161,16 +161,16 @@ class BoardView(val game: Game) : View {
             // By flooring the scale, the lines of the grid will always be aligned to pixels on the screen, and therefore
             // won't need antialiasing, which can give inellegant results. The only down side, is that the board scales in
             // jumps when the view is resized by dragging.
-            scale = Math.floor(size / (board.sizeX + 2))
-            size = scale * (board.sizeX + 2)
+            scale = Math.floor(size / (board.size + 2))
+            size = scale * (board.size + 2)
 
             if (scale == oldScale) {
                 return
             }
             oldScale = scale
 
-            val playingSize = scale * board.sizeX
-            val logicalSize = (board.sizeX + 2) * pointSize
+            val playingSize = scale * board.size
+            val logicalSize = (board.size + 2) * pointSize
 
             layoutInArea(wood, marginLeft, marginTop, size, size, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(boardMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
@@ -220,22 +220,22 @@ class BoardView(val game: Game) : View {
             lines.strokeWidth = scale / 70.0
 
             lines.elements.clear()
-            for (x in 0..board.sizeX - 1) {
+            for (x in 0..board.size - 1) {
                 val from = MoveTo((x + 0.5) * scale - 1, 0.5 * scale - 1)
-                val to = LineTo((x + 0.5) * scale - 1, (board.sizeY - 0.5) * scale - 1)
+                val to = LineTo((x + 0.5) * scale - 1, (board.size - 0.5) * scale - 1)
                 lines.elements.addAll(from, to)
             }
-            for (y in 0..board.sizeY - 1) {
+            for (y in 0..board.size - 1) {
                 val from = MoveTo(0.5 * scale - 1, (y + 0.5) * scale - 1)
-                val to = LineTo((board.sizeX - 0.5) * scale - 1, (y + 0.5) * scale - 1)
+                val to = LineTo((board.size - 0.5) * scale - 1, (y + 0.5) * scale - 1)
                 lines.elements.addAll(from, to)
             }
 
-            if (board.sizeX == 19 && board.sizeY == 19) {
+            if (board.size == 19) {
                 starPoints(3, 3, 6)
-            } else if (board.sizeX == 13 && board.sizeY == 13) {
+            } else if (board.size == 13) {
                 starPoints(3, 3, 6)
-            } else if (board.sizeX == 9 && board.sizeY == 9) {
+            } else if (board.size == 9) {
                 starPoints(3, 2, 2, cross = true)
             }
 
@@ -257,7 +257,6 @@ class BoardView(val game: Game) : View {
         override fun moved() {
             mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
 
-            val currentNode = board.game.currentNode
             marks.clear()
             for (mark in board.game.currentNode.marks) {
                 marks.add(mark.createMarkView())

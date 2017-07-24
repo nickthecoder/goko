@@ -33,7 +33,7 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
 
     var oldScale = 0.0
 
-    val array = array2d<ImageView?>(game.board.sizeX, game.board.sizeY) { null }
+    val array = array2d<ImageView?>(game.board.size, game.board.size) { null }
 
     init {
         game.gameListeners.add(this)
@@ -50,7 +50,7 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         children.add(imageView)
 
         val scale = boardView.scale
-        layoutInArea(imageView, point.x * scale, (board.sizeY - point.y - 1) * scale, scale, scale, 0.0, HPos.LEFT, VPos.TOP)
+        layoutInArea(imageView, point.x * scale, (board.size - point.y - 1) * scale, scale, scale, 0.0, HPos.LEFT, VPos.TOP)
     }
 
     fun removeAt(point: Point) {
@@ -75,8 +75,8 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         scaledWhiteStone = scaleImage("stoneW.png", boardView.scale.toInt())
         scaledBlackStone = scaleImage("stoneB.png", boardView.scale.toInt())
         children.clear()
-        for (x in 0..board.sizeX - 1) {
-            for (y in 0..board.sizeY - 1) {
+        for (x in 0..board.size - 1) {
+            for (y in 0..board.size - 1) {
                 val color = board.getStoneAt(x, y)
                 if (color != StoneColor.NONE) {
                     add(Point(x, y), if (color == StoneColor.BLACK) scaledBlackStone else scaledWhiteStone)

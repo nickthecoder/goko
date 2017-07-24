@@ -22,7 +22,7 @@ Setup Properties 	AB, AE, AW, PL
 Node Annotation Properties 	C, DM (x), GB (x), GW (x), HO (x), N, UC (x), V (x)
 Move Annotation Properties 	BM (x), DO (x), IT (x), TE (x)
 Markup Properties 	AR (x), CR, DD (x), LB, LN (x), MA, SL (x), SQ, TR
-Root Properties 	AP (x), CA, FF, GM, ST (x), SZ
+Root Properties 	AP (x),b CA, FF, GM, ST (x), SZ
 Game Info Properties 	AN(x), BR(x), BT(x), CP(x), DT(x), EV(x), GN(x), GC(x), ON(x), OT(x), PB(x), PC(x), PW(x), RE(x), RO(x), RU(x), SO(x), TM(x), US(x), WR(x), WT(x)
 Timing Properties 	BL(x), OB(x), OW(x), WL(x)
 Miscellaneous Properties 	FG(x), PM(x), VW(x)
@@ -69,7 +69,7 @@ class SGFWriter {
 
     private fun writeGameMetaData() {
         writeProperty("PL", game.root.colorToPlay)
-        writeProperty("SZ", game.board.sizeX)
+        writeProperty("SZ", game.board.size)
         writeProperty("CA", "utf-8")
 
         // Players names, ranks, board size etc
@@ -156,7 +156,7 @@ class SGFWriter {
 
     private fun fromPoint(point: Point): String {
         val x = 'a' + point.x
-        val y = 'a' + (game.board.sizeY - 1 - point.y)
+        val y = 'a' + (game.board.size - 1 - point.y)
 
         return "$x$y"
     }

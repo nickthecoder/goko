@@ -33,7 +33,7 @@ class TwoPlayerGameTask(val mainWindow: MainWindow) : AbstractTask() {
 
     override fun run() {
 
-        val game = Game(sizeX = boardSizeP.value!!, sizeY = boardSizeP.value!!)
+        val game = Game(size = boardSizeP.value!!)
         val view = PlayingView(mainWindow, game)
         game.placeHandicap(handicapP.value!!)
 

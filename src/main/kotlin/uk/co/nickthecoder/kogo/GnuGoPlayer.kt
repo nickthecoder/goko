@@ -16,7 +16,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
     override val rank = ""
 
-    val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.sizeX)
+    val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size)
     // TODO Add options --komi <n>, --chinese-rules, --japanese-rules
 
     var writer: Writer? = null
@@ -78,8 +78,8 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
             val space = data.indexOf(" ")
             if (space > 0) {
                 val pointNumber = Integer.parseInt(data.substring(0, space))
-                val y = pointNumber / game.board.sizeX
-                val x = pointNumber - (y * game.board.sizeX)
+                val y = pointNumber / game.board.size
+                val x = pointNumber - (y * game.board.size)
                 val status = data.substring(space).trim()
                 Platform.runLater {
                     markBoard(Point(x, y), status)
@@ -96,7 +96,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
         } else if (status == "black_territory") {
             game.addMark(TerritoryMark(point, StoneColor.BLACK))
         } else if (status == "dead") {
-            game.addMark(DeadMark(point, game.board.getStoneAt(point)))
+            game.addMark(DeadMark(point))
         }
     }
 
@@ -115,10 +115,10 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     fun countGame() {
         command("2 final_score")
 
-        for (y in 0..game.board.sizeY - 1) {
-            for (x in 0..game.board.sizeX - 1) {
+        for (y in 0..game.board.size - 1) {
+            for (x in 0..game.board.size - 1) {
                 val point = Point(x, y)
-                val pointNumber = x + y * game.board.sizeX
+                val pointNumber = x + y * game.board.size
                 command("3${pointNumber} final_status ${point}")
             }
         }

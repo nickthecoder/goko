@@ -30,7 +30,7 @@ class CrossMark(point: Point) : SymbolMark(point, "cross")
 class TriangleMark(point: Point) : SymbolMark(point, "triangle")
 
 
-class DeadMark(point: Point, stoneColor: StoneColor) : SymbolMark(point, "dead")
+class DeadMark(point: Point) : SymbolMark(point, "dead")
 
 class TerritoryMark(point: Point, val color: StoneColor) : SymbolMark(point, "territory") {
 

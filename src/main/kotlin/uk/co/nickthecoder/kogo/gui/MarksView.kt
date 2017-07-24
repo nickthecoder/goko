@@ -21,7 +21,7 @@ class MarksView(val board: Board) {
         override fun layoutChildren() {
             markViews.forEach { child ->
                 val x = child.point.x * BoardView.pointSize
-                val y = (board.sizeY - child.point.y - 1) * BoardView.pointSize
+                val y = (board.size - child.point.y - 1) * BoardView.pointSize
                 layoutInArea(child, x, y, BoardView.pointSize, BoardView.pointSize, 0.0, HPos.CENTER, VPos.CENTER)
             }
         }
