@@ -7,7 +7,7 @@ import uk.co.nickthecoder.kogo.model.StoneColor
 open class LocalPlayer(val game: Game, override val color: StoneColor, val name: String = "Human", override val rank: String = "")
     : Player {
 
-    override val timeRemaining = game.metaData.timeLimit.duplicate()
+    override var timeRemaining = game.metaData.timeLimit.copy()
 
     override val label
         get() = name

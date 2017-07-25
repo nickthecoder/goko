@@ -51,14 +51,12 @@ class BoardView(val game: Game) : View {
     val OFF_SCREEN = Point(-100, -100)
 
 
-    override fun build(): View {
+    override fun build(){
         with(container) {
             styleClass.add("board-container")
             children.add(boardLayout)
         }
         boardLayout.build()
-
-        return this
     }
 
     fun toBoardPoint(x: Double, y: Double): Point {

@@ -6,7 +6,7 @@ interface View {
 
     val node: Node
 
-    fun build(): View
+    fun build()
 
     fun tidyUp() {}
 

@@ -7,11 +7,6 @@ import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.StoneColor
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.TwoPlayerGamePreferences
-import uk.co.nickthecoder.paratask.AbstractTask
-import uk.co.nickthecoder.paratask.TaskDescription
-import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
-import uk.co.nickthecoder.paratask.parameters.IntParameter
-import uk.co.nickthecoder.paratask.parameters.StringParameter
 
 class TwoPlayerGameTask(val mainWindow: MainWindow) : TwoPlayerGamePreferences() {
 
@@ -23,10 +18,17 @@ class TwoPlayerGameTask(val mainWindow: MainWindow) : TwoPlayerGamePreferences()
 
         val game = Game(size = boardSizeP.value!!)
         val view = PlayingView(mainWindow, game)
-        game.placeHandicap(handicapP.value!!)
+
+        game.metaData.handicap = handicapP.value!!
+        game.metaData.komi = komiP.value!!
+        game.metaData.japaneseRules = rulesP.value!!
+        game.metaData.timeLimit = timeLimitP.value!!
 
         val blackPlayer = LocalPlayer(game, StoneColor.BLACK, blackPlayerP.value)
         val whitePlayer = LocalPlayer(game, StoneColor.WHITE, whitePlayerP.value)
+
+        blackPlayer.timeRemaining = game.metaData.timeLimit.copy()
+        whitePlayer.timeRemaining = game.metaData.timeLimit.copy()
 
         game.addPlayer(blackPlayer)
         game.addPlayer(whitePlayer)

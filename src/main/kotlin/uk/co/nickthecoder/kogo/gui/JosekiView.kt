@@ -39,7 +39,7 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
         game.gameListeners.add(this)
     }
 
-    override fun build(): View {
+    override fun build() {
         println("Building joseki view")
         boardView.build()
         println("Built board view")
@@ -74,9 +74,6 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
         toolBar.items.addAll(passB, restartB, backB, forwardB)
 
         game.root.apply(game)
-        println("Built joseki view")
-
-        return this
     }
 
     fun onPass() {

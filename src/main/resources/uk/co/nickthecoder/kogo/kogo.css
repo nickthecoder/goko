@@ -108,14 +108,6 @@
     Problem Views
 *************************************************************************************/
 
-.comments {
-    -fx-padding: 0 6px 0 6px;
-}
-
-.comments > .label {
-    -fx-padding: 6px 0 0 0;
-}
-
 .problem-results {
     -fx-padding: 6px;
 }
@@ -141,6 +133,28 @@
 }
 .problem-set .button.uncertain {
     -fx-background-image: url( 'buttons/problem-uncertain.png' )
+}
+
+/***********************************************************************************
+   Views (CommentsView, GameInfoView)
+*************************************************************************************/
+
+.comments {
+    -fx-padding: 0 6px 0 6px;
+}
+
+.comments > .label {
+    -fx-padding: 6px 0 0 0;
+}
+
+.game-info {
+    -fx-padding: 6px;
+    -fx-spacing: 6px;
+}
+
+.heading {
+    -fx-font-size: 140%;
+    -fx-padding: 12px 0 0 0;
 }
 
 /***********************************************************************************

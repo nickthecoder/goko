@@ -13,59 +13,48 @@ class TimeLimitPreferences : AbstractTask() {
 
     override val taskD = TaskDescription("timeLimits")
 
-    val timeScales = mapOf<String, Double>("hours" to 60.0 * 60, "minutes" to 60.0, "seconds" to 1.0)
-
     val timeLimitsP = MultipleParameter<CompoundParameter>("timeLimits", minItems = 1) {
-        val descriptionP = StringParameter("description")
-        val mainPeriodP = ScaledDoubleParameter(name = "mainPeriod", value = 30.0, scales = timeScales, currentScale = 60.0)
-        val byoYomiPeriodP = ScaledDoubleParameter(name = "byoYomiPeriod", value = 10.0, scales = timeScales, currentScale = 60.0)
-        val byoYomiMoves = IntParameter(name = "byoYomiMoves", value = 25)
-        val overtimePeriod = ScaledDoubleParameter(name = "overtimePeriod", value = 30.0, scales = timeScales, currentScale = 1.0)
-        val overtimePeriods = IntParameter(name = "overtimePeriods", value = 3)
-
-        val comp = CompoundParameter("timeLimit")
-
-        comp.addParameters(descriptionP, mainPeriodP, byoYomiPeriodP, byoYomiMoves, overtimePeriod, overtimePeriods)
-        comp
+        val timeLimit = TimedLimit("", 30.0, 60.0, 10.0, 60.0, 25, 30.0, 1.0, 3)
+        timeLimit.compound
     }
 
     init {
         taskD.addParameters(timeLimitsP)
-
-        addTimeLimit("30 minutes, plus 10 minutes byo-yomi per 25 moves", 30.0, 60.0, byoYomiPeriod = 10.0, byoYomiScale = 60.0, byoYomiMoves = 25)
-        addTimeLimit("10 minutes, plus 30 seconds byo-yomi, 3 overtimes", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0, overtimePeriods = 3)
-        addTimeLimit("10 minutes, plus 30 seconds byo-yomi, no overtime", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0)
     }
 
+    fun addTimeLimit(timeLimit: TimedLimit) {
+        if (contains(timeLimit)) {
+            return
+        }
+        timeLimitsP.addValue(timeLimit.compound)
+    }
 
-    fun addTimeLimit(
-            description: String,
-            mainPeriod: Double,
-            mainScale: Double,
-            byoYomiPeriod: Double,
-            byoYomiScale: Double,
-            byoYomiMoves: Int = 1,
-            overtimePeriod: Double = byoYomiPeriod,
-            overtimeScale: Double = byoYomiScale,
-            overtimePeriods: Int = 0) {
+    private fun contains(timeLimit: TimedLimit): Boolean {
+        for (compound in timeLimitsP.value) {
 
-        val compound = timeLimitsP.newValue() as CompoundParameter
-        val descriptionP = compound.find("description") as StringParameter
-        val mainPeriodP = compound.find("mainPeriod") as ScaledDoubleParameter
-        val byoYomiPeriodP = compound.find("byoYomiPeriod") as ScaledDoubleParameter
-        val byoYomiMovesP = compound.find("byoYomiMoves") as IntParameter
-        val overtimePeriodP = compound.find("overtimePeriod") as ScaledDoubleParameter
-        val overtimePeriodsP = compound.find("overtimePeriods") as IntParameter
+            val mainPeriodP = compound.find("mainPeriod") as ScaledDoubleParameter
+            val byoYomiPeriodP = compound.find("byoYomiPeriod") as ScaledDoubleParameter
+            val byoYomiMovesP = compound.find("byoYomiMoves") as IntParameter
+            val overtimePeriodP = compound.find("overtimePeriod") as ScaledDoubleParameter
+            val overtimePeriodsP = compound.find("overtimePeriods") as IntParameter
 
-        descriptionP.value = description
-        mainPeriodP.value = mainPeriod
-        mainPeriodP.currentScale = mainScale
-        byoYomiPeriodP.value = byoYomiPeriod
-        byoYomiPeriodP.currentScale = byoYomiScale
-        byoYomiMovesP.value = byoYomiMoves
-        overtimePeriodP.value = overtimePeriod
-        overtimePeriodP.currentScale = overtimeScale
-        overtimePeriodsP.value = overtimePeriods
+            //println("Main ${mainPeriodP.value.scaledValue} with ${timeLimit.mainPeriodP.value.scaledValue}")
+            //println("ByoPeriod ${byoYomiPeriodP.value.scaledValue} with ${timeLimit.byoYomiPeriodP.value.scaledValue}")
+            //println("ByoMoves ${byoYomiMovesP.value} with ${timeLimit.byoYomiMovesP.value}")
+            //println("OvertimePeriod ${overtimePeriodP.value.scaledValue} with ${timeLimit.overtimePeriodP.value.scaledValue}")
+            //println("Overtimes ${overtimePeriodsP.value} with ${timeLimit.overtimePeriodsP.value}")
+            //println()
+            if (mainPeriodP.value.scaledValue == timeLimit.mainPeriodP.value.scaledValue
+                    && byoYomiPeriodP.value.scaledValue == timeLimit.byoYomiPeriodP.value.scaledValue
+                    && byoYomiMovesP.value == timeLimit.byoYomiMovesP.value
+                    && overtimePeriodP.value.scaledValue == timeLimit.overtimePeriodP.value.scaledValue
+                    && overtimePeriodsP.value == timeLimit.overtimePeriodsP.value
+                    ) {
+                return true
+            }
+        }
+        //println("Not found. Maintime of ${timeLimit.mainPeriodP.value.scaledValue}")
+        return false
     }
 
     fun createTimeLimitChoice(): ChoiceParameter<TimeLimit> {
@@ -79,6 +68,7 @@ class TimeLimitPreferences : AbstractTask() {
     fun updateTimeLimitChoice(choiceP: ChoiceParameter<TimeLimit>) {
         val noLimit = NoTimeLimit.instance
 
+        val oldValue = choiceP.value
         choiceP.addChoice(noLimit.key(), noLimit, noLimit.details())
 
         val multi = Preferences.timeLimitPreferences.timeLimitsP
@@ -91,12 +81,21 @@ class TimeLimitPreferences : AbstractTask() {
             val overtimePeriodsP = compound.find("overtimePeriods") as IntParameter
 
             val timeLimit = TimedLimit(
-                    mainPeriodP.scaledValue!!,
-                    byoYomiPeriodP.scaledValue!!, byoYomiMovesP.value!!,
-                    overtimePeriodP.scaledValue!!, overtimePeriodsP.value!!)
+                    descriptionP.value,
+                    mainPeriodP.value.value, mainPeriodP.value.scale,
+                    byoYomiPeriodP.value.value, byoYomiPeriodP.value.scale,
+                    byoYomiMovesP.value!!,
+                    overtimePeriodP.value.value, overtimePeriodP.value.scale,
+                    overtimePeriodsP.value!!)
 
             choiceP.addChoice(timeLimit.key(), timeLimit, descriptionP.value)
 
+        }
+        // The choices have been changed, so lets update the parameter's value. If an equivalent TimeLimit still exists, use that,
+        // otherwise default to NoTimeLimit
+        oldValue?.let { choiceP.stringValue = it.key() }
+        if (choiceP.value == null) {
+            choiceP.value = noLimit
         }
     }
 

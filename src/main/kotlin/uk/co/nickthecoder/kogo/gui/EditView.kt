@@ -14,7 +14,7 @@ class EditView(mainWindow : MainWindow, game: Game) : PlayingView( mainWindow, g
 
     val toEndB = Button(">|")
 
-    override fun build(): EditView {
+    override fun build() {
         super.build()
 
         backB.addEventHandler(ActionEvent.ACTION) { game.moveBack() }
@@ -24,8 +24,6 @@ class EditView(mainWindow : MainWindow, game: Game) : PlayingView( mainWindow, g
 
         toolBar.items.addAll(toStartB, backB, forwardB, toEndB)
         toolBar.items.removeAll(resignB)
-
-        return this
     }
 
 }

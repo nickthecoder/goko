@@ -11,7 +11,7 @@ class ProblemOpponent(val game: Game, override val color: StoneColor, val proble
 
     override val label = "Opponent"
 
-    override val timeRemaining = NoTimeLimit()
+    override var timeRemaining: TimeLimit = NoTimeLimit()
 
     override val rank = ""
 

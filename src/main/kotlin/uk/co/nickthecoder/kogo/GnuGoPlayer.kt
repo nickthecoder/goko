@@ -16,10 +16,10 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
     override val rank = ""
 
-    override val timeRemaining = NoTimeLimit()
+    override var timeRemaining: TimeLimit = NoTimeLimit.instance
 
-    val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size)
-    // TODO Add options --komi <n>, --chinese-rules, --japanese-rules
+    val rules = if (game.metaData.japaneseRules) "japanese" else "chinese"
+    val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size, "--komi", game.metaData.komi, "--$rules-rules")
 
     var writer: Writer? = null
 

@@ -22,7 +22,7 @@ class PreferencesView(mainWindow: MainWindow, val initialPage: Task? = null) : T
         tabs.side = Side.BOTTOM
     }
 
-    override fun build(): PreferencesView {
+    override fun build() {
 
         for (task in Preferences.preferenceTasksMap.values) {
             val view = object : PromptTaskView(task, mainWindow) {
@@ -38,8 +38,6 @@ class PreferencesView(mainWindow: MainWindow, val initialPage: Task? = null) : T
                 tabs.selectedTab = tab
             }
         }
-
-        return this
     }
 
     override fun hasView(view: View): Boolean {

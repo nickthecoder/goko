@@ -36,7 +36,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         game.gameListeners.add(this)
     }
 
-    override fun build(): View {
+    override fun build() {
         boardView.build()
         whole.top = toolBar
         whole.center = split
@@ -104,8 +104,6 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         labelContinuations()
         preferencesChanged()
         Preferences.listeners.add(this)
-
-        return this
     }
 
     fun clickToMove(point: Point) {

@@ -22,15 +22,19 @@ class ChallengeMatchTask(val mainWindow: MainWindow) : ChallengeMatchPreferences
         val game = Game(size = boardSizeP.value!!)
         val view = PlayingView(mainWindow, game)
 
+        game.metaData.handicap = handicapP.value!!
+        game.metaData.komi = if (game.metaData.handicap == 0) komiP.value!! else 0.0
+        game.metaData.japaneseRules = rulesP.value!!
+        game.metaData.timeLimit = timeLimitP.value!!
+
         val human = LocalPlayer(game, StoneColor.opposite(computerPlaysP.value!!), Preferences.yourName, Preferences.yourRank)
+        human.timeRemaining = game.metaData.timeLimit
 
         val gnuGo = GnuGoPlayer(game, computerPlaysP.value!!)
         gnuGo.start()
 
         game.addPlayer(gnuGo)
         game.addPlayer(human)
-
-        game.placeHandicap(handicapP.value!!)
 
         game.gameListeners.add(Preferences.challengeMatchPreferences)
         mainWindow.changeView(view)

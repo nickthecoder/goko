@@ -4,11 +4,10 @@ import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonArray
 import com.eclipsesource.json.JsonObject
 import com.eclipsesource.json.PrettyPrint
-import uk.co.nickthecoder.kogo.model.NoTimeLimit
-import uk.co.nickthecoder.kogo.model.TimeLimit
 import uk.co.nickthecoder.kogo.model.TimedLimit
 import uk.co.nickthecoder.paratask.Task
-import uk.co.nickthecoder.paratask.parameters.*
+import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
+import uk.co.nickthecoder.paratask.parameters.ValueParameter
 import uk.co.nickthecoder.paratask.util.child
 import uk.co.nickthecoder.paratask.util.homeDirectory
 import java.io.*
@@ -40,7 +39,6 @@ object Preferences {
     val editGameShowMoveNumber by editGamePreferences.showMoveNumbersP
 
 
-
     val preferencesFile = homeDirectory.child(".config", "kogo", "preferences.json")
 
     val problemResultsDirectory = homeDirectory.child(".config", "kogo", "problems")
@@ -56,14 +54,15 @@ object Preferences {
     }
 
     init {
+        // NOTE. Time limits must come before any preferences that use time limits (such as quickGamePreferences).
         addPreferenceTask(basicPreferences)
+        addPreferenceTask(timeLimitPreferences)
         addPreferenceTask(quickGamePreferences)
         addPreferenceTask(challengeMatchPreferences)
         addPreferenceTask(twoPlayerGamePreferences)
         addPreferenceTask(problemsPreferences)
         addPreferenceTask(josekiPreferences)
         addPreferenceTask(editGamePreferences)
-        addPreferenceTask(timeLimitPreferences)
 
         if (preferencesFile.exists()) {
             load()
@@ -97,6 +96,7 @@ object Preferences {
         for (jtask1 in jpreferences) {
             val jtask = jtask1.asObject()
             val taskName = jtask.getString("name", "")
+
             val task = preferenceTasksMap[taskName]
             if (task != null) {
                 val jparams = jtask.get("parameters").asArray()
@@ -111,7 +111,11 @@ object Preferences {
                     }
                 }
             }
+            if (taskName == "timeLimits") {
+                updateTimeLimits()
+            }
         }
+
     }
 
     fun save() {
@@ -135,8 +139,25 @@ object Preferences {
             listener.preferencesChanged()
         }
 
+        updateTimeLimits()
+    }
+
+    private fun updateTimeLimits() {
+
+        timeLimitPreferences.addTimeLimit(TimedLimit("30 minutes, plus 10 minutes byo-yomi per 25 moves", 30.0, 60.0, byoYomiPeriod = 10.0, byoYomiScale = 60.0, byoYomiMoves = 25))
+        timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, 3 overtimes", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0, overtimePeriod = 30.0, overtimePeriods = 3))
+        timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, no overtime", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0))
+
         timeLimitPreferences.updateTimeLimitChoice(quickGamePreferences.timeLimitP)
         timeLimitPreferences.updateTimeLimitChoice(challengeMatchPreferences.timeLimitP)
+        timeLimitPreferences.updateTimeLimitChoice(twoPlayerGamePreferences.timeLimitP)
+    }
+
+    fun createRulesChoice(): ChoiceParameter<Boolean> {
+        val choiceP = ChoiceParameter<Boolean>("rules", value = true)
+        choiceP.addChoice("japanese", true, "Japanese")
+        choiceP.addChoice("chinese", false, "Chinese")
+        return choiceP
     }
 
     private fun jsonTask(task: Task): JsonObject {

@@ -27,7 +27,7 @@ open class PromptTaskView(val task: Task, mainWindow: MainWindow) : TopLevelView
 
     val cancelButton = Button("Cancel")
 
-    override fun build(): PromptTaskView {
+    override fun build() {
         with(borderPane) {
             styleClass.add("prompt")
             center = taskForm.scrollPane
@@ -49,8 +49,6 @@ open class PromptTaskView(val task: Task, mainWindow: MainWindow) : TopLevelView
             children.addAll(okButton, cancelButton)
             styleClass.add("buttons")
         }
-
-        return this
     }
 
     private fun onCancel() {

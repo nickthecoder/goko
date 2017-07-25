@@ -10,7 +10,7 @@ interface Player {
 
     val rank: String
 
-    val timeRemaining: TimeLimit
+    var timeRemaining: TimeLimit
 
     val color: StoneColor
 

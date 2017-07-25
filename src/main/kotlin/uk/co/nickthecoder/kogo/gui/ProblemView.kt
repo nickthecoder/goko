@@ -52,7 +52,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         game.gameListeners.add(this)
     }
 
-    override fun build(): View {
+    override fun build() {
         boardView.build()
 
         with(rightPane) {
@@ -66,7 +66,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         with(split) {
             items.add(boardView.node)
             items.add(rightPane)
-            split.dividers[0].position = 0.7
+            dividers[0].position = 0.7
         }
         commentsView.build()
         problemResults.build()
@@ -81,8 +81,6 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         toolBar.items.addAll(preferencesB, restartB, giveUpB, editB, passB)
 
         game.root.apply(game)
-
-        return this
     }
 
     fun onPass() {

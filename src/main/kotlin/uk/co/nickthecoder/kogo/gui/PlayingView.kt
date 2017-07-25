@@ -31,25 +31,27 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
 
     protected val editB = Button("Edit Game")
 
-    protected val undoB = Button("Undo")
-
     override val node = whole
 
-    override fun build(): View {
+    val gameInfoView = GameInfoView(game)
+
+    override fun build() {
         boardView.build()
+        gameInfoView.build()
+
         whole.top = toolBar
         whole.center = split
 
-        split.items.add(boardView.node) // TODO Add a status area on the right
+        with(split) {
+            items.addAll(boardView.node, gameInfoView.node)
+            dividers[0].position = 0.7
+        }
 
         passB.addEventHandler(ActionEvent.ACTION) { onPass() }
         resignB.addEventHandler(ActionEvent.ACTION) { onResign() }
-        undoB.addEventHandler(ActionEvent.ACTION) { onUndo() }
         editB.addEventHandler(ActionEvent.ACTION) { onEditGame() }
 
         toolBar.items.addAll(passB, resignB, editB)
-
-        return this
     }
 
     fun onPass() {
@@ -62,10 +64,6 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
         if (game.playerToMove is LocalPlayer) {
             game.resign(game.playerToMove)
         }
-    }
-
-    fun onUndo() {
-        game.undo()
     }
 
     fun onEditGame() {
@@ -83,5 +81,8 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
     override fun tidyUp() {
         game.tidyUp()
         boardView.tidyUp()
+        gameInfoView.tidyUp()
     }
+
 }
+

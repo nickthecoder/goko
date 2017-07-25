@@ -17,7 +17,7 @@ class Game(size: Int) {
 
     var playerToMove: Player = LocalPlayer(this, StoneColor.BLACK)
 
-    var handicap = 0;
+    var handicap = 0
 
     var players = mutableMapOf<StoneColor, Player>()
 
@@ -37,7 +37,7 @@ class Game(size: Int) {
         addPlayer(LocalPlayer(this, StoneColor.WHITE))
     }
 
-    fun placeHandicap(n: Int) {
+    fun placeHandicap() {
         var start = 3
         var jump = 6
         if (board.size < 19) {
@@ -50,7 +50,7 @@ class Game(size: Int) {
             }
         }
 
-        for (i in 0..n - 1) {
+        for (i in 0..metaData.handicap - 1) {
             val h = handicaps[i]
             val point = Point(start + h.x * jump, start + h.y * jump)
             setupStone(point, StoneColor.BLACK)
@@ -65,7 +65,10 @@ class Game(size: Int) {
     }
 
     fun start() {
-        playerToMove = players.get(if (handicap == 0) StoneColor.BLACK else StoneColor.WHITE)!!
+        playerToMove = players[if (handicap == 0) StoneColor.BLACK else StoneColor.WHITE]!!
+        metaData.whitePlayer = players[StoneColor.WHITE]!!.label
+        metaData.blackPlayer = players[StoneColor.BLACK]!!.label
+        placeHandicap()
         playerToMove.yourTurn()
     }
 
@@ -210,12 +213,6 @@ class Game(size: Int) {
         }
         addNode(node)
         node.apply(this, byPlayer)
-    }
-
-    fun undo() {
-        // TODO move If it is a non-local player to move, ensure their move is ignored.
-        // (This may have already happened, or may happen soon!)
-        moveBack()
     }
 
     fun moveBack(n: Int = 1) {

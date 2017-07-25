@@ -4,6 +4,7 @@ import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
+import uk.co.nickthecoder.paratask.parameters.DoubleParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
 import uk.co.nickthecoder.paratask.parameters.StringParameter
 
@@ -22,10 +23,14 @@ open class TwoPlayerGamePreferences : AbstractTask(), GameListener {
 
     val handicapP = IntParameter("handicap", value = 0, range = 0..9)
 
+    val komiP = DoubleParameter("komi", value = 0.0, minValue = -100.0, maxValue = 100.0)
+
     val timeLimitP = Preferences.timeLimitPreferences.createTimeLimitChoice()
 
+    val rulesP = Preferences.createRulesChoice()
+
     init {
-        taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP, timeLimitP)
+        taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP, komiP, timeLimitP, rulesP)
     }
 
     override fun run() {

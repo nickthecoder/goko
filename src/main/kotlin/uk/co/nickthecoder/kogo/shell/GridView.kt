@@ -27,7 +27,7 @@ abstract class GridView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
 
     abstract val viewStyle: String
 
-    override fun build(): View {
+    override fun build() {
         with(vbox) {
             children.add(hbox)
             alignment = Pos.CENTER
@@ -41,7 +41,6 @@ abstract class GridView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
 
         addButtons()
         buildButtons()
-        return this
     }
 
     fun buildButtons() {
