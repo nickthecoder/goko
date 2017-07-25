@@ -1,14 +1,15 @@
 package uk.co.nickthecoder.kogo.gui
 
-import javafx.event.ActionEvent
-import javafx.scene.control.Button
 import javafx.scene.control.SplitPane
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
+import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
+import uk.co.nickthecoder.paratask.gui.ShortcutHelper
+import uk.co.nickthecoder.paratask.project.TaskPrompter
 
 open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
 
@@ -25,15 +26,15 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
 
     protected val boardView = BoardView(game)
 
-    protected val passB = Button("Pass")
-
-    protected val resignB = Button("Resign")
-
-    protected val editB = Button("Edit Game")
-
     override val node = whole
 
     val gameInfoView = GameInfoView(game)
+
+    val shortcuts = ShortcutHelper("PlayingView", node)
+
+    val passB = KoGoActions.PASS.createButton(shortcuts) { onPass() }
+
+    val resignB = KoGoActions.RESIGN.createButton(shortcuts) { onResign() }
 
     override fun build() {
         boardView.build()
@@ -47,11 +48,9 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
             dividers[0].position = 0.7
         }
 
-        passB.addEventHandler(ActionEvent.ACTION) { onPass() }
-        resignB.addEventHandler(ActionEvent.ACTION) { onResign() }
-        editB.addEventHandler(ActionEvent.ACTION) { onEditGame() }
-
-        toolBar.items.addAll(passB, resignB, editB)
+        val editB = KoGoActions.EDIT.createButton(shortcuts) { onEdit() }
+        val saveB = KoGoActions.SAVE.createButton(shortcuts) { onSave() }
+        toolBar.items.addAll(saveB, editB, resignB, passB)
     }
 
     fun onPass() {
@@ -66,10 +65,15 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
         }
     }
 
-    fun onEditGame() {
+    fun onEdit() {
         val copy = game.copy()
         val view = EditGameView(mainWindow, copy)
         mainWindow.addViewAfter(this, view)
+    }
+
+    fun onSave() {
+        val saveT = SaveGameTask(game)
+        TaskPrompter(saveT).placeOnStage(Stage())
     }
 
     override fun moved() {

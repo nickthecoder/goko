@@ -6,12 +6,14 @@ import javafx.scene.image.Image
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.paratask.ParaTaskApp
+import uk.co.nickthecoder.paratask.util.AutoExit
 import java.io.InputStream
 import java.net.URL
 
 class KoGo : Application() {
 
     override fun start(stage: Stage) {
+        AutoExit.disable()
         MainWindow(stage).show()
     }
 

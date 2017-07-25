@@ -63,7 +63,6 @@ class GameInfoView(val game: Game) : View, GameListener {
     }
 
     fun updateTimes() {
-        println("GIV. Updating times")
         bTime.text = game.players[StoneColor.BLACK]!!.timeRemaining.details()
         wTime.text = game.players[StoneColor.WHITE]!!.timeRemaining.details()
     }
@@ -134,7 +133,6 @@ class GameInfoView(val game: Game) : View, GameListener {
                 if (timeLeft < 0) {
                     timeLeft = 0.0
                 }
-                println("Period=$period startPeriodSeconds=$startPeriodSeconds timeLeft=$timeLeft ellapsedMillis=$ellapsedMillis")
                 if (period == 0) {
                     timedLimit.mainPeriod = timeLeft
                 } else if (period == 1) {
