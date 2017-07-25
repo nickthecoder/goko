@@ -151,6 +151,11 @@ class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposit
         }
         game.board.setStoneAt(point, color, byPlayer = byPlayer)
         takenStones = game.board.removeTakenStones(point, byPlayer)
+        if ( color == StoneColor.BLACK ) {
+            game.blackCaptures += takenStones.size
+        } else {
+            game.whiteCaptures += takenStones.size
+        }
     }
 
     override fun bodyTakeBack(game: Game) {
@@ -158,6 +163,11 @@ class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposit
         val removedColor = StoneColor.opposite(color)
         takenStones.forEach { point ->
             game.board.setStoneAt(point, removedColor, null)
+        }
+        if ( color == StoneColor.BLACK ) {
+            game.blackCaptures -= takenStones.size
+        } else {
+            game.whiteCaptures -= takenStones.size
         }
     }
 

@@ -5,14 +5,13 @@ Bugs
 
 What should happen when setup stones are added, and then later nodes are invalid moves?
 
-Time limits for games (Difference preferences for each type of game)
-	Have some standard times, and also "Custom"
-	Create a TimePrefence in paratask, allowing pick of hours, minute or seconds
-		ScaledDoublePreference, takes a set of scaling values for each type of units, shown as combobox
+Time limits for games
+
+Show captures on gameinfo view.
 
 Edit games
 	Add comments, node name
-	Edit meta-data
+	Edit meta-data (as a Task)
 	Delete branch (warn when deleting main line)
 	Show pass (and allow the pass branch to be deleted)
 	Node annoations (e.g. good for white)

@@ -32,6 +32,10 @@ class Game(size: Int) {
 
     var currentNode: GameNode = root
 
+    var whiteCaptures: Int = 0
+
+    var blackCaptures: Int = 0
+
     init {
         addPlayer(playerToMove)
         addPlayer(LocalPlayer(this, StoneColor.WHITE))
@@ -77,14 +81,19 @@ class Game(size: Int) {
     }
 
     fun resign(player: Player) {
-        gameFinished(otherPlayer(player), player.letter + "+R")
+        gameFinished(otherPlayer(player), player.letter + "+Resign")
+        countEndGame()
+    }
+
+    fun lostOnTime(player: Player) {
+        gameFinished(otherPlayer(player), player.letter + "+Time")
         countEndGame()
     }
 
     fun gameFinished(winner: Player?, matchResult: String = "") {
-        metaData.matchResult = matchResult
+        metaData.gameResult = matchResult
         gameListeners.forEach {
-            it.matchResult(this, winner)
+            it.gameEnded( winner)
         }
     }
 

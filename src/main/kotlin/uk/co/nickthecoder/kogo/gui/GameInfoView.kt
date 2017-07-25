@@ -22,6 +22,11 @@ class GameInfoView(val game: Game) : View, GameListener {
     val bTime = Label()
     val wTime = Label()
 
+    val blackCapturesLabel = Label()
+    val whiteCapturesLabel = Label()
+
+    val gameResultLabel = Label()
+
     init {
         game.gameListeners.add(this)
     }
@@ -45,14 +50,22 @@ class GameInfoView(val game: Game) : View, GameListener {
         val komi = if (game.metaData.komi == 0.0) "None" else game.metaData.komi.toString()
         val komiLabel = Label("Komi : $komi")
 
-        vBox.children.addAll(bPlayer, handicapLabel, bTime, wPlayer, komiLabel, wTime)
+        gameResultLabel.styleClass.add("game-result")
+        vBox.children.addAll(bPlayer, handicapLabel, blackCapturesLabel, bTime, wPlayer, komiLabel, whiteCapturesLabel, wTime, gameResultLabel)
+
         updateTimes()
+        updateCaptures()
+    }
+
+    fun updateCaptures() {
+        blackCapturesLabel.text = "Captured Stones : ${game.blackCaptures}"
+        whiteCapturesLabel.text = "Captured Stones : ${game.whiteCaptures}"
     }
 
     fun updateTimes() {
         println("GIV. Updating times")
-        bTime.text = game.players[StoneColor.BLACK]!!.timeRemaining.status()
-        wTime.text = game.players[StoneColor.WHITE]!!.timeRemaining.status()
+        bTime.text = game.players[StoneColor.BLACK]!!.timeRemaining.details()
+        wTime.text = game.players[StoneColor.WHITE]!!.timeRemaining.details()
     }
 
     override fun moved() {
@@ -65,6 +78,11 @@ class GameInfoView(val game: Game) : View, GameListener {
         }
     }
 
+    override fun gameEnded(winner: Player?) {
+        gameResultLabel.text = "Game Result : ${game.metaData.gameResult}"
+        stopCountdown()
+    }
+
     fun stopCountdown() {
         countdown?.finished = true
         countdown = null
@@ -72,11 +90,6 @@ class GameInfoView(val game: Game) : View, GameListener {
 
     override fun tidyUp() {
         super.tidyUp()
-        stopCountdown()
-    }
-
-    override fun matchResult(game: Game, winner: Player?) {
-        // Stop the countdown when the game has ended
         stopCountdown()
     }
 
@@ -132,8 +145,7 @@ class GameInfoView(val game: Game) : View, GameListener {
                 if (timeLeft == 0.0) {
                     beginPeriod()
                     if (period < 0) {
-                        println("Time limit exceeded")
-                        // TODO Game over
+                        game.lostOnTime(game.players[color]!!)
                         return
                     }
                 }
@@ -153,11 +165,12 @@ class GameInfoView(val game: Game) : View, GameListener {
                     timedLimit.byoYomiMoves = gameTimeLimit.byoYomiMoves
                 }
             } else if (period == 2) {
-                timedLimit.overtimePeriods = timedLimit.overtimePeriods!! -1
+                timedLimit.overtimePeriods = timedLimit.overtimePeriods!! - 1
             }
 
             finished = true
         }
+
     }
 }
 

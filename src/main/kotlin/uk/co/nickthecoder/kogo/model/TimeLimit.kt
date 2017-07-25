@@ -106,10 +106,10 @@ class TimedLimit(
 
     fun byoYomi(): String {
         if (byoYomiPeriod > 0) {
-            if (byoYomiMoves!! > 0) {
-                return "\nByo-Yomi : $byoYomiMoves in ${humanTimePeriod(byoYomiPeriod)}"
+            if (byoYomiMoves!! > 1) {
+                return "\nByo-Yomi : $byoYomiMoves moves in ${humanTimePeriod(byoYomiPeriod)}"
             } else {
-                return "\nByo-Yomi : ${humanTimePeriod(byoYomiPeriod)}${overtime()}"
+                return "\nByo-Yomi : ${humanTimePeriod(byoYomiPeriod)}"
             }
         } else {
             return ""

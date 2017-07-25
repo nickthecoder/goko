@@ -152,6 +152,11 @@
     -fx-spacing: 6px;
 }
 
+.game-result {
+    -fx-padding: 30px 0 0 0;
+    -fx-font-size: 120%;
+}
+
 .heading {
     -fx-font-size: 140%;
     -fx-padding: 12px 0 0 0;

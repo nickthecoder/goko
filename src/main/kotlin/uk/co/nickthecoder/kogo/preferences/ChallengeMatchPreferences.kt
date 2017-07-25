@@ -58,7 +58,7 @@ Each time you play, the the handicap will change based on your previous results.
         Preferences.save()
     }
 
-    override fun matchResult(game: Game, winner: Player?) {
+    override fun gameEnded(winner: Player?) {
         if (winner != null) {
             Platform.runLater {
                 updateStats(winner is LocalPlayer)
