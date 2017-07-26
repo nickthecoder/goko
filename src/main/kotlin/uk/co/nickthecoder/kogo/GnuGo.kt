@@ -6,8 +6,14 @@ import uk.co.nickthecoder.paratask.util.process.BufferedSink
 import uk.co.nickthecoder.paratask.util.process.Exec
 import java.io.OutputStreamWriter
 import java.io.Writer
+import java.util.*
 
 /**
+ * An interface to GnuGo's Process. One instance can be shared my multiple clients, for example, one client may be a
+ * GnuGoPlayer, and another is used to create hints or calculate the score at the end of the game.
+ *
+ * Uses the GTP protocal, running in a separate process. Therefore the results from a command are not returned immediatly,
+ * instead the results are passed back via GnuGoClient.
  */
 class GnuGo(val game: Game, level: Int) : GameListener {
 
@@ -17,9 +23,9 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
     var writer: Writer? = null
 
-    var listener: GnuGoListener? = null
-
     var generatedPoint: Point? = null
+
+    private val destinations = Collections.synchronizedList(ArrayList<GnuGoClient?>())
 
     fun start() {
         game.listeners.add(this)
@@ -35,53 +41,54 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         println("Started GnuGo")
     }
 
-    fun generateMove(color: StoneColor, listener: GnuGoListener) {
-        command("1 genmove ${color.toString().toLowerCase()}", listener)
+    fun generateMove(color: StoneColor, client: GnuGoClient) {
+        command("1 genmove ${color.toString().toLowerCase()}", client)
     }
 
+    /**
+     * Generate a move, but do not acturally play it. Used to generate Hints.
+     */
+    fun generateHint(color: StoneColor, client: GnuGoClient) {
+        command("4 reg_genmove ${color.toString().toLowerCase()}", client)
+    }
 
-    // TODO Make listener not nullable
-    private fun command(command: String, listener: GnuGoListener?) {
-        if (this.listener != null) {
-            throw IllegalStateException("Another command is still pending")
-        }
+    @Synchronized
+    private fun command(command: String, client: GnuGoClient?) {
+        destinations.add(client)
         generatedPoint = null
-        this.listener = listener
+        println("Sending command : '$command'")
         writer?.let {
-            println("Sending command '$command'")
             it.appendln(command)
             it.flush()
         }
     }
 
     private fun parseLine(line: String) {
-        if (line == "" || line == "= ") {
+
+        if (!line.startsWith("=")) {
             return
         }
-        println("Parsing reply '$line'")
+        val listener = destinations.removeAt(0)
 
-        if (line.startsWith("=1 ") && line.length >= 5) {
+        println("Parsing reply: '$line'")
+
+        if ((line.startsWith("=1 ") || line.startsWith("=4 ")) && line.length >= 5) {
             if (line.startsWith("=1 resign")) {
-                listener?.let {
-                    listener = null
-                    it.generatedResign()
-                }
+                listener?.generatedResign()
                 return
             }
             if (line.startsWith("=1 PASS")) {
-                listener?.let {
-                    listener = null
-                    it.generatedPass()
-                    return
-                }
+                listener?.generatedPass()
                 return
             }
-            generatedPoint = Point.fromString(line.substring(3))
-            listener?.let {
-                listener = null
-                it.generatedMove(generatedPoint!!)
-                return
+            val point = Point.fromString(line.substring(3))
+            if (line.startsWith("=1")) {
+                // Remember the point that was just generated, so that when stoneChanged is called, we don't
+                // attempt to add the stone again.
+                generatedPoint = point
             }
+            listener?.generatedMove(point)
+            return
 
         } else if (line.startsWith("=2 ")) {
             game.countedEndGame(line.substring(2).trim())
@@ -100,7 +107,6 @@ class GnuGo(val game: Game, level: Int) : GameListener {
                 }
             }
         }
-
     }
 
     fun markBoard(point: Point, status: String) {
@@ -114,6 +120,10 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         }
     }
 
+    fun addStone(color: StoneColor, point: Point) {
+        command("play ${color.toString().toLowerCase()} ${point}", null)
+    }
+
     override fun stoneChanged(point: Point) {
         // Ignore the stones that I generated
         if (point != generatedPoint) {
@@ -121,7 +131,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
             if (color == StoneColor.NONE) {
                 // TODO Remove the stone
             } else {
-                command("play ${color.toString().toLowerCase()} ${point}", null)
+                addStone(color, point)
             }
         }
     }
@@ -145,10 +155,10 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
 }
 
-interface GnuGoListener {
+interface GnuGoClient {
 
-    fun generatedMove(point: Point)
-    fun generatedPass()
-    fun generatedResign()
+    fun generatedMove(point: Point) {}
+    fun generatedPass() {}
+    fun generatedResign() {}
 }
 

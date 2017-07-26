@@ -1,6 +1,5 @@
 package uk.co.nickthecoder.kogo.model
 
-import uk.co.nickthecoder.kogo.Player
 import uk.co.nickthecoder.kogo.util.array2d
 
 class Board(val size: Int, val game: Game) {

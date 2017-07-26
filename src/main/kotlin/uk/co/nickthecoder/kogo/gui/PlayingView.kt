@@ -4,6 +4,7 @@ import javafx.scene.control.SplitPane
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
+import uk.co.nickthecoder.kogo.HintGenerator
 import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
@@ -33,8 +34,8 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
     val shortcuts = ShortcutHelper("PlayingView", node)
 
     val passB = KoGoActions.PASS.createButton(shortcuts) { onPass() }
-
     val resignB = KoGoActions.RESIGN.createButton(shortcuts) { onResign() }
+    val hintB = KoGoActions.HINT.createButton(shortcuts) { HintGenerator(game).hint() }
 
     override fun build() {
         boardView.build()
@@ -48,9 +49,9 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
             dividers[0].position = 0.7
         }
 
-        val editB = KoGoActions.EDIT.createButton(shortcuts) { onEdit() }
         val saveB = KoGoActions.SAVE.createButton(shortcuts) { onSave() }
-        toolBar.items.addAll(saveB, editB, resignB, passB)
+        val editB = KoGoActions.EDIT.createButton(shortcuts) { onEdit() }
+        toolBar.items.addAll(saveB, editB, hintB, resignB, passB)
     }
 
     fun onPass() {

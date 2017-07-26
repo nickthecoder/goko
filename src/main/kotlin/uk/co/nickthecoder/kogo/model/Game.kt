@@ -1,5 +1,6 @@
 package uk.co.nickthecoder.kogo.model
 
+import uk.co.nickthecoder.kogo.GnuGo
 import uk.co.nickthecoder.kogo.GnuGoPlayer
 import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.Player
@@ -36,9 +37,33 @@ class Game(size: Int) {
 
     var blackCaptures: Int = 0
 
+    private var gnuGo: GnuGo? = null
+
     init {
         addPlayer(playerToMove)
         addPlayer(LocalPlayer(this, StoneColor.WHITE))
+    }
+
+    fun createGnuGo(): GnuGo {
+        gnuGo?.let { return it }
+        players.values.forEach {
+            if (it is GnuGoPlayer) {
+                gnuGo = it.gnuGo
+                return it.gnuGo
+            }
+        }
+        val result = GnuGo(this, 10)
+        result.start()
+        for (y in 0..board.size - 1) {
+            for (x in 0..board.size - 1) {
+                val color = board.getStoneAt(x, y)
+                if (color.isStone()) {
+                    result.addStone(color, Point(x, y))
+                }
+            }
+        }
+        gnuGo = result
+        return result
     }
 
     fun placeHandicap() {

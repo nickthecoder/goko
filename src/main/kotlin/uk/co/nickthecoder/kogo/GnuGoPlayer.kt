@@ -2,15 +2,11 @@ package uk.co.nickthecoder.kogo
 
 import javafx.application.Platform
 import uk.co.nickthecoder.kogo.model.*
-import uk.co.nickthecoder.paratask.util.process.BufferedSink
-import uk.co.nickthecoder.paratask.util.process.Exec
-import java.io.OutputStreamWriter
-import java.io.Writer
 
 /**
  * Interfaces with the GnuGo AI using gtp mode
  */
-class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 10) : Player, GnuGoListener {
+class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 10) : Player, GnuGoClient {
 
     override val label = "Gnu Go level ${level}"
 

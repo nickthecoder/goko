@@ -15,6 +15,7 @@ object KoGoActions {
     val EDIT = KoGoAction("edit", null, label = "Edit", tooltip = "Edit Game")
     val SAVE = KoGoAction("save", KeyCode.S, control = true, label = "Save", tooltip = "Save Game")
     val RESIGN = KoGoAction("resign", null, label = "Resign", tooltip = "Resign Game")
+    val HINT = KoGoAction("hint", null, label = "Hint")
 
     // EditGameView
     val GO_FIRST = KoGoAction("go-first", KeyCode.HOME, control = true, tooltip = "Rewind to the beginning")

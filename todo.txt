@@ -37,6 +37,8 @@ JosekiView needs to use shortcuts and buttons.
 
 Images for each of the Home view's buttons
 
+Consider using CopyOnWrite for listeners
+
 Review games after playing them
 	Get hints from GnuGo
 		Perhaps there should always be a spare GNUGo instance, for hints and game scoring

@@ -1,7 +1,5 @@
 package uk.co.nickthecoder.kogo.model
 
-import uk.co.nickthecoder.kogo.Player
-
 abstract class GameNode(var colorToPlay: StoneColor) {
 
     var moveNumber: Int = 0
@@ -166,7 +164,7 @@ class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposit
         game.board.removeStoneAt(point)
         val removedColor = StoneColor.opposite(color)
         takenStones.forEach { point ->
-            game.board.setStoneAt(point, removedColorN)
+            game.board.setStoneAt(point, removedColor)
         }
         if (color == StoneColor.BLACK) {
             game.blackCaptures -= takenStones.size
