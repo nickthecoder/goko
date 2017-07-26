@@ -1,18 +1,18 @@
 package uk.co.nickthecoder.kogo.gui
 
-import javafx.scene.control.Label
-import javafx.scene.control.TextArea
-import javafx.scene.control.TextField
+import javafx.event.ActionEvent
+import javafx.scene.control.*
+import javafx.scene.image.ImageView
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.VBox
-import uk.co.nickthecoder.kogo.model.Game
-import uk.co.nickthecoder.kogo.model.GameListener
+import uk.co.nickthecoder.kogo.KoGo
+import uk.co.nickthecoder.kogo.model.*
 
 // TODO Currently this is only used by ProblemView, but later make it more generic, usable when editing and reviewing games.
 // This means that that fields should be editable.
 // OR, create another version of this class which IS editable.
 
-class CommentsView(val game: Game) : View, GameListener {
+class CommentsView(val game: Game, val readOnly: Boolean) : View, GameListener {
 
     val whole = VBox()
 
@@ -22,21 +22,153 @@ class CommentsView(val game: Game) : View, GameListener {
 
     val commentC = TextArea()
 
-    val statusesPane = FlowPane()
+    val passedLabel = Label("Passed")
+
+    val moveAnotationsPane = FlowPane()
+
+    val nodeAnotationsPane = FlowPane()
+
+    val moveAnotationButtons = mutableMapOf<MoveAnotation, ToggleButton>()
+
+    val nodeAnotationButtons = mutableMapOf<NodeAnotation, Button>()
 
     override fun build() {
+
+        // Move anotations (good, doubtful, bad, interesting)
+        moveAnotationsPane.styleClass.add("anotations")
+        val moveToggleGroup = ToggleGroup()
+        for (anotation in MoveAnotation.values()) {
+            val name = anotation.toString().toLowerCase()
+            val img = KoGo.imageResource("buttons/move-${name}.png")
+            val button = ToggleButton("", ImageView(img))
+            button.tooltip = Tooltip(name.capitalize())
+            moveAnotationButtons.put(anotation, button)
+            if (readOnly) {
+                button.isDisable = true
+            } else {
+                moveAnotationsPane.children.add(button)
+                button.addEventHandler(ActionEvent.ACTION) {
+                    game.currentNode.moveAnotation = if (button.isSelected) anotation else null
+                }
+            }
+            moveToggleGroup.toggles.add(button)
+        }
+
+        // Node anotations (Even, good for B/W, Hotspot, Unclear)
+        nodeAnotationsPane.styleClass.add("anotations")
+        for (anotation in NodeAnotation.values()) {
+            val name = anotation.toString().toLowerCase().replace('_', '-')
+            val img = KoGo.imageResource("buttons/node-${name}.png")
+            val button = Button("", ImageView(img))
+            button.tooltip = Tooltip(name.capitalize().replace("-", " "))
+            nodeAnotationButtons.put(anotation, button)
+            if (readOnly) {
+                button.isDisable = true
+            } else {
+                nodeAnotationsPane.children.add(button)
+                button.addEventHandler(ActionEvent.ACTION) {
+                    changeNodeAnotation(anotation)
+                }
+            }
+        }
+
+        // TODO Do a similar thing for NodeAnotations
+
         whole.styleClass.add("comments")
 
-        nameC.isEditable = false
+        if (readOnly) {
+            nameC.isEditable = false
+            commentC.isEditable = false
+        } else {
+            nameC.textProperty().addListener({ _, _, value -> game.currentNode.name = value })
+            commentC.textProperty().addListener({ _, _, value -> game.currentNode.comment = value })
+        }
+
         with(commentC) {
-            isEditable = false
             isWrapText = true
             prefRowCount = 20
         }
-        whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, statusesPane)
+
+        with(passedLabel) {
+            isVisible = false
+            styleClass.add("passed")
+        }
+
+        whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, passedLabel, nodeAnotationsPane, moveAnotationsPane)
 
         update()
         game.gameListeners.add(this)
+    }
+
+    fun changeNodeAnotation(anotation: NodeAnotation) {
+        val node = game.currentNode
+        if (node.nodeAnotation != anotation) {
+            node.nodeAnotation = anotation
+            node.nodeAnotationVery = false
+        } else {
+            if (!node.nodeAnotationVery) {
+                node.nodeAnotationVery = true
+            } else {
+                node.nodeAnotation = null
+                node.nodeAnotationVery = false
+            }
+        }
+        updateNodeAnotations()
+    }
+
+    fun updateNodeAnotations() {
+        val node = game.currentNode
+        val anotation = node.nodeAnotation
+        val very = node.nodeAnotationVery
+        if (readOnly) {
+            nodeAnotationsPane.children.clear()
+            if (anotation != null) {
+                val button = nodeAnotationButtons[anotation]!!
+                nodeAnotationsPane.children.add(button)
+                if (very) {
+                    button.styleClass.remove("very")
+                    button.styleClass.add("very")
+                } else {
+                    button.styleClass.remove("very")
+                }
+            }
+        } else {
+            nodeAnotationButtons.forEach { an, button ->
+                if (an == anotation) {
+                    button.styleClass.remove("selected")
+                    button.styleClass.add("selected")
+                    if (very) {
+                        button.styleClass.remove("very")
+                        button.styleClass.add("very")
+                    } else {
+                        button.styleClass.remove("very")
+                    }
+                } else {
+                    button.styleClass.removeAll("very", "selected")
+                }
+            }
+        }
+    }
+
+    fun updateMoveAnotations() {
+        val node = game.currentNode
+        if (node is SetupNode) {
+            moveAnotationsPane.isVisible = false
+        } else {
+            moveAnotationsPane.isVisible = true
+
+            if (readOnly) {
+                moveAnotationsPane.children.clear()
+                node.moveAnotation?.let {
+                    moveAnotationsPane.children.add(moveAnotationButtons[it])
+                }
+            } else {
+                for (an in MoveAnotation.values()) {
+                    val button = moveAnotationButtons[an]!!
+                    button.isSelected = node.moveAnotation == an
+                }
+            }
+        }
     }
 
     fun update() {
@@ -44,12 +176,10 @@ class CommentsView(val game: Game) : View, GameListener {
             nameC.text = name
             commentC.text = comment
 
-            // Icons for "Good for Black/White", "Even", "Hotspot" etc.
-            statuses.clear()
-            for (status in statuses) {
-                // TODO Add icons to statusesPane
-            }
+            passedLabel.isVisible = game.currentNode is PassNode
         }
+        updateMoveAnotations()
+        updateNodeAnotations()
     }
 
     override fun moved() {

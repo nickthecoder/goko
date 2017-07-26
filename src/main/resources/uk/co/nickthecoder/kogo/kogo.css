@@ -152,15 +152,70 @@
     -fx-spacing: 6px;
 }
 
+.heading {
+    -fx-font-size: 140%;
+    -fx-padding: 12px 0 0 0;
+}
+
 .game-result {
     -fx-padding: 30px 0 0 0;
     -fx-font-size: 120%;
 }
 
-.heading {
-    -fx-font-size: 140%;
-    -fx-padding: 12px 0 0 0;
+.passed {
+    -fx-font-size: 120%;
 }
+
+.anotations {
+    -fx-alignment: center;
+    -fx-padding: 6px 0 6px 0;
+}
+
+.anotations > .toggle-button {
+    -fx-opacity: 0.3;
+}
+.anotations > .toggle-button:selected {
+    -fx-opacity: 1.0;
+}
+
+/* Three state : .button, .button.selected and .button.selected.very */
+.anotations > .button {
+    -fx-opacity: 0.3;
+}
+.anotations > .button.selected {
+    -fx-opacity: 0.7;
+}
+.anotations > .button.very {
+    -fx-opacity: 1.0;
+}
+
+/* When .selected or .selected.very, make it look like a depressed toggle button (adaptedfrom moderna.css) */
+.anotations > .button.selected {
+    -fx-background-color:
+        -fx-shadow-highlight-color,
+        linear-gradient(to bottom, derive(-fx-outer-border, -20%), -fx-outer-border),
+        linear-gradient(to bottom,
+            derive(-fx-color, -22%) 0%,
+            derive(-fx-color, -13%) 20%,
+            derive(-fx-color, -11%) 50%);
+    -fx-background-insets: 0 0 -1 0, 0, 1;
+}
+.anotations > .button.selected:focused {
+    -fx-background-color:
+        -fx-focus-color,
+        linear-gradient(to bottom,
+            derive(-fx-color, -22%) 0%,
+            derive(-fx-color, -13%) 20%,
+            derive(-fx-color, -11%) 50%),
+        -fx-faint-focus-color,
+        linear-gradient(to bottom,
+            derive(-fx-color, -22%) 0%,
+            derive(-fx-color, -13%) 20%,
+            derive(-fx-color, -11%) 50%);
+    -fx-background-insets: -0.2, 1, -1.4, 2.6;
+    -fx-background-radius: 3, 2, 4, 0;
+}
+
 
 /***********************************************************************************
 

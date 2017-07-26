@@ -28,7 +28,7 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
 
     private val boardView = BoardView(game)
 
-    private val commentsView = CommentsView(game)
+    private val commentsView = CommentsView(game, true)
 
     override val node = whole
 

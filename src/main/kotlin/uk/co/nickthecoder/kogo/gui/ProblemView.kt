@@ -33,7 +33,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
 
     private val boardView = BoardView(game)
 
-    private val commentsView = CommentsView(game)
+    private val commentsView = CommentsView(game, true)
 
     private val problemResults = ProblemResults()
 

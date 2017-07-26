@@ -14,8 +14,8 @@ Those partially supported are mark using (p)
 
 Move Properties   B, KO (x), MN (x), W
 Setup Properties 	AB, AE, AW, PL
-Node Annotation Properties 	C, DM (x), GB (x), GW (x), HO (x), N (x), UC (x), V (x)
-Move Annotation Properties 	BM (x), DO (x), IT (x), TE (x)
+Node Annotation Properties 	C, DM (p), GB (p), GW (p), HO (p), N, UC (p), V (x) (Ignored the "1" or "2" for NodeAnotations
+Move Annotation Properties 	BM, DO, IT, TE
 Markup Properties 	AR (x), CR, DD (x), LB, LN (x), MA, SL (x), SQ, TR
 Root Properties 	AP (x), CA (x), FF (x), GM (x), ST (x), SZ
 Game Info Properties 	AN (x), BR (x), BT (x), CP (x), DT (x), EV (x), GN (x), GC (x), ON (x), OT (x), PB (x), PC (x), PW (x), RE (x), RO (x), RU (x), SO (x), TM (x), US (x), WR (x), WT (x)
@@ -152,22 +152,24 @@ class SGFReader {
             currentNode.name = it
         }
 
-        if (sgfNode.hasProperty("GW")) {
-            currentNode.statuses.add(NodeStatus.GOOD_FOR_WHITE)
-        }
-        if (sgfNode.hasProperty("GB")) {
-            currentNode.statuses.add(NodeStatus.GOOD_FOR_BLACK)
-        }
-        if (sgfNode.hasProperty("DM")) {
-            currentNode.statuses.add(NodeStatus.EVEN)
-        }
-        if (sgfNode.hasProperty("HO")) {
-            currentNode.statuses.add(NodeStatus.HOT_SPOT)
-        }
-        if (sgfNode.hasProperty("UC")) {
-            currentNode.statuses.add(NodeStatus.UNCLEAR)
-        }
+        nodeAnotation(sgfNode, currentNode, NodeAnotation.GOOD_FOR_BLACK, "GB")
+        nodeAnotation(sgfNode, currentNode, NodeAnotation.GOOD_FOR_WHITE, "GW")
+        nodeAnotation(sgfNode, currentNode, NodeAnotation.EVEN, "DM")
+        nodeAnotation(sgfNode, currentNode, NodeAnotation.HOTSPOT, "HO")
+        nodeAnotation(sgfNode, currentNode, NodeAnotation.UNCLEAR, "UC")
 
+        if (sgfNode.hasProperty("BM")) {
+            currentNode.moveAnotation = MoveAnotation.BAD
+        }
+        if (sgfNode.hasProperty("DO")) {
+            currentNode.moveAnotation = MoveAnotation.DOUBTFUL
+        }
+        if (sgfNode.hasProperty("IT")) {
+            currentNode.moveAnotation = MoveAnotation.INTERESTING
+        }
+        if (sgfNode.hasProperty("TE")) {
+            currentNode.moveAnotation = MoveAnotation.TESUJI
+        }
 
         val labels = sgfNode.getPropertyValues("LB")
         labels?.forEach { str ->
@@ -212,6 +214,17 @@ class SGFReader {
         // TODO "DD" to dim out the point
         // TODO "LN" for lines
         // TODO Update other node data.
+    }
+
+    private fun nodeAnotation(sgfNode: SGFNode, node: GameNode, anotation: NodeAnotation, property: String) {
+        if (sgfNode.hasProperty(property)) {
+            node.nodeAnotation = anotation
+            if (sgfNode.getPropertyValue(property) == "2") {
+                node.nodeAnotationVery = true
+            } else {
+                node.nodeAnotationVery = false
+            }
+        }
     }
 
     private fun addChildren(game: Game, sgfParent: SGFNode) {

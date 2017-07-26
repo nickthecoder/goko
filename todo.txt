@@ -10,12 +10,10 @@ Time limits for games
 Show captures on gameinfo view.
 
 Edit games
-	Add comments, node name
 	Edit meta-data (as a Task)
 	Delete branch (warn when deleting main line)
 	Show pass (and allow the pass branch to be deleted)
 	Node annoations (e.g. good for white)
-	Save button
 	Edit button from JosekiView (navigate to the same node in the copy)
 		Create a "NodeNavigation" class?
 		Or just use the original's node tree
@@ -77,4 +75,7 @@ Hidden Stone Go (via client server)
 
 One Color Go
 
+New Geometry
+	Voids where no stones can be placed, and do NOT count as liberties.
+	Neutral points, where no stones can be placed, but DO count as liberties.
 

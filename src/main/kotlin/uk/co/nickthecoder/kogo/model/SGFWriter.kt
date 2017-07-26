@@ -19,8 +19,8 @@ Those partially supported are mark using (p)
 
 Move Properties 	B, KO (x), MN (x), W
 Setup Properties 	AB, AE, AW, PL
-Node Annotation Properties 	C, DM (x), GB (x), GW (x), HO (x), N, UC (x), V (x)
-Move Annotation Properties 	BM (x), DO (x), IT (x), TE (x)
+Node Annotation Properties 	C, DM, GB, GW, HO, N, UC, V (x)
+Move Annotation Properties 	BM, DO, IT, TE
 Markup Properties 	AR (x), CR, DD (x), LB, LN (x), MA, SL (x), SQ, TR
 Root Properties 	AP (x),b CA, FF, GM, ST (x), SZ
 Game Info Properties 	AN(x), BR(x), BT(x), CP(x), DT(x), EV(x), GN(x), GC(x), ON(x), OT, PB, PC(x), PW, RE, RO(x), RU(x), SO(x), TM, US(x), WR(x), WT(x)
@@ -165,6 +165,29 @@ class SGFWriter {
         if (node.comment.isNotBlank()) {
             writeProperty("C", node.comment)
         }
+
+        val anotationProperty = when (node.nodeAnotation) {
+            null -> null
+            NodeAnotation.GOOD_FOR_WHITE -> "GW"
+            NodeAnotation.GOOD_FOR_BLACK -> "GB"
+            NodeAnotation.HOTSPOT -> "HO"
+            NodeAnotation.EVEN -> "DM"
+            NodeAnotation.UNCLEAR -> "UN"
+        }
+        if (anotationProperty != null) {
+            writeProperty(anotationProperty, if (node.nodeAnotationVery) "2" else "1")
+        }
+
+        val moveAnotationProperty = when (node.moveAnotation) {
+            null -> null
+            MoveAnotation.TESUJI -> "TE"
+            MoveAnotation.INTERESTING -> "IT"
+            MoveAnotation.DOUBTFUL -> "DO"
+            MoveAnotation.BAD -> "BM"
+        }
+        if (moveAnotationProperty != null) {
+            writeProperty(moveAnotationProperty)
+        }
     }
 
     private fun fromPoint(point: Point): String {
@@ -172,6 +195,10 @@ class SGFWriter {
         val y = 'a' + (game.board.size - 1 - point.y)
 
         return "$x$y"
+    }
+
+    private fun writeProperty(name: String) {
+        writeProperty(name, "")
     }
 
     private fun writeProperty(name: String, value: StoneColor) {

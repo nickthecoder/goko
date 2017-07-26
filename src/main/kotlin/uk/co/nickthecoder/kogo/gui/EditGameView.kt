@@ -3,12 +3,14 @@ package uk.co.nickthecoder.kogo.gui
 import javafx.scene.control.SplitPane
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
+import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.PreferencesListener
 import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.CompoundButtons
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
+import uk.co.nickthecoder.paratask.project.TaskPrompter
 
 class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener, PreferencesListener {
 
@@ -25,6 +27,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
 
     private val boardView = BoardView(game)
 
+    private val commentView = CommentsView(game, false)
 
     override val node = whole
 
@@ -38,11 +41,16 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
 
     override fun build() {
         boardView.build()
+        commentView.build()
         whole.top = toolBar
         whole.center = split
 
-        split.items.add(boardView.node)
+        with(split) {
+            items.addAll(boardView.node, commentView.node)
+            dividers[0].position = 0.7
+        }
 
+        val saveB = KoGoActions.SAVE.createButton(shortcuts) { onSave() }
         val preferencesB = KoGoActions.PREFERENCES.createButton(shortcuts) { mainWindow.addView(PreferencesView(mainWindow, Preferences.editGamePreferences)) }
         val restartB = KoGoActions.GO_FIRST.createButton(shortcuts) { game.rewindTo(game.root) }
         val backB = KoGoActions.GO_BACK.createButton(shortcuts) { game.moveBack() }
@@ -99,7 +107,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         modes.children.addAll(moveModeB, blackModeB, whiteModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
         modes.createToggleGroup()
 
-        toolBar.items.addAll(preferencesB, modes, navigation, mainLineB, passB)
+        toolBar.items.addAll(saveB, preferencesB, modes, navigation, mainLineB, passB)
 
         labelContinuations()
         preferencesChanged()
@@ -155,6 +163,11 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         while (game.currentNode.children.isNotEmpty()) {
             game.currentNode.children[0].apply(game, null)
         }
+    }
+
+    fun onSave() {
+        val saveT = SaveGameTask(game)
+        TaskPrompter(saveT).placeOnStage(Stage())
     }
 
     fun labelContinuations() {

@@ -22,7 +22,11 @@ abstract class GameNode(var colorToPlay: StoneColor) {
 
     var name: String = ""
 
-    var statuses = mutableSetOf<NodeStatus>()
+    var moveAnotation: MoveAnotation? = null
+
+    var nodeAnotation: NodeAnotation? = null
+
+    var nodeAnotationVery: Boolean = false
 
     fun addMark(mark: Mark) {
         removeMark(mark.point)
@@ -151,7 +155,7 @@ class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposit
         }
         game.board.setStoneAt(point, color, byPlayer = byPlayer)
         takenStones = game.board.removeTakenStones(point, byPlayer)
-        if ( color == StoneColor.BLACK ) {
+        if (color == StoneColor.BLACK) {
             game.blackCaptures += takenStones.size
         } else {
             game.whiteCaptures += takenStones.size
@@ -164,7 +168,7 @@ class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposit
         takenStones.forEach { point ->
             game.board.setStoneAt(point, removedColor, null)
         }
-        if ( color == StoneColor.BLACK ) {
+        if (color == StoneColor.BLACK) {
             game.blackCaptures -= takenStones.size
         } else {
             game.whiteCaptures -= takenStones.size
