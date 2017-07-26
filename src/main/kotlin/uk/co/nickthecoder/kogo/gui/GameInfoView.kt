@@ -27,6 +27,8 @@ class GameInfoView(val game: Game) : View, GameListener {
 
     val gameResultLabel = Label()
 
+    val messageLabel = Label()
+
     init {
         game.listeners.add(this)
     }
@@ -34,7 +36,7 @@ class GameInfoView(val game: Game) : View, GameListener {
     override fun build() {
 
         gameResultLabel.isWrapText = true
-        
+
         with(vBox) {
             styleClass.add("game-info")
         }
@@ -53,7 +55,10 @@ class GameInfoView(val game: Game) : View, GameListener {
         val komiLabel = Label("Komi : $komi")
 
         gameResultLabel.styleClass.add("game-result")
-        vBox.children.addAll(bPlayer, handicapLabel, blackCapturesLabel, bTime, wPlayer, komiLabel, whiteCapturesLabel, wTime, gameResultLabel)
+
+        messageLabel.isWrapText = true
+
+        vBox.children.addAll(bPlayer, handicapLabel, blackCapturesLabel, bTime, wPlayer, komiLabel, whiteCapturesLabel, wTime, gameResultLabel, messageLabel)
 
         updateTimes()
         updateCaptures()
@@ -78,6 +83,7 @@ class GameInfoView(val game: Game) : View, GameListener {
             countdown?.start()
         }
         gameResultLabel.text = ""
+        messageLabel.text = ""
     }
 
     override fun gameEnded(winner: Player?) {

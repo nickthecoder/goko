@@ -31,6 +31,8 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
 
     val nodeAnotationButtons = mutableMapOf<NodeAnotation, Button>()
 
+    val messageLabel = Label()
+
     override fun build() {
 
         // Move anotations (good, doubtful, bad, interesting)
@@ -71,8 +73,6 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
             }
         }
 
-        // TODO Do a similar thing for NodeAnotations
-
         whole.styleClass.add("comments")
 
         if (readOnly) {
@@ -93,7 +93,9 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
             styleClass.add("passed")
         }
 
-        whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, passedLabel, nodeAnotationsPane, moveAnotationsPane)
+        messageLabel.isWrapText = true
+
+        whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, passedLabel, nodeAnotationsPane, moveAnotationsPane, messageLabel)
 
         update()
         game.listeners.add(this)
@@ -190,6 +192,7 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
 
     override fun moved() {
         update()
+        messageLabel.text = ""
     }
 
     override fun updatedCurrentNode() {

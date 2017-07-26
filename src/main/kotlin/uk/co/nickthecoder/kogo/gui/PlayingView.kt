@@ -51,7 +51,7 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
 
     fun onEstimateScore() {
         ScoreEstimator(game).estimate() {
-            gameInfoView.gameResultLabel.text = it
+            gameInfoView.messageLabel.text = it
         }
     }
 }

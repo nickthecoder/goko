@@ -1,6 +1,7 @@
 package uk.co.nickthecoder.kogo.gui
 
 import javafx.scene.control.SplitPane
+import uk.co.nickthecoder.kogo.ScoreEstimator
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.PreferencesListener
@@ -80,7 +81,9 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         modes.children.addAll(moveModeB, blackModeB, whiteModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
         modes.createToggleGroup()
 
-        toolBar.items.addAll(saveB, preferencesB, modes, navigation, mainLineB, passB)
+        val estimateScoreB = KoGoActions.ESTIMATE_SCORE.createButton { onEstimateScore() }
+
+        toolBar.items.addAll(saveB, preferencesB, modes, navigation, mainLineB, estimateScoreB, passB)
 
         labelContinuations()
         preferencesChanged()
@@ -148,6 +151,12 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             }
             game.addMark(mark)
             index++
+        }
+    }
+
+    fun onEstimateScore() {
+        ScoreEstimator(game).estimate() {
+            commentView.messageLabel.text = it
         }
     }
 
