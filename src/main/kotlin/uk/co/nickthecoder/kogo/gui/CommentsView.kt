@@ -96,14 +96,14 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
         whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, passedLabel, nodeAnotationsPane, moveAnotationsPane)
 
         update()
-        game.gameListeners.add(this)
+        game.listeners.add(this)
         Preferences.listeners.add(this)
     }
 
     override fun tidyUp() {
         Preferences.listeners.remove(this)
     }
-    
+
     fun changeNodeAnotation(anotation: NodeAnotation) {
         val node = game.currentNode
         if (node.nodeAnotation != anotation) {

@@ -40,7 +40,7 @@ class ClickBoardView(val boardView: BoardView) : GameListener {
         stack.addEventHandler(MouseEvent.MOUSE_CLICKED) { onMouseClicked(it) }
         stack.addEventHandler(MouseEvent.MOUSE_EXITED) { onMouseExited() }
 
-        game.gameListeners.add(this)
+        game.listeners.add(this)
 
     }
 

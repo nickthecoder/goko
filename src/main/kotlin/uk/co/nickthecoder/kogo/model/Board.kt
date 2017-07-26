@@ -38,7 +38,7 @@ class Board(val size: Int, val game: Game) {
         if (contains(point)) {
             points[point.x][point.y] = color
             if (!isCopy) {
-                game.gameListeners.forEach { listener ->
+                game.listeners.forEach { listener ->
                     listener.stoneChanged(point, byPlayer)
                 }
             }
@@ -51,7 +51,7 @@ class Board(val size: Int, val game: Game) {
     fun removeStoneAt(point: Point, byPlayer: Player? = null) {
         points[point.x][point.y] = StoneColor.NONE
         if (!isCopy) {
-            game.gameListeners.forEach { listener ->
+            game.listeners.forEach { listener ->
                 listener.stoneChanged(point, byPlayer)
             }
         }

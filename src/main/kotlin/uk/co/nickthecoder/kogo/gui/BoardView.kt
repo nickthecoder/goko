@@ -108,7 +108,7 @@ class BoardView(val game: Game) : View {
         private val wood = Region()
 
         init {
-            board.game.gameListeners.add(this)
+            board.game.listeners.add(this)
 
             specialMarks.add(mouseMark)
             specialMarks.add(latestMark)

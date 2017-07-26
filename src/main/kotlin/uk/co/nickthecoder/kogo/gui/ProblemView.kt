@@ -49,7 +49,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
     init {
         game.addPlayer(firstPlayer)
         game.addPlayer(secondPlayer)
-        game.gameListeners.add(this)
+        game.listeners.add(this)
     }
 
     override fun build() {

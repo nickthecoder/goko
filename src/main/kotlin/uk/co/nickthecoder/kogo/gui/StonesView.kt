@@ -36,7 +36,7 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
     val array = array2d<ImageView?>(game.board.size, game.board.size) { null }
 
     init {
-        game.gameListeners.add(this)
+        game.listeners.add(this)
     }
 
     fun add(point: Point, image: Image?) {

@@ -28,7 +28,7 @@ class GameInfoView(val game: Game) : View, GameListener {
     val gameResultLabel = Label()
 
     init {
-        game.gameListeners.add(this)
+        game.listeners.add(this)
     }
 
     override fun build() {

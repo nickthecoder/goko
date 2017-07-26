@@ -21,7 +21,7 @@ class Game(size: Int) {
 
     var players = mutableMapOf<StoneColor, Player>()
 
-    val gameListeners = mutableListOf<GameListener>()
+    val listeners = mutableListOf<GameListener>()
 
     val handicaps = listOf(
             Point(0, 0), Point(2, 2), Point(2, 0), Point(0, 2),
@@ -92,7 +92,7 @@ class Game(size: Int) {
 
     fun gameFinished(winner: Player?, matchResult: String = "") {
         metaData.gameResult = matchResult
-        gameListeners.forEach {
+        listeners.forEach {
             it.gameEnded( winner)
         }
     }
@@ -153,7 +153,7 @@ class Game(size: Int) {
     internal fun moved() {
         val node = currentNode
         playerToMove = players.get(node.colorToPlay)!!
-        gameListeners.forEach {
+        listeners.forEach {
             it.moved()
         }
         if (autoPlay) {
@@ -180,7 +180,7 @@ class Game(size: Int) {
     fun addMark(mark: Mark) {
         removeMark(mark.point)
         currentNode.addMark(mark)
-        for (listener in gameListeners) {
+        for (listener in listeners) {
             listener.addedMark(mark)
         }
     }
@@ -188,14 +188,14 @@ class Game(size: Int) {
     fun removeMark(point: Point) {
         val mark = currentNode.removeMark(point)
         if (mark != null) {
-            for (listener in gameListeners) {
+            for (listener in listeners) {
                 listener.removedMark(mark)
             }
         }
     }
 
     fun updatedCurrentNode() {
-        for (listener in gameListeners) {
+        for (listener in listeners) {
             listener.updatedCurrentNode()
         }
     }

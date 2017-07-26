@@ -37,7 +37,7 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
 
 
     init {
-        game.gameListeners.add(this)
+        game.listeners.add(this)
     }
 
     override fun build() {

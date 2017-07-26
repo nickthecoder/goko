@@ -36,7 +36,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
     val shortcuts = ShortcutHelper("EditGameView", node)
 
     init {
-        game.gameListeners.add(this)
+        game.listeners.add(this)
     }
 
     override fun build() {

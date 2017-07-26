@@ -9,7 +9,7 @@ class History(val game: Game) : GameListener {
     private val history = mutableListOf<GameNode>()
 
     init {
-        game.gameListeners.add(this)
+        game.listeners.add(this)
     }
 
     fun forward(n: Int = 1) {

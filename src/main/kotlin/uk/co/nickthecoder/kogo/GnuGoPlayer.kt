@@ -24,7 +24,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     var writer: Writer? = null
 
     fun start() {
-        game.gameListeners.add(this)
+        game.listeners.add(this)
         exec.outSink = object : BufferedSink() {
             override fun sink(line: String) {
                 parseLine(line)
@@ -127,7 +127,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     }
 
     override fun tidyUp() {
-        game.gameListeners.remove(this)
+        game.listeners.remove(this)
         exec.kill()
     }
 
