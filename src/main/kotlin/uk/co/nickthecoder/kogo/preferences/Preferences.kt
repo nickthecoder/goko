@@ -11,6 +11,8 @@ import uk.co.nickthecoder.paratask.parameters.ValueParameter
 import uk.co.nickthecoder.paratask.util.child
 import uk.co.nickthecoder.paratask.util.homeDirectory
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 object Preferences {
 
@@ -68,6 +70,15 @@ object Preferences {
             load()
         }
 
+    }
+
+    /**
+     * Creates a file path for a sgf file, based on the type of game and the current date and time.
+     */
+    fun gameFile(gameType: String): File {
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm")
+        val name = "$gameType ${format.format(Date().time)}.sgf"
+        return File(gamesDirectory, name)
     }
 
     /**

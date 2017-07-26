@@ -33,6 +33,8 @@ class TwoPlayerGameTask(val mainWindow: MainWindow) : TwoPlayerGamePreferences()
         game.addPlayer(blackPlayer)
         game.addPlayer(whitePlayer)
 
+        game.file = Preferences.gameFile("Two Player")
+
         mainWindow.changeView(view)
         game.start()
     }

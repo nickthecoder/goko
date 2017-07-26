@@ -8,6 +8,7 @@ import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.StoneColor
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.QuickGamePreferences
+import java.io.File
 
 class QuickGameTask(val mainWindow: MainWindow) : QuickGamePreferences() {
 
@@ -33,6 +34,8 @@ class QuickGameTask(val mainWindow: MainWindow) : QuickGamePreferences() {
 
         game.addPlayer(gnuGo)
         game.addPlayer(human)
+
+        game.file = Preferences.gameFile("Quick")
 
         mainWindow.changeView(view)
         game.start()

@@ -36,6 +36,8 @@ class ChallengeMatchTask(val mainWindow: MainWindow) : ChallengeMatchPreferences
         game.addPlayer(gnuGo)
         game.addPlayer(human)
 
+        game.file = Preferences.gameFile("Challenge")
+
         game.listeners.add(Preferences.challengeMatchPreferences)
         mainWindow.changeView(view)
         game.start()
