@@ -27,7 +27,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
 
     private val boardView = BoardView(game)
 
-    private val commentView = CommentsView(game, false)
+    private val commentView = CommentsView(game, false, Preferences.editGamePreferences)
 
     override val node = whole
 

@@ -6,6 +6,7 @@ import javafx.scene.control.SplitPane
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
 import uk.co.nickthecoder.kogo.model.*
+import uk.co.nickthecoder.kogo.preferences.Preferences
 import java.io.File
 
 class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
@@ -28,7 +29,7 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
 
     private val boardView = BoardView(game)
 
-    private val commentsView = CommentsView(game, true)
+    private val commentsView = CommentsView(game, true, Preferences.josekiPreferences)
 
     override val node = whole
 

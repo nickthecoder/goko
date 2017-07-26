@@ -7,12 +7,11 @@ import javafx.scene.layout.FlowPane
 import javafx.scene.layout.VBox
 import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.model.*
+import uk.co.nickthecoder.kogo.preferences.CommentsPreferences
+import uk.co.nickthecoder.kogo.preferences.Preferences
+import uk.co.nickthecoder.kogo.preferences.PreferencesListener
 
-// TODO Currently this is only used by ProblemView, but later make it more generic, usable when editing and reviewing games.
-// This means that that fields should be editable.
-// OR, create another version of this class which IS editable.
-
-class CommentsView(val game: Game, val readOnly: Boolean) : View, GameListener {
+class CommentsView(val game: Game, val readOnly: Boolean, val preferences: CommentsPreferences) : View, GameListener, PreferencesListener {
 
     val whole = VBox()
 
@@ -98,8 +97,13 @@ class CommentsView(val game: Game, val readOnly: Boolean) : View, GameListener {
 
         update()
         game.gameListeners.add(this)
+        Preferences.listeners.add(this)
     }
 
+    override fun tidyUp() {
+        Preferences.listeners.remove(this)
+    }
+    
     fun changeNodeAnotation(anotation: NodeAnotation) {
         val node = game.currentNode
         if (node.nodeAnotation != anotation) {
@@ -117,6 +121,8 @@ class CommentsView(val game: Game, val readOnly: Boolean) : View, GameListener {
     }
 
     fun updateNodeAnotations() {
+        nodeAnotationsPane.isVisible = preferences.showNodeAnotationsP.value == true
+
         val node = game.currentNode
         val anotation = node.nodeAnotation
         val very = node.nodeAnotationVery
@@ -152,7 +158,7 @@ class CommentsView(val game: Game, val readOnly: Boolean) : View, GameListener {
 
     fun updateMoveAnotations() {
         val node = game.currentNode
-        if (node is SetupNode) {
+        if (node is SetupNode || preferences.showMoveAnotationsP.value == false) {
             moveAnotationsPane.isVisible = false
         } else {
             moveAnotationsPane.isVisible = true
@@ -188,5 +194,9 @@ class CommentsView(val game: Game, val readOnly: Boolean) : View, GameListener {
 
     override fun updatedCurrentNode() {
         update()
+    }
+
+    override fun preferencesChanged() {
+        updatedCurrentNode()
     }
 }
