@@ -1,43 +1,24 @@
 package uk.co.nickthecoder.kogo.gui
 
 import javafx.scene.control.SplitPane
-import javafx.scene.control.ToolBar
-import javafx.scene.layout.BorderPane
-import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.PreferencesListener
 import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.CompoundButtons
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
-import uk.co.nickthecoder.paratask.project.TaskPrompter
 
-class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener, PreferencesListener {
+class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWindow, game), PreferencesListener {
 
     override val title = "Edit"
-
-    val board: Board
-        get() = game.board
-
-    private val whole = BorderPane()
-
-    private val toolBar = ToolBar()
 
     private val split = SplitPane()
 
     private val boardView = BoardView(game)
 
     private val commentView = CommentsView(game, false, Preferences.editGamePreferences)
-
-    override val node = whole
-
-    val history = History(game)
-
+    
     val shortcuts = ShortcutHelper("EditGameView", node)
-
-    init {
-        game.listeners.add(this)
-    }
 
     override fun build() {
         boardView.build()
@@ -50,21 +31,12 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
             dividers[0].position = 0.7
         }
 
-        val saveB = KoGoActions.SAVE.createButton(shortcuts) { onSave() }
         val preferencesB = KoGoActions.PREFERENCES.createButton(shortcuts) { mainWindow.addView(PreferencesView(mainWindow, Preferences.editGamePreferences)) }
-        val restartB = KoGoActions.GO_FIRST.createButton(shortcuts) { game.rewindTo(game.root) }
-        val backB = KoGoActions.GO_BACK.createButton(shortcuts) { game.moveBack() }
-        val rewindB = KoGoActions.GO_REWIND.createButton(shortcuts) { game.moveBack(10) }
-        val forwardB = KoGoActions.GO_FORWARD.createButton(shortcuts) { history.forward() }
-        val fastForwardB = KoGoActions.GO_FAST_FORWARD.createButton(shortcuts) { history.forward(10) }
-        val endB = KoGoActions.GO_END.createButton(shortcuts) { onEnd() }
 
         val navigation = CompoundButtons()
         navigation.children.addAll(restartB, rewindB, backB, forwardB, fastForwardB, endB)
 
         val mainLineB = KoGoActions.GO_MAIN_LINE.createButton(shortcuts) { history.mainLine() }
-
-        val passB = KoGoActions.PASS.createButton(shortcuts) { onPass() }
 
         val moveModeB = KoGoActions.MODE_MOVE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> clickToMove(point) }
@@ -114,6 +86,14 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         Preferences.listeners.add(this)
     }
 
+    override fun tidyUp() {
+        super.tidyUp()
+        game.tidyUp()
+        boardView.tidyUp()
+        commentView.tidyUp()
+        Preferences.listeners.remove(this)
+    }
+
     fun clickToMove(point: Point) {
         val player = game.playerToMove
 
@@ -155,21 +135,6 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         }
     }
 
-    fun onPass() {
-        game.playerToMove.pass()
-    }
-
-    fun onEnd() {
-        while (game.currentNode.children.isNotEmpty()) {
-            game.currentNode.children[0].apply(game)
-        }
-    }
-
-    fun onSave() {
-        val saveT = SaveGameTask(game)
-        TaskPrompter(saveT).placeOnStage(Stage())
-    }
-
     fun labelContinuations() {
         val currentNode = game.currentNode
         var index = 0
@@ -186,14 +151,8 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
     }
 
     override fun moved() {
+        super.moved()
         labelContinuations()
-    }
-
-    override fun tidyUp() {
-        game.tidyUp()
-        boardView.tidyUp()
-        commentView.tidyUp()
-        Preferences.listeners.remove(this)
     }
 
     override fun preferencesChanged() {

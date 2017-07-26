@@ -12,36 +12,21 @@ import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 import uk.co.nickthecoder.paratask.project.TaskPrompter
 
-open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWindow), GameListener {
+open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWindow, game) {
 
     override val title = "Playing"
-
-    val board: Board
-        get() = game.board
-
-    protected val whole = BorderPane()
-
-    protected val toolBar = ToolBar()
 
     protected val split = SplitPane()
 
     protected val boardView = BoardView(game)
 
-    override val node = whole
-
     val gameInfoView = GameInfoView(game)
 
-    val shortcuts = ShortcutHelper("PlayingView", node)
-
-    val passB = KoGoActions.PASS.createButton(shortcuts) { onPass() }
-    val resignB = KoGoActions.RESIGN.createButton(shortcuts) { onResign() }
-    val hintB = KoGoActions.HINT.createButton(shortcuts) { HintGenerator(game).hint() }
-
     override fun build() {
+        super.build()
         boardView.build()
         gameInfoView.build()
 
-        whole.top = toolBar
         whole.center = split
 
         with(split) {
@@ -49,41 +34,11 @@ open class PlayingView(mainWindow: MainWindow, val game: Game) : TopLevelView(ma
             dividers[0].position = 0.7
         }
 
-        val saveB = KoGoActions.SAVE.createButton(shortcuts) { onSave() }
-        val editB = KoGoActions.EDIT.createButton(shortcuts) { onEdit() }
         toolBar.items.addAll(saveB, editB, hintB, resignB, passB)
     }
 
-    fun onPass() {
-        if (game.playerToMove is LocalPlayer) {
-            game.playerToMove.pass()
-        }
-    }
-
-    fun onResign() {
-        if (game.playerToMove is LocalPlayer) {
-            game.resign(game.playerToMove)
-        }
-    }
-
-    fun onEdit() {
-        val copy = game.copy()
-        val view = EditGameView(mainWindow, copy)
-        mainWindow.addViewAfter(this, view)
-    }
-
-    fun onSave() {
-        val saveT = SaveGameTask(game)
-        TaskPrompter(saveT).placeOnStage(Stage())
-    }
-
-    override fun moved() {
-        val isLocal = game.playerToMove is LocalPlayer
-        passB.isDisable = !isLocal
-        resignB.isDisable = !isLocal
-    }
-
     override fun tidyUp() {
+        super.tidyUp()
         game.tidyUp()
         boardView.tidyUp()
         gameInfoView.tidyUp()

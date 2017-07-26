@@ -1,27 +1,17 @@
 package uk.co.nickthecoder.kogo.gui
 
-import javafx.event.ActionEvent
-import javafx.scene.control.Button
 import javafx.scene.control.SplitPane
-import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
-import uk.co.nickthecoder.kogo.model.*
+import uk.co.nickthecoder.kogo.model.AlternateMark
+import uk.co.nickthecoder.kogo.model.MoveNode
+import uk.co.nickthecoder.kogo.model.SGFReader
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import java.io.File
 
 class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
-    : TopLevelView(mainWindow), GameListener {
-
-    val game = SGFReader(josekiDatabase).read()
+    : AbstractGoView(mainWindow, SGFReader(josekiDatabase).read()) {
 
     override val title = "Joseki"
-
-    val board: Board
-        get() = game.board
-
-    private val whole = BorderPane()
-
-    private val toolBar = ToolBar()
 
     private val split = SplitPane()
 
@@ -31,25 +21,14 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
 
     private val commentsView = CommentsView(game, true, Preferences.josekiPreferences)
 
-    override val node = whole
-
-    val history = History(game)
-
-
-    init {
-        game.listeners.add(this)
-    }
-
     override fun build() {
-        println("Building joseki view")
+        super.build()
         boardView.build()
-        println("Built board view")
 
         with(rightPane) {
             center = commentsView.node
         }
 
-        whole.top = toolBar
         whole.center = split
 
         with(split) {
@@ -59,29 +38,20 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
         }
         commentsView.build()
 
-        val passB = Button("Pass")
-        passB.addEventHandler(ActionEvent.ACTION) { onPass() }
-
-        val restartB = Button("<<")
-        restartB.addEventHandler(ActionEvent.ACTION) { game.rewindTo(game.root) }
-        passB.addEventHandler(ActionEvent.ACTION) { onPass() }
-
-        val backB = Button("<")
-        backB.addEventHandler(ActionEvent.ACTION) { game.moveBack() }
-
-        val forwardB = Button(">")
-        forwardB.addEventHandler(ActionEvent.ACTION) { history.forward() }
-
         toolBar.items.addAll(passB, restartB, backB, forwardB)
 
         game.root.apply(game)
     }
 
-    fun onPass() {
-        game.pass()
+    override fun tidyUp() {
+        super.tidyUp()
+        game.tidyUp()
+        boardView.tidyUp()
+        commentsView.tidyUp()
     }
 
     override fun moved() {
+        super.moved()
 
         val currentNode = game.currentNode
 
@@ -93,12 +63,6 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
                 }
             }
         }
-    }
-
-    override fun tidyUp() {
-        game.tidyUp()
-        boardView.tidyUp()
-        commentsView.tidyUp()
     }
 
 }

@@ -106,7 +106,8 @@ class Game(size: Int) {
     }
 
     fun resign(player: Player) {
-        gameFinished(otherPlayer(player), player.letter + "+Resign")
+        val winner = otherPlayer(player)
+        gameFinished(winner, winner.letter + "+Resign")
         countEndGame()
     }
 

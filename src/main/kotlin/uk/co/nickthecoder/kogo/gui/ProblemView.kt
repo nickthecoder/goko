@@ -14,18 +14,9 @@ import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 
 class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boolean = false)
-    : TopLevelView(mainWindow), GameListener {
-
-    val game = problem.load()
+    : AbstractGoView(mainWindow, problem.load()) {
 
     override val title = "Problem ${problem.label}"
-
-    val board: Board
-        get() = game.board
-
-    private val whole = BorderPane()
-
-    private val toolBar = ToolBar()
 
     private val split = SplitPane()
 
@@ -37,9 +28,6 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
 
     private val problemResults = ProblemResults()
 
-
-    override val node = whole
-
     val firstPlayer = ProblemPlayer(game, game.playerToMove.color)
 
     val secondPlayer = ProblemOpponent(game, firstPlayer.color.opposite(), this)
@@ -49,10 +37,10 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
     init {
         game.addPlayer(firstPlayer)
         game.addPlayer(secondPlayer)
-        game.listeners.add(this)
     }
 
     override fun build() {
+        super.build()
         boardView.build()
 
         with(rightPane) {
@@ -60,7 +48,6 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
             bottom = problemResults
         }
 
-        whole.top = toolBar
         whole.center = split
 
         with(split) {
@@ -72,19 +59,19 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         problemResults.build()
 
         val preferencesB = KoGoActions.PREFERENCES.createButton { mainWindow.addView(PreferencesView(mainWindow, Preferences.problemsPreferences)) }
-
-        val passB = KoGoActions.PASS.createButton(shortcuts) { onPass() }
-        val restartB = KoGoActions.PROBLEM_RESTART.createButton(shortcuts) { onRestart() }
+        val restartB = KoGoActions.PROBLEM_RESTART.createButton { onRestart() }
         val giveUpB = KoGoActions.PROBLEM_GIVE_UP.createButton(shortcuts) { onGiveUp() }
-        val editB = KoGoActions.EDIT.createButton(shortcuts) { onEdit() }
 
         toolBar.items.addAll(preferencesB, restartB, giveUpB, editB, passB)
 
         game.root.apply(game)
     }
 
-    fun onPass() {
-        firstPlayer.pass()
+    override fun tidyUp() {
+        super.tidyUp()
+        game.tidyUp()
+        boardView.tidyUp()
+        commentsView.tidyUp()
     }
 
     fun onRestart() {
@@ -96,19 +83,20 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         showProblem(problem, cheat = true)
     }
 
-    fun onEdit() {
+    override fun onEdit() {
         // NOTE, Currently this will NOT allow you to save the edited game if the problem is part of a multi-game .sgf file.
         val copy = problem.load()
         val view = EditGameView(mainWindow, copy)
         mainWindow.addViewAfter(this, view)
     }
 
-    fun showProblem(problem: Problem, cheat: Boolean = false) {
+    private fun showProblem(problem: Problem, cheat: Boolean = false) {
         val view = ProblemView(mainWindow, problem, cheat)
         mainWindow.changeView(view)
     }
 
     override fun moved() {
+        super.moved()
         val currentNode = game.currentNode
 
         if (cheat) {
@@ -128,12 +116,6 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
                 }
             }
         }
-    }
-
-    override fun tidyUp() {
-        game.tidyUp()
-        boardView.tidyUp()
-        commentsView.tidyUp()
     }
 
     inner class ProblemResults : VBox() {
