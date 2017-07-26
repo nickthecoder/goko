@@ -100,6 +100,7 @@ class Game(size: Int) {
     var awaitingFinalCount = false
 
     fun countEndGame() {
+        /*
         val counter = GnuGoPlayer(this, StoneColor.NONE)
         counter.start()
         // Tell the counter where the stones are
@@ -112,6 +113,7 @@ class Game(size: Int) {
             }
         }
         counter.countGame()
+        */
     }
 
     fun countedEndGame(result: String) {
