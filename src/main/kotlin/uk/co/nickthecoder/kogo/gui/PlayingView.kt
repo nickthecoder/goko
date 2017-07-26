@@ -6,6 +6,7 @@ import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.HintGenerator
 import uk.co.nickthecoder.kogo.LocalPlayer
+import uk.co.nickthecoder.kogo.ScoreEstimator
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
@@ -19,6 +20,10 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
     protected val split = SplitPane()
 
     protected val boardView = BoardView(game)
+
+    val shortcuts = ShortcutHelper("PlayingView", node)
+
+    val estimateScoreB = KoGoActions.ESTIMATE_SCORE.createButton { onEstimateScore() }
 
     val gameInfoView = GameInfoView(game)
 
@@ -34,7 +39,7 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
             dividers[0].position = 0.7
         }
 
-        toolBar.items.addAll(saveB, editB, hintB, resignB, passB)
+        toolBar.items.addAll(saveB, editB, hintB, estimateScoreB, resignB, passB)
     }
 
     override fun tidyUp() {
@@ -44,5 +49,10 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
         gameInfoView.tidyUp()
     }
 
+    fun onEstimateScore() {
+        ScoreEstimator(game).estimate() {
+            gameInfoView.gameResultLabel.text = it
+        }
+    }
 }
 

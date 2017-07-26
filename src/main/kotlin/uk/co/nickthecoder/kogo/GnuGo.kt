@@ -52,6 +52,10 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         command("4 reg_genmove ${color.toString().toLowerCase()}", client)
     }
 
+    fun estimateScore(client: GnuGoClient) {
+        command("5 estimate_score", client)
+    }
+
     @Synchronized
     private fun command(command: String, client: GnuGoClient?) {
         destinations.add(client)
@@ -106,6 +110,8 @@ class GnuGo(val game: Game, level: Int) : GameListener {
                     markBoard(Point(x, y), status)
                 }
             }
+        } else if (line.startsWith("=5")) {
+            listener?.scoreEstimate(line.substring(3))
         }
     }
 
@@ -160,5 +166,6 @@ interface GnuGoClient {
     fun generatedMove(point: Point) {}
     fun generatedPass() {}
     fun generatedResign() {}
+    fun scoreEstimate(score: String) {}
 }
 

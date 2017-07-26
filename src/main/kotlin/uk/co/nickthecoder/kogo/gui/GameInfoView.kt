@@ -33,6 +33,8 @@ class GameInfoView(val game: Game) : View, GameListener {
 
     override fun build() {
 
+        gameResultLabel.isWrapText = true
+        
         with(vBox) {
             styleClass.add("game-info")
         }
@@ -75,6 +77,7 @@ class GameInfoView(val game: Game) : View, GameListener {
             countdown = Countdown(timeLimit, game.playerToMove.color)
             countdown?.start()
         }
+        gameResultLabel.text = ""
     }
 
     override fun gameEnded(winner: Player?) {
