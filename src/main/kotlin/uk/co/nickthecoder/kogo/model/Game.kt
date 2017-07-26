@@ -77,7 +77,7 @@ class Game(size: Int) {
     }
 
     fun setupStone(point: Point, color: StoneColor) {
-        board.setStoneAt(point, color, null)
+        board.setStoneAt(point, color)
     }
 
     fun resign(player: Player) {
@@ -93,7 +93,7 @@ class Game(size: Int) {
     fun gameFinished(winner: Player?, matchResult: String = "") {
         metaData.gameResult = matchResult
         listeners.forEach {
-            it.gameEnded( winner)
+            it.gameEnded(winner)
         }
     }
 
@@ -130,16 +130,16 @@ class Game(size: Int) {
         return players.get(nextColor)!!
     }
 
-    fun pass(byPlayer: Player) {
+    fun pass() {
         val node = PassNode(playerToMove.color)
-        addAndApplyNode(node, byPlayer)
+        addAndApplyNode(node)
         if (currentNode is PassNode) {
             awaitingFinalCount = true
             countEndGame()
         }
     }
 
-    fun move(point: Point, color: StoneColor, byPlayer: Player) {
+    fun move(point: Point, color: StoneColor) {
         if (color != StoneColor.BLACK && color != StoneColor.WHITE) {
             throw IllegalArgumentException("Must play black or white")
         }
@@ -147,7 +147,7 @@ class Game(size: Int) {
             throw IllegalArgumentException("This point is already taken")
         }
         val node = MoveNode(point, color)
-        addAndApplyNode(node, byPlayer)
+        addAndApplyNode(node)
     }
 
     var autoPlay: Boolean = true
@@ -169,9 +169,8 @@ class Game(size: Int) {
             return false
         }
         val copy = board.copy()
-        val dummyPlayer = LocalPlayer(this, StoneColor.NONE)
-        copy.setStoneAt(point, playerToMove.color, dummyPlayer)
-        copy.removeTakenStones(point, dummyPlayer)
+        copy.setStoneAt(point, playerToMove.color)
+        copy.removeTakenStones(point)
         if (copy.checkLiberties(point) != null) {
             return false
         }
@@ -214,16 +213,16 @@ class Game(size: Int) {
         currentNode.children.add(node)
     }
 
-    private fun addAndApplyNode(node: GameNode, byPlayer: Player?) {
+    private fun addAndApplyNode(node: GameNode) {
         autoPlay = true
         currentNode.children.forEach { child ->
             if (child.sameAs(node)) {
-                child.apply(this, byPlayer)
+                child.apply(this)
                 return
             }
         }
         addNode(node)
-        node.apply(this, byPlayer)
+        node.apply(this)
     }
 
     fun moveBack(n: Int = 1) {

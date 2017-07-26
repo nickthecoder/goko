@@ -90,16 +90,16 @@ abstract class GameNode(var colorToPlay: StoneColor) {
         board.removeStoneAt(point)
     }
 
-    open fun bodyApply(game: Game, byPlayer: Player?) {
+    open fun bodyApply(game: Game) {
         removedStones.forEach { point, _ ->
-            game.board.removeStoneAt(point, byPlayer)
+            game.board.removeStoneAt(point)
         }
         addedStones.forEach { point, color ->
             game.setupStone(point, color)
         }
     }
 
-    fun apply(game: Game, byPlayer: Player? = null) {
+    fun apply(game: Game) {
 
         if (this === game.root && game.currentNode === this) {
         } else {
@@ -107,7 +107,7 @@ abstract class GameNode(var colorToPlay: StoneColor) {
                 throw IllegalArgumentException("$this is not a child of the current node : ${game.currentNode}")
             }
         }
-        bodyApply(game, byPlayer)
+        bodyApply(game)
         game.currentNode = this
         game.moved()
     }
@@ -149,12 +149,12 @@ class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposit
 
     var takenStones = setOf<Point>()
 
-    override fun bodyApply(game: Game, byPlayer: Player?) {
+    override fun bodyApply(game: Game) {
         if (game.board.getStoneAt(point) != StoneColor.NONE) {
-            game.board.removeStoneAt(point, byPlayer)
+            game.board.removeStoneAt(point)
         }
-        game.board.setStoneAt(point, color, byPlayer = byPlayer)
-        takenStones = game.board.removeTakenStones(point, byPlayer)
+        game.board.setStoneAt(point, color)
+        takenStones = game.board.removeTakenStones(point)
         if (color == StoneColor.BLACK) {
             game.blackCaptures += takenStones.size
         } else {
@@ -163,10 +163,10 @@ class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposit
     }
 
     override fun bodyTakeBack(game: Game) {
-        game.board.removeStoneAt(point, null)
+        game.board.removeStoneAt(point)
         val removedColor = StoneColor.opposite(color)
         takenStones.forEach { point ->
-            game.board.setStoneAt(point, removedColor, null)
+            game.board.setStoneAt(point, removedColorN)
         }
         if (color == StoneColor.BLACK) {
             game.blackCaptures -= takenStones.size

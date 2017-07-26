@@ -17,7 +17,7 @@ class History(val game: Game) : GameListener {
             val i = history.indexOf(game.currentNode)
             if (i >= 0 && i < history.size - 1) {
                 val node = history[i + 1]
-                node.apply(game, null)
+                node.apply(game)
             } else {
                 game.moveForward()
             }

@@ -16,7 +16,7 @@ interface GameListener {
 
     fun removedMark(mark: Mark) {}
 
-    fun stoneChanged(point: Point, byPlayer: Player?) {}
+    fun stoneChanged(point: Point) {}
 
     fun updatedCurrentNode() {}
 }

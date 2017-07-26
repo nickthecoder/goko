@@ -127,7 +127,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
         if (node !is SetupNode) {
             node = SetupNode(game.playerToMove.color)
             game.addNode(node)
-            node.apply(game, null)
+            node.apply(game)
         }
         node.addStone(board, point, color)
         game.updatedCurrentNode()
@@ -161,7 +161,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
 
     fun onEnd() {
         while (game.currentNode.children.isNotEmpty()) {
-            game.currentNode.children[0].apply(game, null)
+            game.currentNode.children[0].apply(game)
         }
     }
 

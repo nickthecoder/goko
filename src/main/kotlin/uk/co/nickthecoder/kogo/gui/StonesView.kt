@@ -59,7 +59,7 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         oldImageView?.let { children.remove(it) }
     }
 
-    override fun stoneChanged(point: Point, byPlayer: Player?) {
+    override fun stoneChanged(point: Point) {
         val color = board.getStoneAt(point)
         if (color == StoneColor.NONE) {
             removeAt(point)

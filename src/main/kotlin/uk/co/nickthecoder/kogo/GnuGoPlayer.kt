@@ -40,13 +40,13 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
     override fun generatedMove(point: Point) {
         Platform.runLater {
-            game.move(point, color, this)
+            game.move(point, color)
         }
     }
 
     override fun generatedPass() {
         Platform.runLater {
-            game.pass(this)
+            game.pass()
         }
     }
 

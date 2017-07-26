@@ -21,17 +21,17 @@ class ProblemOpponent(val game: Game, override val color: StoneColor, val proble
             val nextNode = currentNode.children.firstOrNull()
 
             nextNode?.let {
-                it.apply(game, this)
+                it.apply(game)
             }
         }
     }
 
     override fun makeMove(point: Point) {
-        game.move(point, color, this)
+        game.move(point, color)
     }
 
     override fun pass() {
-        game.pass(this)
+        game.pass()
     }
 
     override fun canClickToPlay(): Boolean {

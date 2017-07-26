@@ -78,7 +78,7 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
     }
 
     fun onPass() {
-        game.pass(game.playerToMove)
+        game.pass()
     }
 
     override fun moved() {

@@ -242,7 +242,7 @@ class SGFReader {
                     passNode = PassNode(game.playerToMove.color)
                     game.addNode(passNode)
                 }
-                passNode.apply(game, null)
+                passNode.apply(game)
             }
             if (gameNode is SetupNode && game.currentNode is SetupNode) {
                 // There are two setup nodes in a row, which seems pointless, so lets merge them into one node.
@@ -251,7 +251,7 @@ class SGFReader {
                 game.moveForward()
             } else {
                 game.addNode(gameNode)
-                gameNode.apply(game, null)
+                gameNode.apply(game)
                 updateNode(game, sgfChild)
             }
             addChildren(game, sgfChild)

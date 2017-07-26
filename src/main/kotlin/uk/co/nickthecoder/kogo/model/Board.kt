@@ -29,30 +29,22 @@ class Board(val size: Int, val game: Game) {
         }
     }
 
-    /**
-     * byPlayer is the Player that added the stone. This is only used by the board listeners, so that
-     * GNUGoPlayer does not re-add stones to its internal board for pieces that have already been added.
-     * Therefore, when moving back/forward through the game tree, this will be null.
-     */
-    fun setStoneAt(point: Point, color: StoneColor, byPlayer: Player? = null) {
+    fun setStoneAt(point: Point, color: StoneColor) {
         if (contains(point)) {
             points[point.x][point.y] = color
             if (!isCopy) {
                 game.listeners.forEach { listener ->
-                    listener.stoneChanged(point, byPlayer)
+                    listener.stoneChanged(point)
                 }
             }
         }
     }
 
-    /**
-     * See setStoneAt for a description of byPlayer.
-     */
-    fun removeStoneAt(point: Point, byPlayer: Player? = null) {
+    fun removeStoneAt(point: Point) {
         points[point.x][point.y] = StoneColor.NONE
         if (!isCopy) {
             game.listeners.forEach { listener ->
-                listener.stoneChanged(point, byPlayer)
+                listener.stoneChanged(point)
             }
         }
     }
@@ -89,13 +81,13 @@ class Board(val size: Int, val game: Game) {
         }
     }
 
-    fun removeTakenStones(point: Point, byPlayer: Player?): Set<Point> {
+    fun removeTakenStones(point: Point): Set<Point> {
 
         fun removeTakenStonesQuarter(innerPoint: Point): Set<Point> {
             if (contains(innerPoint) && getStoneAt(innerPoint) != getStoneAt(point)) {
                 val group = checkLiberties(innerPoint)
                 group?.forEach {
-                    removeStoneAt(it, byPlayer)
+                    removeStoneAt(it)
                 }
                 return group ?: setOf<Point>()
             } else {

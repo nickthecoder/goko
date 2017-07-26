@@ -114,7 +114,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         }
     }
 
-    override fun stoneChanged(point: Point, byPlayer: Player?) {
+    override fun stoneChanged(point: Point) {
         // Ignore the stones that I generated
         if (point != generatedPoint) {
             val color = game.board.getStoneAt(point)
