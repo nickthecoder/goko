@@ -17,10 +17,11 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     private val boardView = BoardView(game)
 
     private val commentView = CommentsView(game, false, Preferences.editGamePreferences)
-    
+
     val shortcuts = ShortcutHelper("EditGameView", node)
 
     override fun build() {
+        super.build()
         boardView.build()
         commentView.build()
         whole.top = toolBar
