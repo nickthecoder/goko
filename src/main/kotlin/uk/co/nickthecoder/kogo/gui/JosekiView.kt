@@ -98,6 +98,7 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
     override fun tidyUp() {
         game.tidyUp()
         boardView.tidyUp()
+        commentsView.tidyUp()
     }
 
 }

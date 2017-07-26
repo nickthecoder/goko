@@ -133,6 +133,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
     override fun tidyUp() {
         game.tidyUp()
         boardView.tidyUp()
+        commentsView.tidyUp()
     }
 
     inner class ProblemResults : VBox() {

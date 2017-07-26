@@ -192,6 +192,7 @@ class EditGameView(mainWindow: MainWindow, val game: Game) : TopLevelView(mainWi
     override fun tidyUp() {
         game.tidyUp()
         boardView.tidyUp()
+        commentView.tidyUp()
         Preferences.listeners.remove(this)
     }
 
