@@ -19,15 +19,15 @@ import java.util.*
  */
 class GnuGo(val game: Game, level: Int) : GameListener {
 
-    val rules = if (game.metaData.japaneseRules) "japanese" else "chinese"
+    private val rules = if (game.metaData.japaneseRules) "japanese" else "chinese"
 
-    val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size, "--komi", game.metaData.komi, "--$rules-rules")
+    private val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size, "--komi", game.metaData.komi, "--$rules-rules")
 
-    var writer: Writer? = null
+    private var writer: Writer? = null
 
     private val replyHandlers = Collections.synchronizedMap(HashMap<Int, ReplyHandler>())
 
-    var commandNumber = 1
+    private var commandNumber = 1
 
     fun start() {
         game.listeners.add(this)
@@ -123,7 +123,7 @@ abstract class ReplyHandler(val client: GnuGoClient) {
     abstract fun parseReply(reply: String)
 }
 
-class MoveHandler(client: GnuGoClient) : ReplyHandler(client) {
+private class MoveHandler(client: GnuGoClient) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {
         if (reply == "resign") {
@@ -139,24 +139,16 @@ class MoveHandler(client: GnuGoClient) : ReplyHandler(client) {
     }
 }
 
-class PointStatusHandler(client: GnuGoClient, val point: Point) : ReplyHandler(client) {
+private class PointStatusHandler(client: GnuGoClient, val point: Point) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {
         client.pointStatus(point, reply)
     }
 }
 
-class FinalScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
+private class FinalScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {
         client.scoreEstimate(reply)
     }
-}
-
-interface GnuGoClient {
-    fun generatedMove(point: Point) {}
-    fun generatedPass() {}
-    fun generatedResign() {}
-    fun scoreEstimate(score: String) {}
-    fun pointStatus(point: Point, status: String) {}
 }
