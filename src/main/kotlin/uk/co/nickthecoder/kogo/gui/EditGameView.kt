@@ -103,9 +103,10 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         modes.children.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
         modes.createToggleGroup()
 
+        boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
+
         toolBar.items.addAll(saveB, preferencesB, modes, navigation, mainLineB, estimateScoreB, passB)
 
-        labelContinuations()
         preferencesChanged()
         Preferences.listeners.add(this)
     }
@@ -173,31 +174,16 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         }
     }
 
-    fun labelContinuations() {
-        val currentNode = game.currentNode
-        var index = 0
-        currentNode.children.filter { it is MoveNode }.map { it as MoveNode }.forEach { child ->
-            val mark: Mark
-            if (index == 0) {
-                mark = MainLineMark(child.point)
-            } else {
-                mark = AlternateMark(child.point)
-            }
-            game.addMark(mark)
-            index++
-        }
-    }
-
     override fun showScore(score: String) {
         gameInfoView.messageLabel.text = score
     }
 
     override fun moved() {
         super.moved()
-        labelContinuations()
     }
 
     override fun preferencesChanged() {
         boardView.showMoveNumbers = Preferences.editGameShowMoveNumber!!
+        boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
     }
 }

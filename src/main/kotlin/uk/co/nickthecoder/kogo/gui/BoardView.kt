@@ -11,6 +11,7 @@ import javafx.scene.shape.LineTo
 import javafx.scene.shape.MoveTo
 import javafx.scene.shape.Path
 import uk.co.nickthecoder.kogo.model.*
+import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 
 
 class BoardView(val game: Game) : View {
@@ -33,11 +34,19 @@ class BoardView(val game: Game) : View {
 
     val moveNumbers = MarksView(board)
 
+    val continuations = MarksView(board)
+
     private var mouseMode = MouseMode.PLAYING
 
     private var mouseMark = SymbolMarkView(Point(-10, -10), "place-stone")
 
     private val latestMark = SymbolMarkView(Point(-10, -10), "latest") // Initially off-screen
+
+    var showContinuations = ShowContinuations.DO_NOT_SHOW
+        set(v) {
+            field = v
+            updateContinuations()
+        }
 
     var showMoveNumbers: Int = 0
         set(v) {
@@ -119,9 +128,33 @@ class BoardView(val game: Game) : View {
             }
         }
     }
-    
+
     fun toBoardPoint(x: Double, y: Double): Point {
         return Point((x / pointSize).toInt(), board.size - (y / pointSize).toInt() - 1)
+    }
+
+    fun updateContinuations() {
+        continuations.clear()
+        val currentNode = game.currentNode
+        if (showContinuations != ShowContinuations.DO_NOT_SHOW) {
+            var index = 0
+            var markView: MarkView
+            currentNode.children.filter { it is MoveNode && !currentNode.hasMarkAt(it.point) }.map { it as MoveNode }.forEach { child ->
+                val mark: SymbolMark
+                if (showContinuations == ShowContinuations.NUMBERS) {
+                    markView = MarkView(LabelMark(child.point, index.toString()))
+                } else {
+                    if (index == 0) {
+                        mark = MainLineMark(child.point)
+                    } else {
+                        mark = AlternateMark(child.point)
+                    }
+                    markView = SymbolMarkView(mark)
+                }
+                continuations.add(markView)
+                index++
+            }
+        }
     }
 
     fun updateMoveNumbers() {
@@ -175,7 +208,7 @@ class BoardView(val game: Game) : View {
         }
 
         fun build() {
-            children.addAll(wood, lines, starPoints, boardMarks.node, stones, moveNumbers.node, marks.node, specialMarks.node, clickBoardView.node)
+            children.addAll(wood, lines, starPoints, boardMarks.node, stones, moveNumbers.node, continuations.node, marks.node, specialMarks.node, clickBoardView.node)
 
             with(wood) {
                 styleClass.add("wood")
@@ -234,6 +267,7 @@ class BoardView(val game: Game) : View {
             layoutInArea(boardMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(starPoints, marginLeft + scale * 1.5, marginTop + scale * 1.5, playingSize, playingSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(moveNumbers.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
+            layoutInArea(continuations.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(marks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(specialMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(clickBoardView.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
@@ -248,6 +282,13 @@ class BoardView(val game: Game) : View {
             }
 
             with(moveNumbers.node) {
+                translateX = (size - logicalSize) / 2
+                translateY = translateX
+                scaleX = scale / pointSize
+                scaleY = scaleX
+            }
+
+            with(continuations.node) {
                 translateX = (size - logicalSize) / 2
                 translateY = translateX
                 scaleX = scale / pointSize
@@ -318,6 +359,7 @@ class BoardView(val game: Game) : View {
                 marks.add(mark.createMarkView())
             }
             updateMoveNumbers()
+            updateContinuations()
             if (mouseMode == MouseMode.PLAYING) {
                 mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
             }
@@ -325,6 +367,7 @@ class BoardView(val game: Game) : View {
 
         override fun addedMark(mark: Mark) {
             marks.add(mark.createMarkView())
+            updateContinuations()
             updateMoveNumbers()
         }
 
@@ -337,4 +380,18 @@ class BoardView(val game: Game) : View {
 
 enum class MouseMode {
     PLAYING, ADDING_STONES, MARKING, REMOVING_STONES, REMOVING_MARKS
+}
+
+enum class ShowContinuations {
+    DO_NOT_SHOW, NUMBERS, SYMBOLS;
+
+    companion object {
+        fun createChoices(): ChoiceParameter<ShowContinuations> {
+            val parameter = ChoiceParameter<ShowContinuations>("showContinuations", value = ShowContinuations.DO_NOT_SHOW)
+            parameter.addChoice("none", ShowContinuations.DO_NOT_SHOW, "Do not show")
+            parameter.addChoice("numbers", ShowContinuations.NUMBERS, "As Numbers")
+            parameter.addChoice("symbols", ShowContinuations.SYMBOLS, "As Symbols")
+            return parameter
+        }
+    }
 }
