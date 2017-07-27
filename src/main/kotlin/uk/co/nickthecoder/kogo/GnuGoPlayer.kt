@@ -20,6 +20,10 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
         gnuGo.start()
     }
 
+    override fun placeHandicap() {
+        gnuGo.placeHandicap(this)
+    }
+
     override fun yourTurn() {
         gnuGo.generateMove(color, this)
     }

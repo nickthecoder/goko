@@ -21,6 +21,7 @@ class QuickGameTask(val mainWindow: MainWindow) : QuickGamePreferences() {
         val game = Game(size = boardSizeP.value!!)
         game.metaData.komi = komiP.value!!
         game.metaData.handicap = handicapP.value!!
+        game.metaData.fixedHandicaptPoints = fixedHandicapPointsP.value!!
         game.metaData.japaneseRules = rulesP.value!!
         game.metaData.timeLimit = timeLimitP.value!!
 

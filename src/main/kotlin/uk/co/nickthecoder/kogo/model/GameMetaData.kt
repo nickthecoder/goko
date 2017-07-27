@@ -5,7 +5,9 @@ data class GameMetaData(
         var blackPlayer: String = "",
         var whitePlayer: String = "",
         var handicap: Int = 0,
+        var fixedHandicaptPoints: Boolean = true,
         var gameResult: String = "",
         var komi: Double = 0.0,
         var japaneseRules : Boolean = true,
-        var timeLimit: TimeLimit = NoTimeLimit())
+        var timeLimit: TimeLimit = NoTimeLimit()
+)

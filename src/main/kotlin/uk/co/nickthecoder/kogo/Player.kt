@@ -19,6 +19,8 @@ interface Player {
 
     fun tidyUp() {}
 
+    fun placeHandicap() {}
+
     fun yourTurn() {}
 
     fun canClickToPlay(): Boolean

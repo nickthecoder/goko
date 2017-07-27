@@ -12,7 +12,7 @@ import java.util.*
 
 /**
  * An interface to GnuGo's Process. One instance can be shared my multiple clients, for example, one client may be a
- * GnuGoPlayer, and another is used to create hints or calculate the score at the end of the game.
+ * GnuGoPlayer, and another is used to create topMoves or calculate the score at the end of the game.
  *
  * Uses the GTP protocal, running in a separate process. Therefore the results from a command are not returned immediatly,
  * instead the results are passed back via GnuGoClient.
@@ -43,6 +43,11 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         println("Started GnuGo")
     }
 
+    fun placeHandicap(client: GnuGoClient) {
+        val handler = PlaceHandicapHandler(client)
+        command("place_free_handicap ${game.metaData.handicap}", handler)
+    }
+
     fun generateMove(color: StoneColor, client: GnuGoClient) {
         val handler = MoveHandler(client)
         command("genmove ${color.toString().toLowerCase()}", handler)
@@ -52,13 +57,12 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         command("play ${color.toString().toLowerCase()} ${point}", null)
     }
 
-
     /**
      * Generate a move, but do not acturally play it. Used to generate Hints.
      */
-    fun generateHint(color: StoneColor, client: GnuGoClient) {
-        val handler = MoveHandler(client)
-        command("reg_genmove ${color.toString().toLowerCase()}", handler)
+    fun topMoves(color: StoneColor, client: GnuGoClient) {
+        val handler = TopMovesHandler(client)
+        command("top_moves ${color.toString().toLowerCase()}", handler)
     }
 
     fun estimateScore(client: GnuGoClient) {
@@ -96,7 +100,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
             val reply = line.substring(space + 1)
             val number = line.substring(1, space).toInt()
             val handler = replyHandlers.remove(number)
-            println("Paring '$reply' with handler $handler")
+            println("Parsing '$reply' with handler $handler")
             handler?.parseReply(reply)
         }
 
@@ -136,6 +140,30 @@ private class MoveHandler(client: GnuGoClient) : ReplyHandler(client) {
         }
         val point = Point.fromString(reply)
         client.generatedMove(point)
+    }
+}
+
+private class TopMovesHandler(client: GnuGoClient) : ReplyHandler(client) {
+
+    override fun parseReply(reply: String) {
+        if (reply.isNotBlank()) {
+            val pairList = reply.trim().split(' ').withIndex().groupBy { it.index / 2 }.map { it.value.map { it.value } }
+            val results = pairList.map { Pair(Point.fromString(it[0]), it[1].toDouble()) }
+
+            client.topMoves(results)
+        } else {
+            client.topMoves(listOf())
+        }
+    }
+}
+
+private class PlaceHandicapHandler(client: GnuGoClient) : ReplyHandler(client) {
+
+    override fun parseReply(reply: String) {
+        reply.split(" ").forEach {
+            val point = Point.fromString(it)
+            client.generatedMove(point)
+        }
     }
 }
 

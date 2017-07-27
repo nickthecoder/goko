@@ -3,6 +3,7 @@ package uk.co.nickthecoder.kogo.preferences
 import uk.co.nickthecoder.kogo.model.StoneColor
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
+import uk.co.nickthecoder.paratask.parameters.BooleanParameter
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 import uk.co.nickthecoder.paratask.parameters.DoubleParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
@@ -24,6 +25,8 @@ open class QuickGamePreferences : AbstractTask() {
 
     val handicapP = IntParameter("handicap", value = 0, range = 0..9)
 
+    val fixedHandicapPointsP = BooleanParameter("fixedHandicapPoints", value = true)
+
     val komiP = DoubleParameter("komi", value = 0.0, minValue = -100.0, maxValue = 100.0)
 
     val timeLimitP = Preferences.timeLimitPreferences.createTimeLimitChoice()
@@ -31,7 +34,7 @@ open class QuickGamePreferences : AbstractTask() {
     val rulesP = Preferences.createRulesChoice()
 
     init {
-        taskD.addParameters(boardSizeP, computerPlaysP, computerLevelP, handicapP, komiP, timeLimitP, rulesP)
+        taskD.addParameters(boardSizeP, computerPlaysP, computerLevelP, handicapP, fixedHandicapPointsP, komiP, timeLimitP, rulesP)
     }
 
     override fun run() {

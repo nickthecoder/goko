@@ -18,8 +18,6 @@ class Game(size: Int) {
 
     var playerToMove: Player = LocalPlayer(this, StoneColor.BLACK)
 
-    var handicap = 0
-
     var players = mutableMapOf<StoneColor, Player>()
 
     val listeners = mutableListOf<GameListener>()
@@ -37,11 +35,37 @@ class Game(size: Int) {
 
     var blackCaptures: Int = 0
 
+    /**
+     * The number of handicap stones the black player still has to play.
+     * Is zero when using fixed handicap points (on the star points).
+     */
+    var freeHandicaps: Int = 0
+
     private var gnuGo: GnuGo? = null
 
     init {
         addPlayer(playerToMove)
         addPlayer(LocalPlayer(this, StoneColor.WHITE))
+    }
+
+    fun start() {
+        metaData.whitePlayer = players[StoneColor.WHITE]!!.label
+        metaData.blackPlayer = players[StoneColor.BLACK]!!.label
+        if (metaData.fixedHandicaptPoints) {
+            placeHandicap()
+            playerToMove = players[if (metaData.handicap < 2) StoneColor.BLACK else StoneColor.WHITE]!!
+        } else {
+            playerToMove = players[StoneColor.BLACK]!!
+            if (metaData.handicap > 2) {
+                freeHandicaps = metaData.handicap
+                playerToMove.placeHandicap()
+            } else {
+                playerToMove.yourTurn()
+            }
+        }
+        if (metaData.fixedHandicaptPoints) {
+            playerToMove.yourTurn()
+        }
     }
 
     fun createGnuGo(): GnuGo {
@@ -91,14 +115,6 @@ class Game(size: Int) {
         if (playerToMove.color == player.color) {
             playerToMove = player
         }
-    }
-
-    fun start() {
-        playerToMove = players[if (handicap == 0) StoneColor.BLACK else StoneColor.WHITE]!!
-        metaData.whitePlayer = players[StoneColor.WHITE]!!.label
-        metaData.blackPlayer = players[StoneColor.BLACK]!!.label
-        placeHandicap()
-        playerToMove.yourTurn()
     }
 
     fun setupStone(point: Point, color: StoneColor) {
@@ -167,6 +183,23 @@ class Game(size: Int) {
     }
 
     fun move(point: Point, color: StoneColor) {
+        if (freeHandicaps > 0) {
+            println("Free handicap move")
+            if (currentNode != root) {
+                throw IllegalStateException("Can only play handicap in the root node")
+            }
+            freeHandicaps--
+            root.addStone(board, point, color)
+            updatedCurrentNode()
+
+            if (freeHandicaps == 0) {
+                println("handicap done")
+                root.colorToPlay = StoneColor.WHITE
+                moved()
+            }
+            return
+        }
+
         if (color != StoneColor.BLACK && color != StoneColor.WHITE) {
             throw IllegalArgumentException("Must play black or white")
         }
@@ -180,12 +213,14 @@ class Game(size: Int) {
     var autoPlay: Boolean = true
 
     internal fun moved() {
+        println("Game.moved")
         val node = currentNode
         playerToMove = players.get(node.colorToPlay)!!
         listeners.forEach {
             it.moved()
         }
         if (autoPlay) {
+            println("Game.moved your turn ${playerToMove.color}")
             playerToMove.yourTurn()
             autoPlay = false
         }
