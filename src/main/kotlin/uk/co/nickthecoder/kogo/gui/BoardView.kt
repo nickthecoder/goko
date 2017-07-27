@@ -33,7 +33,7 @@ class BoardView(val game: Game) : View {
 
     val moveNumbers = MarksView(board)
 
-    private var isPlacingStone: Boolean = true
+    private var mouseMode = MouseMode.PLAYING
 
     private var mouseMark = SymbolMarkView(Point(-10, -10), "place-stone")
 
@@ -61,39 +61,65 @@ class BoardView(val game: Game) : View {
         boardLayout.build()
     }
 
+    fun playing() {
+        mouseMark.style("place-stone")
+        mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
+        mouseMode = MouseMode.PLAYING
+    }
+
     fun placingStone(color: StoneColor) {
         mouseMark.style("place-stone")
         mouseMark.colorWhite(color == StoneColor.WHITE)
-        isPlacingStone = true
+        mouseMode = MouseMode.ADDING_STONES
     }
 
     fun placingMark() {
         mouseMark.style("place-mark")
-        isPlacingStone = false
+        mouseMode = MouseMode.MARKING
     }
 
     fun removingMark() {
+        mouseMark.style("remove-stone")
+        mouseMode = MouseMode.REMOVING_MARKS
+    }
+
+    fun removingStone() {
         mouseMark.style("remove-mark")
-        isPlacingStone = false
+        mouseMode = MouseMode.REMOVING_STONES
     }
 
     fun mouseMarkAt(point: Point?) {
         if (point == null) {
             mouseMark.point = OFF_SCREEN
         } else {
-            if (isPlacingStone) {
+            var show = true
+
+            if (mouseMode == MouseMode.PLAYING || mouseMode == MouseMode.ADDING_STONES) {
                 if (board.getStoneAt(point).isStone()) {
-                    mouseMark.point = OFF_SCREEN
-                } else {
-                    mouseMark.point = point
+                    show = false
                 }
-            } else {
-                mouseMark.colorWhite(board.getStoneAt(point) == StoneColor.BLACK)
+            } else if (mouseMode == MouseMode.REMOVING_STONES) {
+                if (!board.getStoneAt(point).isStone()) {
+                    show = false
+                }
+            } else if (mouseMode == MouseMode.REMOVING_MARKS) {
+                if (!game.currentNode.hasMarkAt(point)) {
+                    show = false
+                }
+            }
+
+            if (show) {
                 mouseMark.point = point
+            } else {
+                mouseMark.point = OFF_SCREEN
+            }
+
+            if (mouseMode == MouseMode.MARKING || mouseMode == MouseMode.REMOVING_MARKS || mouseMode == MouseMode.REMOVING_STONES) {
+                mouseMark.colorWhite(board.getStoneAt(point) == StoneColor.BLACK)
             }
         }
     }
-
+    
     fun toBoardPoint(x: Double, y: Double): Point {
         return Point((x / pointSize).toInt(), board.size - (y / pointSize).toInt() - 1)
     }
@@ -107,7 +133,6 @@ class BoardView(val game: Game) : View {
             if (currentNode is MoveNode) {
                 if (!currentNode.hasMarkAt(currentNode.point)) {
                     latestMark.point = currentNode.point
-                    latestMark.colorWhite(currentNode.color == StoneColor.BLACK)
                 }
             }
         }
@@ -288,13 +313,14 @@ class BoardView(val game: Game) : View {
         }
 
         override fun moved() {
-            mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
-
             marks.clear()
             for (mark in board.game.currentNode.marks) {
                 marks.add(mark.createMarkView())
             }
             updateMoveNumbers()
+            if (mouseMode == MouseMode.PLAYING) {
+                mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
+            }
         }
 
         override fun addedMark(mark: Mark) {
@@ -307,4 +333,8 @@ class BoardView(val game: Game) : View {
         }
 
     }
+}
+
+enum class MouseMode {
+    PLAYING, ADDING_STONES, MARKING, REMOVING_STONES, REMOVING_MARKS
 }

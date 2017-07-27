@@ -49,7 +49,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         val moveModeB = KoGoActions.MODE_MOVE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> clickToMove(point) }
-            boardView.placingStone(game.playerToMove.color)
+            boardView.playing()
         }
         moveModeB.isSelected = true
 
@@ -62,6 +62,12 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             boardView.clickBoardView.onClickedPoint = { point -> addSetupStone(point, StoneColor.WHITE) }
             boardView.placingStone(StoneColor.WHITE)
         }
+
+        val removeStoneModeB = KoGoActions.MODE_REMOVE_STONE.createToggleButton(shortcuts) {
+            boardView.clickBoardView.onClickedPoint = { point -> removeStone(point) }
+            boardView.removingStone()
+        }
+
 
         val squareModeB = KoGoActions.MODE_SQUARE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.addMark(SquareMark(point)) }
@@ -88,13 +94,13 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             boardView.placingMark()
         }
 
-        val removeMarkModeB = KoGoActions.MODE_CLEAR.createToggleButton(shortcuts) {
+        val removeMarkModeB = KoGoActions.MODE_REMOVE_MARK.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.removeMark(point) }
             boardView.removingMark()
         }
 
         val modes = CompoundButtons()
-        modes.children.addAll(moveModeB, blackModeB, whiteModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
+        modes.children.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
         modes.createToggleGroup()
 
         toolBar.items.addAll(saveB, preferencesB, modes, navigation, mainLineB, estimateScoreB, passB)
@@ -130,6 +136,19 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         }
         node.addStone(board, point, color)
         game.updatedCurrentNode()
+    }
+
+    fun removeStone(point: Point) {
+        if (board.getStoneAt(point).isStone()) {
+            var node = game.currentNode
+            if (node !is SetupNode) {
+                node = SetupNode(game.playerToMove.color)
+                game.addNode(node)
+                node.apply(game)
+            }
+            node.removeStone(board, point)
+            game.updatedCurrentNode()
+        }
     }
 
     fun addNumber(point: Point) {

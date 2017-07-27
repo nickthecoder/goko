@@ -69,7 +69,8 @@
 .marks > .place-mark {
     -fx-symbol: "◌";
 }
-.marks > .remove-mark {
+.marks > .remove-mark,
+.marks > .remove-stone {
     -fx-symbol: "⛔";
 }
 .marks > .latest {

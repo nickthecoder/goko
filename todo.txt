@@ -1,8 +1,4 @@
 
-Make the mouse mark more intellegent.
-	Move Mode should only show the mark on empty points
-	Mark Mode should show on all points, but be a different shape
-
 Bugs
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
@@ -16,6 +12,9 @@ Consider using move_probabilities for hints, so that multiple points can be retu
 	Sort by value, show the top filled in, and the next N hollow.
 
 What should happen when setup stones are added, and then later nodes are invalid moves?
+	Perhaps we should create a new branch when adding/removing stones to a setup node which has child nodes.
+		The trouble with this is navigating to this new set-up node.
+		Need a pull-down to list all (or 
 
 Game score chart
 	Show a chart of the game score throughout the game (using GnuGo's estimate).

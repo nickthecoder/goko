@@ -30,12 +30,13 @@ object KoGoActions {
     val MODE_MOVE = KoGoAction("mode-move", KeyCode.DIGIT1, control = true, tooltip = "Mode : Make moves")
     val MODE_BLACK = KoGoAction("mode-black", KeyCode.DIGIT2, control = true, tooltip = "Mode : Place black set-up stones")
     val MODE_WHITE = KoGoAction("mode-white", KeyCode.DIGIT3, control = true, tooltip = "Mode : Place white set-up stones")
-    val MODE_SQUARE = KoGoAction("mode-square", KeyCode.DIGIT4, label = "□", control = true, tooltip = "Mode : Add square marks")
-    val MODE_CIRCLE = KoGoAction("mode-square", KeyCode.DIGIT5, label = "○", control = true, tooltip = "Mode : Add circle marks")
-    val MODE_TRIANGLE = KoGoAction("mode-triangle", KeyCode.DIGIT6, label = "△", control = true, tooltip = "Mode : Add triangle marks")
-    val MODE_NUMBERS = KoGoAction("mode-numbers", KeyCode.DIGIT7, label = "1", control = true, tooltip = "Mode : Add number marks")
-    val MODE_LETTERS = KoGoAction("mode-letters", KeyCode.DIGIT8, label = "A", control = true, tooltip = "Mode : Add letter marks")
-    val MODE_CLEAR = KoGoAction("mode-clear", KeyCode.DIGIT9, control = true, tooltip = "Mode : Remove marks")
+    val MODE_REMOVE_STONE = KoGoAction("mode-remove-stone", KeyCode.DIGIT4, control = true, tooltip = "Mode : Remove stones")
+    val MODE_SQUARE = KoGoAction("mode-square", KeyCode.DIGIT5, label = "□", control = true, tooltip = "Mode : Add square marks")
+    val MODE_CIRCLE = KoGoAction("mode-square", KeyCode.DIGIT6, label = "○", control = true, tooltip = "Mode : Add circle marks")
+    val MODE_TRIANGLE = KoGoAction("mode-triangle", KeyCode.DIGIT7, label = "△", control = true, tooltip = "Mode : Add triangle marks")
+    val MODE_NUMBERS = KoGoAction("mode-numbers", KeyCode.DIGIT8, label = "1", control = true, tooltip = "Mode : Add number marks")
+    val MODE_LETTERS = KoGoAction("mode-letters", KeyCode.DIGIT9, label = "A", control = true, tooltip = "Mode : Add letter marks")
+    val MODE_REMOVE_MARK = KoGoAction("mode-remove-mark", KeyCode.DIGIT0, control = true, tooltip = "Mode : Remove marks")
 
     // ProblemView
 
