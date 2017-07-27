@@ -1,6 +1,5 @@
 package uk.co.nickthecoder.kogo.model
 
-import javafx.application.Platform
 import uk.co.nickthecoder.kogo.GnuGo
 import uk.co.nickthecoder.kogo.GnuGoPlayer
 import uk.co.nickthecoder.kogo.LocalPlayer

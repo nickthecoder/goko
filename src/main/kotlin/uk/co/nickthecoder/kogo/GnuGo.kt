@@ -1,7 +1,9 @@
 package uk.co.nickthecoder.kogo
 
-import javafx.application.Platform
-import uk.co.nickthecoder.kogo.model.*
+import uk.co.nickthecoder.kogo.model.Game
+import uk.co.nickthecoder.kogo.model.GameListener
+import uk.co.nickthecoder.kogo.model.Point
+import uk.co.nickthecoder.kogo.model.StoneColor
 import uk.co.nickthecoder.paratask.util.process.BufferedSink
 import uk.co.nickthecoder.paratask.util.process.Exec
 import java.io.OutputStreamWriter
@@ -23,9 +25,9 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
     var writer: Writer? = null
 
-    var generatedPoint: Point? = null
+    private val replyHandlers = Collections.synchronizedMap(HashMap<Int, ReplyHandler>())
 
-    private val destinations = Collections.synchronizedList(ArrayList<GnuGoClient?>())
+    var commandNumber = 1
 
     fun start() {
         game.listeners.add(this)
@@ -42,35 +44,43 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     }
 
     fun generateMove(color: StoneColor, client: GnuGoClient) {
-        command("1 genmove ${color.toString().toLowerCase()}", client)
+        val handler = MoveHandler(client)
+        command("genmove ${color.toString().toLowerCase()}", handler)
     }
+
+    fun addStone(color: StoneColor, point: Point) {
+        command("play ${color.toString().toLowerCase()} ${point}", null)
+    }
+
 
     /**
      * Generate a move, but do not acturally play it. Used to generate Hints.
      */
     fun generateHint(color: StoneColor, client: GnuGoClient) {
-        command("2 reg_genmove ${color.toString().toLowerCase()}", client)
+        val handler = MoveHandler(client)
+        command("reg_genmove ${color.toString().toLowerCase()}", handler)
     }
 
     fun estimateScore(client: GnuGoClient) {
-        for (y in 0..game.board.size-1) {
-            for (x in 0..game.board.size-1) {
+        for (y in 0..game.board.size - 1) {
+            for (x in 0..game.board.size - 1) {
                 val point = Point(x, y)
-                command("3${x + y * game.board.size} final_status ${point}", client)
-                // command("6${x + y * game.board.size} unconditional_status ${point}", client)
+                val handler = PointStatusHandler(client, point)
+                command("final_status ${point}", handler)
             }
         }
-        command("4 final_score", client)
-        //command("4 estimate_score", client)
+        val handler = FinalScoreHandler(client)
+        command("final_score", handler)
     }
 
     @Synchronized
-    private fun command(command: String, client: GnuGoClient?) {
-        destinations.add(client)
-        generatedPoint = null
-        println("Sending command : '$command'")
+    private fun command(command: String, handler: ReplyHandler?) {
+        val number = commandNumber++
+        replyHandlers.put(number, handler)
+
+        println("Sending command : '$number $command'")
         writer?.let {
-            it.appendln(command)
+            it.appendln("$number $command")
             it.flush()
         }
     }
@@ -80,74 +90,24 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         if (!line.startsWith("=")) {
             return
         }
-        val client = destinations.removeAt(0)
 
-        println("Parsing reply: '$line' client=$client queueSize=${destinations.size}")
-
-        if ((line.startsWith("=1 ") || line.startsWith("=2 ")) && line.length >= 5) {
-            if (line.startsWith("=1 resign")) {
-                client?.generatedResign()
-                return
-            }
-            if (line.startsWith("=1 PASS")) {
-                client?.generatedPass()
-                return
-            }
-            val point = Point.fromString(line.substring(3))
-            if (line.startsWith("=1")) {
-                // Remember the point that was just generated, so that when stoneChanged is called, we don't
-                // attempt to add the stone again.
-                generatedPoint = point
-            }
-            client?.generatedMove(point)
-            return
-
-        } else if (line.startsWith("=3")) {
-
-            val data = line.substring(2)
-            val space = data.indexOf(" ")
-            if (space > 0) {
-                val point = decodePoint(data.substring(0, space))
-                val status = data.substring(space).trim()
-                client?.pointStatus(point, status)
-            }
-
-        } else if (line.startsWith("=4")) {
-            client?.scoreEstimate(line.substring(3))
+        val space = line.indexOf(' ')
+        if (space > 0) {
+            val reply = line.substring(space + 1)
+            val number = line.substring(1, space).toInt()
+            val handler = replyHandlers.remove(number)
+            println("Paring '$reply' with handler $handler")
+            handler?.parseReply(reply)
         }
-    }
 
-    fun decodePoint(str: String): Point {
-        val pointNumber = Integer.parseInt(str)
-        val y = pointNumber / game.board.size
-        val x = pointNumber - (y * game.board.size)
-        return Point(x, y)
-    }
-
-    fun markBoard(point: Point, status: String) {
-        // Status is one of : "alive", "dead", "seki", "white_territory", "black_territory", or "dame"
-        if (status == "white_territory") {
-            game.addMark(TerritoryMark(point, StoneColor.WHITE))
-        } else if (status == "black_territory") {
-            game.addMark(TerritoryMark(point, StoneColor.BLACK))
-        } else if (status == "dead") {
-            game.addMark(DeadMark(point))
-        }
-    }
-
-    fun addStone(color: StoneColor, point: Point) {
-        command("play ${color.toString().toLowerCase()} ${point}", null)
     }
 
     override fun stoneChanged(point: Point) {
-        // Ignore the stones that I generated
-        if (point != generatedPoint) {
-            val color = game.board.getStoneAt(point)
-            if (color == StoneColor.NONE) {
-                // TODO Remove the stone
-            } else {
-                addStone(color, point)
-            }
+        val color = game.board.getStoneAt(point)
+        if (color == StoneColor.NONE) {
+            // TODO Remove the stone
+        } else {
+            addStone(color, point)
         }
     }
 
@@ -158,12 +118,45 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
 }
 
-interface GnuGoClient {
+abstract class ReplyHandler(val client: GnuGoClient) {
 
+    abstract fun parseReply(reply: String)
+}
+
+class MoveHandler(client: GnuGoClient) : ReplyHandler(client) {
+
+    override fun parseReply(reply: String) {
+        if (reply == "resign") {
+            client.generatedResign()
+            return
+        }
+        if (reply == "PASS") {
+            client.generatedPass()
+            return
+        }
+        val point = Point.fromString(reply)
+        client.generatedMove(point)
+    }
+}
+
+class PointStatusHandler(client: GnuGoClient, val point: Point) : ReplyHandler(client) {
+
+    override fun parseReply(reply: String) {
+        client.pointStatus(point, reply)
+    }
+}
+
+class FinalScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
+
+    override fun parseReply(reply: String) {
+        client.scoreEstimate(reply)
+    }
+}
+
+interface GnuGoClient {
     fun generatedMove(point: Point) {}
     fun generatedPass() {}
     fun generatedResign() {}
     fun scoreEstimate(score: String) {}
     fun pointStatus(point: Point, status: String) {}
 }
-
