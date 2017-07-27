@@ -1,17 +1,9 @@
 package uk.co.nickthecoder.kogo.gui
 
 import javafx.scene.control.SplitPane
-import javafx.scene.control.ToolBar
-import javafx.scene.layout.BorderPane
-import javafx.stage.Stage
-import uk.co.nickthecoder.kogo.HintGenerator
-import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.ScoreEstimator
-import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
-import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
-import uk.co.nickthecoder.paratask.project.TaskPrompter
 
 open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWindow, game) {
 
@@ -22,8 +14,6 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
     protected val boardView = BoardView(game)
 
     val shortcuts = ShortcutHelper("PlayingView", node)
-
-    val estimateScoreB = KoGoActions.ESTIMATE_SCORE.createButton { onEstimateScore() }
 
     val gameInfoView = GameInfoView(game)
 
@@ -49,10 +39,9 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
         gameInfoView.tidyUp()
     }
 
-    fun onEstimateScore() {
-        ScoreEstimator(game).estimate() {
-            gameInfoView.messageLabel.text = it
-        }
+    override fun showScore(score: String) {
+        gameInfoView.messageLabel.text = score
     }
+
 }
 

@@ -222,6 +222,10 @@ class Game(size: Int) {
         }
     }
 
+    fun clearMarks() {
+        currentNode.marks.toList().forEach { removeMark(it.point) }
+    }
+
     fun updatedCurrentNode() {
         for (listener in listeners) {
             listener.updatedCurrentNode()

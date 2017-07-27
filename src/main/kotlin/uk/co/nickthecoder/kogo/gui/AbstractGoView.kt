@@ -5,6 +5,7 @@ import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.HintGenerator
 import uk.co.nickthecoder.kogo.LocalPlayer
+import uk.co.nickthecoder.kogo.ScoreEstimator
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
@@ -26,22 +27,23 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     protected val toolBar = ToolBar()
 
-    val history = History(game)
+    protected val history = History(game)
 
-    private val shortcuts = ShortcutHelper("PlayingView", node)
+    private val shortcuts = ShortcutHelper("PlayingView", whole)
 
     protected val passB = KoGoActions.PASS.createButton(shortcuts) { onPass() }
     protected val saveB = KoGoActions.SAVE.createButton(shortcuts) { onSave() }
     protected val editB = KoGoActions.EDIT.createButton(shortcuts) { onEdit() }
     protected val resignB = KoGoActions.RESIGN.createButton(shortcuts) { onResign() }
     protected val hintB = KoGoActions.HINT.createButton(shortcuts) { HintGenerator(game).hint() }
+    protected val estimateScoreB = KoGoActions.ESTIMATE_SCORE.createToggleButton { onCalculateScore() }
 
-    val restartB = KoGoActions.GO_FIRST.createButton(shortcuts) { game.rewindTo(game.root) }
-    val backB = KoGoActions.GO_BACK.createButton(shortcuts) { game.moveBack() }
-    val rewindB = KoGoActions.GO_REWIND.createButton(shortcuts) { game.moveBack(10) }
-    val forwardB = KoGoActions.GO_FORWARD.createButton(shortcuts) { history.forward() }
-    val fastForwardB = KoGoActions.GO_FAST_FORWARD.createButton(shortcuts) { history.forward(10) }
-    val endB = KoGoActions.GO_END.createButton(shortcuts) { onEnd() }
+    protected val restartB = KoGoActions.GO_FIRST.createButton(shortcuts) { game.rewindTo(game.root) }
+    protected val backB = KoGoActions.GO_BACK.createButton(shortcuts) { game.moveBack() }
+    protected val rewindB = KoGoActions.GO_REWIND.createButton(shortcuts) { game.moveBack(10) }
+    protected val forwardB = KoGoActions.GO_FORWARD.createButton(shortcuts) { history.forward() }
+    protected val fastForwardB = KoGoActions.GO_FAST_FORWARD.createButton(shortcuts) { history.forward(10) }
+    protected val endB = KoGoActions.GO_END.createButton(shortcuts) { onEnd() }
 
     override fun build() {
         whole.top = toolBar
@@ -80,6 +82,17 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
             game.currentNode.children[0].apply(game)
         }
     }
+
+    fun onCalculateScore() {
+        game.clearMarks()
+        if (estimateScoreB.isSelected) {
+            ScoreEstimator(game).estimate() {
+                showScore(it)
+            }
+        }
+    }
+
+    open fun showScore(score: String) {}
 
     override fun moved() {
         val isLocal = game.playerToMove is LocalPlayer
