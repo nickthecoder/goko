@@ -16,10 +16,10 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow) {
     override fun addButtons() {
 
         with(buttons) {
-            add(createButton("Quick Game", "quick-game", QuickGameTask(mainWindow)))
-            add(createButton("Two Player Game", "two-player-game", TwoPlayerGameTask(mainWindow)))
-            add(createButton("Challenge Match", "challenge-match", ChallengeMatchTask(mainWindow)))
-            add(createButton("Open SGF File", "open-file", OpenFileTask(mainWindow)))
+            add(createTaskButton("Quick Game", "quick-game") { QuickGameTask(mainWindow) })
+            add(createTaskButton("Two Player Game", "two-player-game") { TwoPlayerGameTask(mainWindow) })
+            add(createTaskButton("Challenge Match", "challenge-match") { ChallengeMatchTask(mainWindow) })
+            add(createTaskButton("Open SGF File", "open-file") { OpenFileTask(mainWindow) })
             add(createButton("Problems", "problems") { ProblemsView(mainWindow) })
             add(createButton("Joseki Dictionary", "joseki") {
                 val joseki = Preferences.josekiDirectionary
@@ -33,7 +33,10 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow) {
         }
     }
 
-    fun createButton(label: String, style: String, task: Task): Button {
-        return createButton(label, style) { PromptTaskView(task, mainWindow) }
+    fun createTaskButton(label: String, style: String, factory: () -> Task): Button {
+        return createButton(label, style) {
+            val task = factory()
+            PromptTaskView(task, mainWindow)
+        }
     }
 }

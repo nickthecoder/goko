@@ -1,9 +1,13 @@
 
+
+Make the mouse mark more intellegent.
+	Move Mode should only show the mark on empty points
+	Mark Mode should show on all points, but be a different shape
+
 Bugs
 	A pass from Go Problems invokes the game scoring algorithm!
 		Also, why is it doing it after a SINGLE pass? Hmm.
 	Ko not tested for, and then throws exception when the ko point is played.
-	Quick game does not respect the size preference (until application is restarted).
 
 Consider using move_probabilities for hints, so that multiple points can be returned
 	Sort by value, show the top filled in, and the next N hollow.
