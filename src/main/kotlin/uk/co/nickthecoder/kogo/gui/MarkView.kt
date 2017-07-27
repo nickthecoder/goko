@@ -11,6 +11,8 @@ open class MarkView : Label {
 
     internal var marksView: MarksView? = null
 
+    private var markStyle: String? = null
+
     var point: Point
         set(v) {
             field = v
@@ -19,6 +21,7 @@ open class MarkView : Label {
 
     constructor(point: Point, style: String? = null, text: String = "") : super(text) {
         this.point = point
+        markStyle = style
         style?.let { styleClass.add(it) }
     }
 
@@ -29,6 +32,12 @@ open class MarkView : Label {
 
     init {
         styleClass.add("mark")
+    }
+
+    fun style(style: String) {
+        styleClass.remove(markStyle)
+        markStyle = style
+        styleClass.add(style)
     }
 
     fun colorWhite(white: Boolean) {

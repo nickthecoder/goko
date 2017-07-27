@@ -33,9 +33,11 @@ class BoardView(val game: Game) : View {
 
     val moveNumbers = MarksView(board)
 
-    val mouseMark = SymbolMarkView(Point(-10, -10), "mouse")
+    private var isPlacingStone: Boolean = true
 
-    val latestMark = SymbolMarkView(Point(-10, -10), "latest") // Initially off-screen
+    private var mouseMark = SymbolMarkView(Point(-10, -10), "place-stone")
+
+    private val latestMark = SymbolMarkView(Point(-10, -10), "latest") // Initially off-screen
 
     var showMoveNumbers: Int = 0
         set(v) {
@@ -51,12 +53,45 @@ class BoardView(val game: Game) : View {
     val OFF_SCREEN = Point(-100, -100)
 
 
-    override fun build(){
+    override fun build() {
         with(container) {
             styleClass.add("board-container")
             children.add(boardLayout)
         }
         boardLayout.build()
+    }
+
+    fun placingStone(color: StoneColor) {
+        mouseMark.style("place-stone")
+        mouseMark.colorWhite(color == StoneColor.WHITE)
+        isPlacingStone = true
+    }
+
+    fun placingMark() {
+        mouseMark.style("place-mark")
+        isPlacingStone = false
+    }
+
+    fun removingMark() {
+        mouseMark.style("remove-mark")
+        isPlacingStone = false
+    }
+
+    fun mouseMarkAt(point: Point?) {
+        if (point == null) {
+            mouseMark.point = OFF_SCREEN
+        } else {
+            if (isPlacingStone) {
+                if (board.getStoneAt(point).isStone()) {
+                    mouseMark.point = OFF_SCREEN
+                } else {
+                    mouseMark.point = point
+                }
+            } else {
+                mouseMark.colorWhite(board.getStoneAt(point) == StoneColor.BLACK)
+                mouseMark.point = point
+            }
+        }
     }
 
     fun toBoardPoint(x: Double, y: Double): Point {

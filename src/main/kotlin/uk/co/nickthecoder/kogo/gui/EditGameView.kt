@@ -49,39 +49,48 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         val moveModeB = KoGoActions.MODE_MOVE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> clickToMove(point) }
+            boardView.placingStone(game.playerToMove.color)
         }
         moveModeB.isSelected = true
 
         val blackModeB = KoGoActions.MODE_BLACK.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> addSetupStone(point, StoneColor.BLACK) }
+            boardView.placingStone(StoneColor.BLACK)
         }
 
         val whiteModeB = KoGoActions.MODE_WHITE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> addSetupStone(point, StoneColor.WHITE) }
+            boardView.placingStone(StoneColor.WHITE)
         }
 
         val squareModeB = KoGoActions.MODE_SQUARE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.addMark(SquareMark(point)) }
+            boardView.placingMark()
         }
 
         val circleModeB = KoGoActions.MODE_CIRCLE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.addMark(CircleMark(point)) }
+            boardView.placingMark()
         }
 
         val triangleModeB = KoGoActions.MODE_TRIANGLE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.addMark(TriangleMark(point)) }
+            boardView.placingMark()
         }
 
         val numberModeB = KoGoActions.MODE_NUMBERS.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> addNumber(point) }
+            boardView.placingMark()
         }
 
         val letterModeB = KoGoActions.MODE_LETTERS.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> addLetter(point) }
+            boardView.placingMark()
         }
 
         val removeMarkModeB = KoGoActions.MODE_CLEAR.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.removeMark(point) }
+            boardView.removingMark()
         }
 
         val modes = CompoundButtons()

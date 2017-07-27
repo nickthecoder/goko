@@ -4,7 +4,6 @@ Make the mouse mark more intellegent.
 	Mark Mode should show on all points, but be a different shape
 
 Bugs
-	Names not appearing in when editing
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
 		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).

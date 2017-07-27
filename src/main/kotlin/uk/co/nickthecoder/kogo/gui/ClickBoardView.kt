@@ -47,14 +47,14 @@ class ClickBoardView(val boardView: BoardView) : GameListener {
     fun onMouseMoved(event: MouseEvent) {
         val point = boardView.toBoardPoint(event.x, event.y)
         if (board.contains(point)) {
-            boardView.mouseMark.point = point
+            boardView.mouseMarkAt(point)
         } else {
-            boardView.mouseMark.point = boardView.OFF_SCREEN
+            boardView.mouseMarkAt(null)
         }
     }
 
     fun onMouseExited() {
-        boardView.mouseMark.point = boardView.OFF_SCREEN
+        boardView.mouseMarkAt(null)
     }
 
     fun onMouseClicked(event: MouseEvent) {
