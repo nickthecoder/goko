@@ -15,7 +15,7 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
 
     val shortcuts = ShortcutHelper("PlayingView", node)
 
-    val gameInfoView = GameInfoView(game)
+    val gameInfoView = GameInfoView(game,true)
 
     override fun build() {
         super.build()

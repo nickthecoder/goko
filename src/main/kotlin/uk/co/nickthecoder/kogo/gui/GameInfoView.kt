@@ -11,7 +11,7 @@ import java.util.*
 
 /**
  */
-class GameInfoView(val game: Game) : View, GameListener {
+class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListener {
 
     val vBox = VBox()
 
@@ -58,9 +58,17 @@ class GameInfoView(val game: Game) : View, GameListener {
 
         messageLabel.isWrapText = true
 
-        vBox.children.addAll(bPlayer, handicapLabel, blackCapturesLabel, bTime, wPlayer, komiLabel, whiteCapturesLabel, wTime, gameResultLabel, messageLabel)
+        vBox.children.addAll(bPlayer, handicapLabel, blackCapturesLabel)
+        if (showTimeLimit) {
+            updateTimes()
+            vBox.children.add(bTime)
+        }
+        vBox.children.addAll(wPlayer, komiLabel, whiteCapturesLabel)
+        if (showTimeLimit) {
+            vBox.children.add(wTime)
+        }
+        vBox.children.add(messageLabel)
 
-        updateTimes()
         updateCaptures()
     }
 
@@ -75,18 +83,22 @@ class GameInfoView(val game: Game) : View, GameListener {
     }
 
     override fun moved() {
-        countdown?.moved()
-        updateTimes()
-        val timeLimit = game.playerToMove.timeRemaining
-        if (timeLimit is TimedLimit) {
-            countdown = Countdown(timeLimit, game.playerToMove.color)
-            countdown?.start()
+        if (showTimeLimit) {
+            countdown?.moved()
+            updateTimes()
+            val timeLimit = game.playerToMove.timeRemaining
+            if (timeLimit is TimedLimit) {
+                countdown = Countdown(timeLimit, game.playerToMove.color)
+                countdown?.start()
+            }
         }
         gameResultLabel.text = ""
         messageLabel.text = ""
+        updateCaptures()
     }
 
     override fun gameEnded(winner: Player?) {
+        vBox.children.add(gameResultLabel)
         gameResultLabel.text = "Game Result : ${game.metaData.gameResult}"
         stopCountdown()
     }
@@ -152,7 +164,7 @@ class GameInfoView(val game: Game) : View, GameListener {
                 if (timeLeft == 0.0) {
                     beginPeriod()
                     if (period < 0) {
-                        Platform.runLater{
+                        Platform.runLater {
                             game.lostOnTime(game.players[color]!!)
                         }
                         return

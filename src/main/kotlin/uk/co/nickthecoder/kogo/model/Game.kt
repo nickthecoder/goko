@@ -236,6 +236,7 @@ class Game(size: Int) {
         players.values.forEach { player ->
             player.tidyUp()
         }
+        gnuGo?.tidyUp()
     }
 
     fun addNode(node: GameNode) {

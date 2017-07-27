@@ -1,6 +1,7 @@
 package uk.co.nickthecoder.kogo.gui
 
 import javafx.scene.control.SplitPane
+import javafx.scene.layout.BorderPane
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.PreferencesListener
@@ -14,7 +15,11 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     private val split = SplitPane()
 
+    private val rightBorder = BorderPane()
+
     private val boardView = BoardView(game)
+
+    private val gameInfoView = GameInfoView(game, false)
 
     private val commentView = CommentsView(game, false, Preferences.editGamePreferences)
 
@@ -22,15 +27,18 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     override fun build() {
         super.build()
+        gameInfoView.build()
         boardView.build()
         commentView.build()
         whole.top = toolBar
         whole.center = split
 
         with(split) {
-            items.addAll(boardView.node, commentView.node)
+            items.addAll(boardView.node, rightBorder)
             dividers[0].position = 0.7
         }
+        rightBorder.center = commentView.node
+        rightBorder.top = gameInfoView.node
 
         val preferencesB = KoGoActions.PREFERENCES.createButton(shortcuts) { mainWindow.addView(PreferencesView(mainWindow, Preferences.editGamePreferences)) }
 
@@ -90,6 +98,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     override fun tidyUp() {
         super.tidyUp()
         game.tidyUp()
+        gameInfoView.tidyUp()
         boardView.tidyUp()
         commentView.tidyUp()
         Preferences.listeners.remove(this)
@@ -152,7 +161,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     }
 
     override fun showScore(score: String) {
-        commentView.messageLabel.text = score
+        gameInfoView.messageLabel.text = score
     }
 
     override fun moved() {

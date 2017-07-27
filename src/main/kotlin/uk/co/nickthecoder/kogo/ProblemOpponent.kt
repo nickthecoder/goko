@@ -9,7 +9,7 @@ import uk.co.nickthecoder.kogo.preferences.Preferences
  */
 class ProblemOpponent(val game: Game, override val color: StoneColor, val problemView: ProblemView) : Player {
 
-    override val label = "Opponent"
+    override var label = "Opponent"
 
     override var timeRemaining: TimeLimit = NoTimeLimit()
 

@@ -6,7 +6,7 @@ import uk.co.nickthecoder.kogo.model.TimeLimit
 
 interface Player {
 
-    val label: String
+    var label: String
 
     val rank: String
 

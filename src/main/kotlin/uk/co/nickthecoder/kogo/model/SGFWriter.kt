@@ -72,7 +72,11 @@ class SGFWriter {
         writeProperty("CA", "utf-8")
         writeOptionalProperty("PB", game.players[StoneColor.BLACK]?.label)
         writeOptionalProperty("PW", game.players[StoneColor.WHITE]?.label)
+        if (game.metaData.komi != 0.0) {
+            writeProperty("KM", game.metaData.komi)
+        }
         writeOptionalProperty("RE", game.metaData.gameResult)
+
         val timeLimit = game.metaData.timeLimit
         if (timeLimit is TimedLimit) {
             writeProperty("TM", timeLimit.mainPeriod.toInt())
@@ -210,6 +214,10 @@ class SGFWriter {
     }
 
     private fun writeProperty(name: String, value: Int) {
+        writeProperty(name, value.toString())
+    }
+
+    private fun writeProperty(name: String, value: Double) {
         writeProperty(name, value.toString())
     }
 

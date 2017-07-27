@@ -18,7 +18,7 @@ Node Annotation Properties 	C, DM (p), GB (p), GW (p), HO (p), N, UC (p), V (x) 
 Move Annotation Properties 	BM, DO, IT, TE
 Markup Properties 	AR (x), CR, DD (x), LB, LN (x), MA, SL (x), SQ, TR
 Root Properties 	AP (x), CA (x), FF (x), GM (x), ST (x), SZ
-Game Info Properties 	AN (x), BR (x), BT (x), CP (x), DT (x), EV (x), GN (x), GC (x), ON (x), OT (x), PB (x), PC (x), PW (x), RE (x), RO (x), RU (x), SO (x), TM (x), US (x), WR (x), WT (x)
+Game Info Properties 	AN (x), BR (x), BT (x), CP (x), DT (x), EV (x), GN (x), GC (x), ON (x), OT (x), PB, PC (x), PW, RE (x), RO (x), RU (x), SO (x), TM (x), US (x), WR (x), WT (x)
 Timing Properties 	BL (x), OB (x), OW (x), WL (x)
 Miscellaneous Properties 	FG (x), PM (x), VW (x)
 */
@@ -101,7 +101,10 @@ class SGFReader {
 
     private fun updateRootNode(game: Game, sgfNode: SGFNode) {
 
-        // TODO Add meta data such as play names, ranks etc
+        game.players[StoneColor.WHITE]!!.label = sgfNode.getPropertyValue("PW") ?: ""
+        game.players[StoneColor.BLACK]!!.label = sgfNode.getPropertyValue("PB") ?: ""
+
+        game.metaData.komi = sgfNode.getPropertyValue("KM")?.toDouble() ?: 0.0
 
         updateNode(game, sgfNode)
     }
