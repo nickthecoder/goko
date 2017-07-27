@@ -32,6 +32,8 @@ class TriangleMark(point: Point) : SymbolMark(point, "triangle")
 
 class DeadMark(point: Point) : SymbolMark(point, "dead")
 
+class QuestionMark(point: Point) : SymbolMark(point, "question")
+
 class TerritoryMark(point: Point, val color: StoneColor) : SymbolMark(point, "territory") {
 
     override fun createMarkView(): SymbolMarkView {

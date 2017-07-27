@@ -1,5 +1,6 @@
 package uk.co.nickthecoder.kogo.model
 
+import javafx.application.Platform
 import uk.co.nickthecoder.kogo.GnuGo
 import uk.co.nickthecoder.kogo.GnuGoPlayer
 import uk.co.nickthecoder.kogo.LocalPlayer
@@ -112,7 +113,8 @@ class Game(size: Int) {
     }
 
     fun lostOnTime(player: Player) {
-        gameFinished(otherPlayer(player), player.letter + "+Time")
+        val winner = otherPlayer(player)
+        gameFinished(winner, winner.letter + "+Time")
         countEndGame()
     }
 

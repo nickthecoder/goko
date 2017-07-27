@@ -152,7 +152,9 @@ class GameInfoView(val game: Game) : View, GameListener {
                 if (timeLeft == 0.0) {
                     beginPeriod()
                     if (period < 0) {
-                        game.lostOnTime(game.players[color]!!)
+                        Platform.runLater{
+                            game.lostOnTime(game.players[color]!!)
+                        }
                         return
                     }
                 }

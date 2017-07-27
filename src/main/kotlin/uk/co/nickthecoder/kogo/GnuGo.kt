@@ -49,11 +49,19 @@ class GnuGo(val game: Game, level: Int) : GameListener {
      * Generate a move, but do not acturally play it. Used to generate Hints.
      */
     fun generateHint(color: StoneColor, client: GnuGoClient) {
-        command("4 reg_genmove ${color.toString().toLowerCase()}", client)
+        command("2 reg_genmove ${color.toString().toLowerCase()}", client)
     }
 
     fun estimateScore(client: GnuGoClient) {
-        command("5 estimate_score", client)
+        for (y in 0..game.board.size-1) {
+            for (x in 0..game.board.size-1) {
+                val point = Point(x, y)
+                command("3${x + y * game.board.size} final_status ${point}", client)
+                // command("6${x + y * game.board.size} unconditional_status ${point}", client)
+            }
+        }
+        command("4 final_score", client)
+        //command("4 estimate_score", client)
     }
 
     @Synchronized
@@ -72,17 +80,17 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         if (!line.startsWith("=")) {
             return
         }
-        val listener = destinations.removeAt(0)
+        val client = destinations.removeAt(0)
 
-        println("Parsing reply: '$line'")
+        println("Parsing reply: '$line' client=$client queueSize=${destinations.size}")
 
-        if ((line.startsWith("=1 ") || line.startsWith("=4 ")) && line.length >= 5) {
+        if ((line.startsWith("=1 ") || line.startsWith("=2 ")) && line.length >= 5) {
             if (line.startsWith("=1 resign")) {
-                listener?.generatedResign()
+                client?.generatedResign()
                 return
             }
             if (line.startsWith("=1 PASS")) {
-                listener?.generatedPass()
+                client?.generatedPass()
                 return
             }
             val point = Point.fromString(line.substring(3))
@@ -91,28 +99,29 @@ class GnuGo(val game: Game, level: Int) : GameListener {
                 // attempt to add the stone again.
                 generatedPoint = point
             }
-            listener?.generatedMove(point)
+            client?.generatedMove(point)
             return
-
-        } else if (line.startsWith("=2 ")) {
-            game.countedEndGame(line.substring(2).trim())
 
         } else if (line.startsWith("=3")) {
 
             val data = line.substring(2)
             val space = data.indexOf(" ")
             if (space > 0) {
-                val pointNumber = Integer.parseInt(data.substring(0, space))
-                val y = pointNumber / game.board.size
-                val x = pointNumber - (y * game.board.size)
+                val point = decodePoint(data.substring(0, space))
                 val status = data.substring(space).trim()
-                Platform.runLater {
-                    markBoard(Point(x, y), status)
-                }
+                client?.pointStatus(point, status)
             }
-        } else if (line.startsWith("=5")) {
-            listener?.scoreEstimate(line.substring(3))
+
+        } else if (line.startsWith("=4")) {
+            client?.scoreEstimate(line.substring(3))
         }
+    }
+
+    fun decodePoint(str: String): Point {
+        val pointNumber = Integer.parseInt(str)
+        val y = pointNumber / game.board.size
+        val x = pointNumber - (y * game.board.size)
+        return Point(x, y)
     }
 
     fun markBoard(point: Point, status: String) {
@@ -142,18 +151,6 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         }
     }
 
-    fun countGame() {
-        command("2 final_score", null)
-
-        for (y in 0..game.board.size - 1) {
-            for (x in 0..game.board.size - 1) {
-                val point = Point(x, y)
-                val pointNumber = x + y * game.board.size
-                command("3${pointNumber} final_status ${point}", null)
-            }
-        }
-    }
-
     fun tidyUp() {
         game.listeners.remove(this)
         exec.kill()
@@ -167,5 +164,6 @@ interface GnuGoClient {
     fun generatedPass() {}
     fun generatedResign() {}
     fun scoreEstimate(score: String) {}
+    fun pointStatus(point: Point, status: String) {}
 }
 

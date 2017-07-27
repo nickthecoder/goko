@@ -1,13 +1,24 @@
+
+Score
+
 Bugs
 	A pass from Go Problems invokes the game scoring algorithm!
 		Also, why is it doing it after a SINGLE pass? Hmm.
 	Ko not tested for, and then throws exception when the ko point is played.
+	Quick game does not respect the size preference (until application is restarted).
+
+Consider using move_probabilities for hints, so that multiple points can be returned
+	Sort by value, show the top filled in, and the next N hollow.
 
 What should happen when setup stones are added, and then later nodes are invalid moves?
 
 Time limits for games
 
 Show captures on gameinfo view.
+
+Game score chart
+	Show a chart of the game score throughout the game (using GnuGo's estimate).
+	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.
 
 Edit games
 	Edit meta-data (as a Task)
