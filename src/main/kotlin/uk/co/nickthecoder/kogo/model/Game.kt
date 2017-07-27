@@ -54,6 +54,8 @@ class Game(size: Int) {
         if (metaData.fixedHandicaptPoints) {
             placeHandicap()
             playerToMove = players[if (metaData.handicap < 2) StoneColor.BLACK else StoneColor.WHITE]!!
+            playerToMove.yourTurn()
+            root.colorToPlay = playerToMove.color
         } else {
             playerToMove = players[StoneColor.BLACK]!!
             if (metaData.handicap > 2) {
@@ -62,9 +64,6 @@ class Game(size: Int) {
             } else {
                 playerToMove.yourTurn()
             }
-        }
-        if (metaData.fixedHandicaptPoints) {
-            playerToMove.yourTurn()
         }
     }
 
@@ -184,7 +183,6 @@ class Game(size: Int) {
 
     fun move(point: Point, color: StoneColor) {
         if (freeHandicaps > 0) {
-            println("Free handicap move")
             if (currentNode != root) {
                 throw IllegalStateException("Can only play handicap in the root node")
             }
@@ -193,7 +191,6 @@ class Game(size: Int) {
             updatedCurrentNode()
 
             if (freeHandicaps == 0) {
-                println("handicap done")
                 root.colorToPlay = StoneColor.WHITE
                 moved()
             }
@@ -213,14 +210,12 @@ class Game(size: Int) {
     var autoPlay: Boolean = true
 
     internal fun moved() {
-        println("Game.moved")
         val node = currentNode
         playerToMove = players.get(node.colorToPlay)!!
         listeners.forEach {
             it.moved()
         }
         if (autoPlay) {
-            println("Game.moved your turn ${playerToMove.color}")
             playerToMove.yourTurn()
             autoPlay = false
         }

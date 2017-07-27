@@ -68,6 +68,7 @@ class BoardView(val game: Game) : View {
             children.add(boardLayout)
         }
         boardLayout.build()
+        playing()
     }
 
     fun playing() {

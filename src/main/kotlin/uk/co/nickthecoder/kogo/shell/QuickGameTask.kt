@@ -38,8 +38,8 @@ class QuickGameTask(val mainWindow: MainWindow) : QuickGamePreferences() {
 
         game.file = Preferences.gameFile("Quick")
 
-        mainWindow.changeView(view)
         game.start()
+        mainWindow.changeView(view)
     }
 
 }

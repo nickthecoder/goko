@@ -24,6 +24,7 @@ class ChallengeMatchTask(val mainWindow: MainWindow) : ChallengeMatchPreferences
 
         game.metaData.handicap = handicapP.value!!
         game.metaData.komi = if (game.metaData.handicap == 0) komiP.value!! else 0.0
+        game.metaData.fixedHandicaptPoints = fixedHandicapPointsP.value!!
         game.metaData.japaneseRules = rulesP.value!!
         game.metaData.timeLimit = timeLimitP.value!!
 
@@ -39,8 +40,8 @@ class ChallengeMatchTask(val mainWindow: MainWindow) : ChallengeMatchPreferences
         game.file = Preferences.gameFile("Challenge")
 
         game.listeners.add(Preferences.challengeMatchPreferences)
-        mainWindow.changeView(view)
-        game.start()
 
+        game.start()
+        mainWindow.changeView(view)
     }
 }

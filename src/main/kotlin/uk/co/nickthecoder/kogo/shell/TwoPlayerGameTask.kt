@@ -20,6 +20,7 @@ class TwoPlayerGameTask(val mainWindow: MainWindow) : TwoPlayerGamePreferences()
         val view = PlayingView(mainWindow, game)
 
         game.metaData.handicap = handicapP.value!!
+        game.metaData.fixedHandicaptPoints = fixedHandicapPointsP.value!!
         game.metaData.komi = komiP.value!!
         game.metaData.japaneseRules = rulesP.value!!
         game.metaData.timeLimit = timeLimitP.value!!
@@ -35,7 +36,7 @@ class TwoPlayerGameTask(val mainWindow: MainWindow) : TwoPlayerGamePreferences()
 
         game.file = Preferences.gameFile("Two Player")
 
-        mainWindow.changeView(view)
         game.start()
+        mainWindow.changeView(view)
     }
 }

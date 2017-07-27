@@ -8,6 +8,7 @@ import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.kogo.model.StoneColor
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
+import uk.co.nickthecoder.paratask.parameters.BooleanParameter
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 import uk.co.nickthecoder.paratask.parameters.DoubleParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
@@ -32,6 +33,8 @@ Each time you play, the the handicap will change based on your previous results.
 
     val handicapP = IntParameter("handicap", value = 0, range = 0..9)
 
+    val fixedHandicapPointsP = BooleanParameter("fixedHandicapPoints", value = true)
+
     val komiP = DoubleParameter("komi", label = "Even Game's Komi", value = 5.0)
 
     val promotionThresholdP = IntParameter(name = "promotionThreshold", value = 3,
@@ -49,7 +52,7 @@ Each time you play, the the handicap will change based on your previous results.
     val rulesP = Preferences.createRulesChoice()
 
     init {
-        taskD.addParameters(boardSizeP, computerLevelP, computerPlaysP, handicapP, komiP, timeLimitP, rulesP,
+        taskD.addParameters(boardSizeP, computerLevelP, computerPlaysP, handicapP, fixedHandicapPointsP, komiP, timeLimitP, rulesP,
                 promotionThresholdP, demotionThresholdP, winsP, losesP
         )
     }
