@@ -1,28 +1,27 @@
 package uk.co.nickthecoder.kogo.preferences
 
 import javafx.application.Platform
+import uk.co.nickthecoder.kogo.GnuGoPlayer
 import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.Player
+import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.kogo.model.StoneColor
-import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
-import uk.co.nickthecoder.paratask.parameters.BooleanParameter
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
-import uk.co.nickthecoder.paratask.parameters.DoubleParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
 
 open class ChallengeMatchPreferences : AbstractGamePreferences(), GameListener {
 
-    override val taskD = TaskDescription("challengeMatch", description =
+    final override val taskD = TaskDescription("challengeMatch", description =
     """Play aginst the Gnu Go robot.
 Each time you play, the the handicap will change based on your previous results.
 """)
 
     val computerLevelP = IntParameter("computerLevel", range = 1..20, value = 10)
 
-    val computerPlaysP = ChoiceParameter<StoneColor>("computerPlays", value = StoneColor.BLACK)
+    val computerPlaysP = ChoiceParameter("computerPlays", value = StoneColor.BLACK)
             .choice("BLACK", StoneColor.BLACK, "Black")
             .choice("WHITE", StoneColor.WHITE, " White")
 
@@ -44,6 +43,21 @@ Each time you play, the the handicap will change based on your previous results.
 
     override fun run() {
         Preferences.save()
+    }
+
+    override fun changePlayers(game: Game) {
+        val human = LocalPlayer(game, StoneColor.opposite(computerPlaysP.value!!), Preferences.yourName, Preferences.yourRank)
+        human.timeRemaining = game.metaData.timeLimit.copy()
+
+        val gnuGo = GnuGoPlayer(game, computerPlaysP.value!!)
+        gnuGo.start()
+
+        game.addPlayer(gnuGo)
+        game.addPlayer(human)
+
+        game.file = Preferences.gameFile("Challenge")
+        // Listens for the end of the game to update number of wins/loses.
+        game.listeners.add(Preferences.challengeMatchPreferences)
     }
 
     override fun gameEnded(winner: Player?) {
@@ -74,7 +88,6 @@ Each time you play, the the handicap will change based on your previous results.
     }
 
     fun promote() {
-        // TODO, Cheers and cork popping sounds
         winsP.value = 0
 
         if (computerPlaysP.value == StoneColor.BLACK) {
@@ -89,7 +102,6 @@ Each time you play, the the handicap will change based on your previous results.
     }
 
     fun demote() {
-        // TODO, Boos and groans noise
         losesP.value = 0
 
         if (computerPlaysP.value == StoneColor.WHITE) {

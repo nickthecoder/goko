@@ -17,29 +17,7 @@ class QuickGameTask(val mainWindow: MainWindow) : QuickGamePreferences() {
     }
 
     override fun run() {
-
-        val game = Game(size = boardSizeP.value!!)
-        game.metaData.komi = komiP.value!!
-        game.metaData.handicap = handicapP.value!!
-        game.metaData.fixedHandicaptPoints = fixedHandicapPointsP.value!!
-        game.metaData.japaneseRules = rulesP.value!!
-        game.metaData.timeLimit = timeLimitP.value!!
-
-        val view = PlayingView(mainWindow, game)
-
-        val human = LocalPlayer(game, StoneColor.opposite(computerPlaysP.value!!), Preferences.yourName, Preferences.yourRank)
-        human.timeRemaining = game.metaData.timeLimit.copy()
-
-        val gnuGo = GnuGoPlayer(game, computerPlaysP.value!!)
-        gnuGo.start()
-
-        game.addPlayer(gnuGo)
-        game.addPlayer(human)
-
-        game.file = Preferences.gameFile("Quick")
-
-        game.start()
-        mainWindow.changeView(view)
+        mainWindow.changeView(createView(mainWindow))
     }
 
 }
