@@ -29,6 +29,8 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     protected val history = History(game)
 
+    val boardView = BoardView(game)
+
     private val shortcuts = ShortcutHelper("PlayingView", whole)
 
     protected val passB = KoGoActions.PASS.createButton(shortcuts) { onPass() }
@@ -69,6 +71,10 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     open fun onEdit() {
         val copy = game.copy()
         val view = EditGameView(mainWindow, copy)
+        if (boardView.colorVariation != ColorVariation.NORMAL) {
+            // We probably want to see the current board position when playing one-color-go.
+            view.onEnd()
+        }
         mainWindow.addViewAfter(this, view)
     }
 

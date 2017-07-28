@@ -24,8 +24,6 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     private val centerBorder = BorderPane()
 
-    private val boardView = BoardView(game)
-
     private val gameInfoView = GameInfoView(game, false)
 
     private val commentView = CommentsView(game, false, Preferences.editGamePreferences)

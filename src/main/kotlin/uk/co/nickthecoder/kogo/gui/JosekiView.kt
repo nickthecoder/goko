@@ -17,8 +17,6 @@ class JosekiView(mainWindow: MainWindow, val josekiDatabase: File)
 
     private val rightPane = BorderPane()
 
-    private val boardView = BoardView(game)
-
     private val commentsView = CommentsView(game, true, Preferences.josekiPreferences)
 
     override fun build() {

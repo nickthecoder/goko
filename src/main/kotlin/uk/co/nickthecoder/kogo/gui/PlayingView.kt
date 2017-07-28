@@ -11,8 +11,6 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
 
     protected val split = SplitPane()
 
-    val boardView = BoardView(game)
-
     val shortcuts = ShortcutHelper("PlayingView", node)
 
     val gameInfoView = GameInfoView(game,true)
