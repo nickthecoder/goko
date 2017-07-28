@@ -103,7 +103,8 @@ class Game(size: Int) {
         for (i in 0..metaData.handicap!! - 1) {
             val h = handicaps[i]
             val point = Point(start + h.x * jump, start + h.y * jump)
-            setupStone(point, StoneColor.BLACK)
+            root.addStone(board, point, StoneColor.BLACK)
+            board.setStoneAt(point, StoneColor.BLACK)
         }
     }
 
@@ -116,8 +117,8 @@ class Game(size: Int) {
         metaData.whiteName = players[StoneColor.WHITE]?.label ?: ""
     }
 
-    private fun setupStone(point: Point, color: StoneColor) {
-        root.addStone(board, point, color)
+    fun setupStone(point: Point, color: StoneColor) {
+        board.setStoneAt(point, color)
     }
 
     fun resign(player: Player) {

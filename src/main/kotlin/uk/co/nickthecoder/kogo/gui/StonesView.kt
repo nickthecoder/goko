@@ -60,7 +60,6 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
     }
 
     override fun stoneChanged(point: Point) {
-        println("StoneView stoneChanged")
         val color = board.getStoneAt(point)
         if (color == StoneColor.NONE) {
             removeAt(point)

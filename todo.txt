@@ -1,7 +1,5 @@
 
-Bugs
-	Free handicap stones aren't showing up when editing. Where they adde to the root node?
-	
+Bugs	
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
 		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).
@@ -10,17 +8,17 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
+Sound for countdowns (voice, beeps and large visuals)
+
+
+One Color Go
+
 Game score chart
 	Show a chart of the game score throughout the game (using GnuGo's estimate).
 	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.
 	Click on the chart to jump to that game node.
 
 Edit games
-	Delete branch (warn when deleting main line) (incluce deleting Passes)
-	Edit button from JosekiView (navigate to the same node in the copy)
-		Create a "NodeNavigation" class?
-		Or just use the original's node tree
-			GameNode.equals should be able to compare nodes for different games.
 	listen to the game being reviewed, and add nodes to the reviewing game as moves are played.
 		Add them as the main line in the copy.
 
@@ -31,12 +29,9 @@ Undo option when playing games (separate preference for each type of game)
 SFGReader
 	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.
 
-Icons on the tabs?
-
 Consider using CopyOnWrite for listeners
 	Maybe create a special generic class for listeners, with weak references too.
 
-Sound for countdowns (voice, beeps and large visuals)
 
 Use a cut-down version of GoTextProtocol to set up a client/server game across a LAN.
 	Or a propriatory protocol?
@@ -49,8 +44,6 @@ Consider using move_probabilities for hints, so that multiple points can be retu
 Hidden Stone Go (via client server)
 	Parameters for # of black & white stones
 	Parameter for showing your own hidden stones
-
-One Color Go
 
 New Geometry
 	Voids where no stones can be placed, and do NOT count as liberties.

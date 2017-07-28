@@ -31,7 +31,7 @@ object Preferences {
 
     val problemsPreferences = ProblemsPreferences()
     val problemsDirectory by problemsPreferences.directoryP
-    val problemsShowContinuations by problemsPreferences.showContinuationsP
+    val problemsShowContinuations by problemsPreferences.showBranchesP
     val problemsAutomaticOpponent by problemsPreferences.automaticOpponentP
 
     val josekiPreferences = JosekiPreferences()

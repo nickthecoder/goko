@@ -11,7 +11,7 @@ import javafx.scene.shape.LineTo
 import javafx.scene.shape.MoveTo
 import javafx.scene.shape.Path
 import uk.co.nickthecoder.kogo.model.*
-import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
+import uk.co.nickthecoder.paratask.util.Labelled
 
 
 class BoardView(val game: Game) : View {
@@ -42,7 +42,7 @@ class BoardView(val game: Game) : View {
 
     private val latestMark = SymbolMarkView(Point(-10, -10), "latest") // Initially off-screen
 
-    var showContinuations = ShowContinuations.DO_NOT_SHOW
+    var showBranches = ShowBranches.DO_NOT_SHOW
         set(v) {
             field = v
             updateContinuations()
@@ -137,15 +137,15 @@ class BoardView(val game: Game) : View {
     fun updateContinuations() {
         continuations.clear()
         val currentNode = game.currentNode
-        if (showContinuations != ShowContinuations.DO_NOT_SHOW) {
-            var index = 0
+        if (showBranches != ShowBranches.DO_NOT_SHOW) {
+            var index = 1
             var markView: MarkView
             currentNode.children.filter { it is MoveNode && !currentNode.hasMarkAt(it.point) }.map { it as MoveNode }.forEach { child ->
                 val mark: SymbolMark
-                if (showContinuations == ShowContinuations.NUMBERS) {
+                if (showBranches == ShowBranches.NUMBERS) {
                     markView = MarkView(LabelMark(child.point, index.toString()))
                 } else {
-                    if (index == 0) {
+                    if (index == 1) {
                         mark = MainLineMark(child.point)
                     } else {
                         mark = AlternateMark(child.point)
@@ -383,16 +383,14 @@ enum class MouseMode {
     PLAYING, ADDING_STONES, MARKING, REMOVING_STONES, REMOVING_MARKS
 }
 
-enum class ShowContinuations {
-    DO_NOT_SHOW, NUMBERS, SYMBOLS;
+enum class ShowBranches(override val label: String) : Labelled {
+    DO_NOT_SHOW("Do not show"),
+    NUMBERS("As Numbers"),
+    SYMBOLS("As Symbols")
+}
 
-    companion object {
-        fun createChoices(): ChoiceParameter<ShowContinuations> {
-            val parameter = ChoiceParameter<ShowContinuations>("showContinuations", value = ShowContinuations.DO_NOT_SHOW)
-            parameter.addChoice("none", ShowContinuations.DO_NOT_SHOW, "Do not show")
-            parameter.addChoice("numbers", ShowContinuations.NUMBERS, "As Numbers")
-            parameter.addChoice("symbols", ShowContinuations.SYMBOLS, "As Symbols")
-            return parameter
-        }
-    }
+enum class ColorVariation(override val label: String) : Labelled {
+    NORMAL("Normal"),
+    ONE_COLOR_GO("One Color Go"),
+    TWO_COLOR_ONE_COLOR_GO("Two Color One Color Go")
 }

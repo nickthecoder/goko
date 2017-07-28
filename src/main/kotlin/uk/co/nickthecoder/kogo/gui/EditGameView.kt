@@ -117,7 +117,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         val editGameInfoB = KoGoActions.EDIT_GAME_INFO.createButton(shortcuts) { onEditGameInfo() }
         val deleteBranchB = KoGoActions.DELETE_BRANCH.createButton(shortcuts) { onDeleteBranch() }
 
-        boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
+        boardView.showBranches = Preferences.editGamePreferences.showBranchesP.value!!
 
         toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, navigation, mainLineB, branchesButton, deleteBranchB)
 
@@ -249,7 +249,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     override fun preferencesChanged() {
         boardView.showMoveNumbers = Preferences.editGameShowMoveNumber!!
-        boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
+        boardView.showBranches = Preferences.editGamePreferences.showBranchesP.value!!
     }
 
     fun onEditGameInfo() {
