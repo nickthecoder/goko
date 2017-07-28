@@ -2,8 +2,10 @@ package uk.co.nickthecoder.kogo.preferences
 
 import uk.co.nickthecoder.kogo.GnuGoPlayer
 import uk.co.nickthecoder.kogo.LocalPlayer
+import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.StoneColor
+import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
@@ -39,4 +41,20 @@ open class QuickGamePreferences : AbstractGamePreferences() {
 
         game.file = Preferences.gameFile("Quick")
     }
+
+    override fun createLauchTask(mainWindow: MainWindow): Task {
+        return QuickGameTask(mainWindow, this)
+    }
+}
+
+class QuickGameTask(val mainWindow: MainWindow, parent: Task) : QuickGamePreferences() {
+
+    init {
+        taskD.copyValuesFrom(parent.taskD)
+    }
+
+    override fun run() {
+        mainWindow.changeView(createView(mainWindow))
+    }
+
 }

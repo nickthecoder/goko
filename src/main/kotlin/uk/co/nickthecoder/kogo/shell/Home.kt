@@ -5,6 +5,8 @@ import uk.co.nickthecoder.kogo.gui.JosekiView
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.preferences.*
 import uk.co.nickthecoder.paratask.Task
+import uk.co.nickthecoder.paratask.parameters.StringParameter
+import uk.co.nickthecoder.paratask.parameters.TaskParameter
 
 class Home(mainWindow: MainWindow) : GridView(mainWindow) {
 
@@ -14,10 +16,15 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow) {
 
     override fun addButtons() {
 
+        Preferences.gamesPreferences.gamesP.value.forEach { compound ->
+            val taskParameter = compound.find("type") as TaskParameter
+            val labelP = compound.find("label") as StringParameter
+            val task = taskParameter.value!! as AbstractGamePreferences
+            buttons.add(createTaskButton(labelP.value, style="none") { task.createLauchTask(mainWindow) })
+        }
+
         with(buttons) {
-            add(createTaskButton("Quick Game", "quick-game") { QuickGameTask(mainWindow) })
-            add(createTaskButton("Two Player Game", "two-player-game") { TwoPlayerGameTask(mainWindow) })
-            add(createTaskButton("Challenge Match", "challenge-match") { ChallengeMatchTask(mainWindow) })
+
             add(createTaskButton("Open SGF File", "open-file") { OpenFileTask(mainWindow) })
             add(createButton("Problems", "problems") { ProblemsView(mainWindow) })
             add(createButton("Joseki Dictionary", "joseki") {

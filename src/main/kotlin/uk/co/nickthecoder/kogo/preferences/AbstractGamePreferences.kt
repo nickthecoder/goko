@@ -8,6 +8,7 @@ import uk.co.nickthecoder.kogo.gui.PlayingView
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.StoneColor
 import uk.co.nickthecoder.paratask.AbstractTask
+import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.*
 
 abstract class AbstractGamePreferences : AbstractTask() {
@@ -51,4 +52,5 @@ abstract class AbstractGamePreferences : AbstractTask() {
 
     abstract fun changePlayers(game: Game)
 
+    abstract fun createLauchTask(mainWindow: MainWindow): Task
 }

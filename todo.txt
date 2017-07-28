@@ -8,6 +8,22 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
+Listen to game, and update the challenge match win/loss figures.
+
+Rename ColorVariation to GameVariation
+
+Allow any number of Playing preferences
+	Name
+	Type (2Player, Man vs Machine, AIChallenge)
+	All parameters from that type
+Need to have a Task object for each Preference, and for it to create another task, which copies the values.
+	i.e. QuickGamePreferences creates QuickGameTask
+
+New Geometry Variation
+	Voids where no stones can be placed, and do NOT count as liberties.
+	Neutral points, where no stones can be placed, but DO count as liberties.
+	Create a GameSetup interface, which is used to place free handicap stones (regular game), voids and neutrals and hidden moves.
+
 Sound for countdowns (voice, beeps and large visuals)
 
 Game score chart
@@ -16,8 +32,10 @@ Game score chart
 	Click on the chart to jump to that game node.
 
 Edit games
-	listen to the game being reviewed, and add nodes to the reviewing game as moves are played.
+	Instead of just COPYING a game, also listen to it, adding nodes to the copy as they are played.
 		Add them as the main line in the copy.
+		WHen Undo is implemented in PlayingView, that will be tricky!
+			Will probably have to improve on just the "moved" event.
 
 Undo option when playing games (separate preference for each type of game)
 	When playing a new move, make it the main line, but keep the old node (adding a "Undone" comment).
@@ -41,8 +59,4 @@ Consider using move_probabilities for hints, so that multiple points can be retu
 Hidden Stone Go (via client server)
 	Parameters for # of black & white stones
 	Parameter for showing your own hidden stones
-
-New Geometry
-	Voids where no stones can be placed, and do NOT count as liberties.
-	Neutral points, where no stones can be placed, but DO count as liberties.
 

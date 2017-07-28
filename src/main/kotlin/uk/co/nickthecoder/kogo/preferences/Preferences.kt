@@ -7,6 +7,7 @@ import com.eclipsesource.json.PrettyPrint
 import uk.co.nickthecoder.kogo.model.TimedLimit
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
+import uk.co.nickthecoder.paratask.parameters.TaskParameter
 import uk.co.nickthecoder.paratask.parameters.ValueParameter
 import uk.co.nickthecoder.paratask.util.child
 import uk.co.nickthecoder.paratask.util.homeDirectory
@@ -23,11 +24,7 @@ object Preferences {
 
     val timeLimitPreferences = TimeLimitPreferences()
 
-    val quickGamePreferences = QuickGamePreferences()
-
-    val challengeMatchPreferences = ChallengeMatchPreferences()
-
-    val twoPlayerGamePreferences = TwoPlayerGamePreferences()
+    val gamesPreferences = GamesPreferences()
 
     val problemsPreferences = ProblemsPreferences()
     val problemsDirectory by problemsPreferences.directoryP
@@ -59,9 +56,7 @@ object Preferences {
         // NOTE. Time limits must come before any preferences that use time limits (such as quickGamePreferences).
         addPreferenceTask(basicPreferences)
         addPreferenceTask(timeLimitPreferences)
-        addPreferenceTask(quickGamePreferences)
-        addPreferenceTask(challengeMatchPreferences)
-        addPreferenceTask(twoPlayerGamePreferences)
+        addPreferenceTask(gamesPreferences)
         addPreferenceTask(problemsPreferences)
         addPreferenceTask(josekiPreferences)
         addPreferenceTask(editGamePreferences)
@@ -159,9 +154,11 @@ object Preferences {
         timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, 3 overtimes", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0, overtimePeriod = 30.0, overtimePeriods = 3))
         timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, no overtime", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0))
 
-        timeLimitPreferences.updateTimeLimitChoice(quickGamePreferences.timeLimitP)
-        timeLimitPreferences.updateTimeLimitChoice(challengeMatchPreferences.timeLimitP)
-        timeLimitPreferences.updateTimeLimitChoice(twoPlayerGamePreferences.timeLimitP)
+        gamesPreferences.gamesP.value.forEach { compound ->
+            val taskParameter = compound.find("game") as TaskParameter
+            val task = taskParameter.value!! as AbstractGamePreferences
+            timeLimitPreferences.updateTimeLimitChoice(task.timeLimitP)
+        }
     }
 
     fun createRulesChoice(): ChoiceParameter<Boolean> {

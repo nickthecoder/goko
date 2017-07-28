@@ -1,9 +1,11 @@
 package uk.co.nickthecoder.kogo.preferences
 
 import uk.co.nickthecoder.kogo.LocalPlayer
+import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.kogo.model.StoneColor
+import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.StringParameter
 
@@ -36,6 +38,24 @@ open class TwoPlayerGamePreferences : AbstractGamePreferences(), GameListener {
         game.addPlayer(whitePlayer)
 
         game.file = Preferences.gameFile("Two Player")
+    }
+
+
+    override fun createLauchTask(mainWindow: MainWindow): Task {
+        return TwoPlayerGameTask(mainWindow, this)
+    }
+
+}
+
+
+class TwoPlayerGameTask(val mainWindow: MainWindow, parent: Task) : TwoPlayerGamePreferences() {
+
+    init {
+        taskD.copyValuesFrom(parent.taskD)
+    }
+
+    override fun run() {
+        mainWindow.changeView(createView(mainWindow))
     }
 
 }

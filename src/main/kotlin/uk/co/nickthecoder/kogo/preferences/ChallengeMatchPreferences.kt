@@ -8,6 +8,7 @@ import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.kogo.model.StoneColor
+import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
@@ -57,7 +58,8 @@ Each time you play, the the handicap will change based on your previous results.
 
         game.file = Preferences.gameFile("Challenge")
         // Listens for the end of the game to update number of wins/loses.
-        game.listeners.add(Preferences.challengeMatchPreferences)
+        // TODO Re-implement this ...
+        // game.listeners.add(Preferences.challengeMatchPreferences)
     }
 
     override fun gameEnded(winner: Player?) {
@@ -114,4 +116,21 @@ Each time you play, the the handicap will change based on your previous results.
             }
         }
     }
+
+    override fun createLauchTask(mainWindow: MainWindow): Task {
+        return ChallengeMatchTask(mainWindow, this)
+    }
+}
+
+
+class ChallengeMatchTask(val mainWindow: MainWindow, parent: Task) : ChallengeMatchPreferences() {
+
+    init {
+        taskD.copyValuesFrom(parent.taskD)
+    }
+
+    override fun run() {
+        mainWindow.changeView(createView(mainWindow))
+    }
+
 }
