@@ -19,4 +19,6 @@ interface GameListener {
     fun stoneChanged(point: Point) {}
 
     fun updatedCurrentNode() {}
+
+    fun updatedMetaData() {}
 }

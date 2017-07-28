@@ -4,6 +4,8 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.OutputStream
 import java.io.OutputStreamWriter
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Writes a game (or set of games) in sgf format.
@@ -23,7 +25,7 @@ Node Annotation Properties 	C, DM, GB, GW, HO, N, UC, V (x)
 Move Annotation Properties 	BM, DO, IT, TE
 Markup Properties 	AR (x), CR, DD (x), LB, LN (x), MA, SL (x), SQ, TR
 Root Properties 	AP (x),b CA, FF, GM, ST (x), SZ
-Game Info Properties 	AN(x), BR(x), BT(x), CP(x), DT(x), EV(x), GN(x), GC(x), ON(x), OT, PB, PC(x), PW, RE, RO(x), RU(x), SO(x), TM, US(x), WR(x), WT(x)
+Game Info Properties 	AN, BR, BT(x), CP, DT, EV, GN, GC, ON(x), OT, PB, PC, PW, RE, RO(x), RU, SO, TM, US, WR, WT(x)
 Timing Properties 	BL(x), OB(x), OW(x), WL(x)
 Miscellaneous Properties 	FG(x), PM(x), VW(x)
  */
@@ -70,26 +72,28 @@ class SGFWriter {
         writeProperty("PL", game.root.colorToPlay)
         writeProperty("SZ", game.board.size)
         writeProperty("CA", "utf-8")
-        writeOptionalProperty("PB", game.players[StoneColor.BLACK]?.label)
-        writeOptionalProperty("PW", game.players[StoneColor.WHITE]?.label)
-        if (game.metaData.komi != 0.0) {
-            writeProperty("KM", game.metaData.komi)
-        }
-        writeOptionalProperty("RE", game.metaData.gameResult)
+        writeOptionalProperty("PB", game.metaData.blackName)
+        writeOptionalProperty("BR", game.metaData.blackRank)
+        writeOptionalProperty("PW", game.metaData.whiteName)
+        writeOptionalProperty("WR", game.metaData.whiteRank)
 
-        val timeLimit = game.metaData.timeLimit
-        if (timeLimit is TimedLimit) {
-            writeProperty("TM", timeLimit.mainPeriod.toInt())
-            if (timeLimit.byoYomiPeriod > 0) {
-                if (timeLimit.byoYomiMoves!! > 1) {
-                    writeProperty("OT", "${timeLimit.byoYomiMoves} moves / ${humanTimePeriod(timeLimit.byoYomiPeriod)}")
-                } else {
-                    writeProperty("OT", "1 move / ${humanTimePeriod(timeLimit.byoYomiPeriod)}")
-                }
-            }
-        }
+        writeOptionalProperty("RE", game.metaData.result)
+        writeOptionalProperty("KM", game.metaData.komi, saveZeros = false)
+        writeOptionalProperty("TM", game.metaData.mainTime.scaledValue)
+        writeOptionalProperty("OT", game.metaData.overtime)
 
-        // Players names, ranks, board size etc
+        writeOptionalProperty("DT", game.metaData.datePlayed)
+        writeOptionalProperty("EV", game.metaData.event)
+        writeOptionalProperty("GN", game.metaData.gameName)
+        writeOptionalProperty("PC", game.metaData.place)
+        writeOptionalProperty("RU", game.metaData.rules)
+        writeOptionalProperty("GC", game.metaData.gameComments)
+
+        writeOptionalProperty("CP", game.metaData.copyright)
+        writeOptionalProperty("AN", game.metaData.annotator)
+        writeOptionalProperty("US", game.metaData.enteredBy)
+        writeOptionalProperty("SO", game.metaData.source)
+
         writer.write("\n")
     }
 
@@ -232,6 +236,29 @@ class SGFWriter {
     private fun writeOptionalProperty(name: String, value: String?) {
         if (value != null && value.isNotBlank()) {
             writeProperty(name, value)
+        }
+    }
+
+    private fun writeOptionalProperty(name: String, value: Double?, saveZeros: Boolean = true) {
+        if (value != null) {
+            if (saveZeros || value != 0.0) {
+                writeProperty(name, value)
+            }
+        }
+    }
+
+    private fun writeOptionalProperty(name: String, value: Int?, saveZeros: Boolean = true) {
+        if (value != null) {
+            if (saveZeros || value != 0) {
+                writeProperty(name, value)
+            }
+        }
+    }
+
+    private fun writeOptionalProperty(name: String, value: Date?) {
+        if (value != null) {
+            val format = SimpleDateFormat("yyyy-MM-dd")
+            writeProperty(name, format.format(value))
         }
     }
 }

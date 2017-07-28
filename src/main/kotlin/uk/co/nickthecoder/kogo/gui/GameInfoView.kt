@@ -19,14 +19,17 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
 
     override val node = vBox
 
+    val bPlayer = Label()
+    val wPlayer = Label()
+
     val bTime = Label()
     val wTime = Label()
 
     val blackCapturesLabel = Label()
     val whiteCapturesLabel = Label()
-
+    val handicapLabel = Label()
+    val komiLabel = Label()
     val gameResultLabel = Label()
-
     val messageLabel = Label()
 
     init {
@@ -41,18 +44,10 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
             styleClass.add("game-info")
         }
 
-        val bPlayer = Label(game.players[StoneColor.BLACK]?.label)
-        val wPlayer = Label(game.players[StoneColor.WHITE]?.label)
         bPlayer.graphic = ImageView(KoGo.imageResource("buttons/mode-black.png"))
         wPlayer.graphic = ImageView(KoGo.imageResource("buttons/mode-white.png"))
         bPlayer.styleClass.add("heading")
         wPlayer.styleClass.add("heading")
-
-        val handicap = if (game.metaData.handicap == 0) "None" else "${game.metaData.handicap} stones"
-        val handicapLabel = Label("Handicap : ${handicap}")
-
-        val komi = if (game.metaData.komi == 0.0) "None" else game.metaData.komi.toString()
-        val komiLabel = Label("Komi : $komi")
 
         gameResultLabel.styleClass.add("game-result")
 
@@ -70,6 +65,7 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         vBox.children.add(messageLabel)
 
         updateCaptures()
+        updatedMetaData()
     }
 
     fun updateCaptures() {
@@ -97,9 +93,31 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         updateCaptures()
     }
 
+    override fun updatedMetaData() {
+        bPlayer.text = game.metaData.blackName
+        wPlayer.text = game.metaData.whiteName
+        val handicap = if (game.metaData.handicap == null) {
+            "Unknown"
+        } else if (game.metaData.handicap == 0) {
+            "None"
+        } else {
+            "${game.metaData.handicap} stones"
+        }
+        handicapLabel.text = "Handicap : ${handicap}"
+
+        val komi = if (game.metaData.komi == null) {
+            "Unknown"
+        } else if (game.metaData.komi == 0.0) {
+            "None"
+        } else {
+            game.metaData.komi.toString()
+        }
+        komiLabel.text = "Komi : $komi"
+    }
+
     override fun gameEnded(winner: Player?) {
         vBox.children.add(gameResultLabel)
-        gameResultLabel.text = "Game Result : ${game.metaData.gameResult}"
+        gameResultLabel.text = "Game Result : ${game.metaData.result}"
         stopCountdown()
     }
 

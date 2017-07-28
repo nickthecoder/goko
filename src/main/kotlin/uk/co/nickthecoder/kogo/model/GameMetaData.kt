@@ -1,10 +1,12 @@
 package uk.co.nickthecoder.kogo.model
 
+import javafx.application.Platform
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.*
+import java.util.*
 
-class GameMetaData() : AbstractTask() {
+class GameMetaData(val game: Game) : AbstractTask() {
 
     override val taskD = TaskDescription("editGameInformation")
 
@@ -24,8 +26,8 @@ class GameMetaData() : AbstractTask() {
 
     private val gameInfo = GroupParameter("gameInfo")
     private val datePlayedP = DateParameter(name = "datePlayed", required = false)
-    private val gameNameP = StringParameter(name = "gameName", required = false)
     private val eventP = StringParameter(name = "event", required = false)
+    private val gameNameP = StringParameter(name = "gameName", required = false)
     private val placeP = StringParameter(name = "place", required = false)
     private val rulesP = StringParameter(name = "rules", required = false)
     private val gameCommentsP = StringParameter(name = "gameComments", required = false)
@@ -40,16 +42,28 @@ class GameMetaData() : AbstractTask() {
     var blackRank by blackRankP
     var whiteName by whiteNameP
     var whiteRank by whiteRankP
-    var gameResult by resultP
+
+    var result by resultP
     var mainTime by mainTimeP
     var overtime by overtimeP
-    var datePlayed by datePlayedP
+    var datePlayed: Date?
+        get() = datePlayedP.date
+        set(v) {
+            datePlayedP.date = v
+        }
+
     var event by eventP
+    var gameName by gameNameP
     var place by placeP
     var rules by rulesP
     var gameComments by gameCommentsP
     var handicap by handicapP
     var komi by komiP
+
+    var copyright by copyrightP
+    var annotator by annotatorP
+    var enteredBy by enteredByP
+    var source by sourceP
 
     var timeLimit: TimeLimit = NoTimeLimit()
         set(v) {
@@ -62,7 +76,7 @@ class GameMetaData() : AbstractTask() {
     init {
         blackGroup.addParameters(blackNameP, blackRankP)
         whiteGroup.addParameters(whiteNameP, whiteRankP)
-        gameInfo.addParameters(datePlayedP, gameNameP, eventP, placeP, rulesP, gameCommentsP)
+        gameInfo.addParameters(datePlayedP, eventP, gameNameP, placeP, rulesP, gameCommentsP)
         authors.addParameters(copyrightP, annotatorP, enteredByP, sourceP)
 
         taskD.addParameters(blackGroup, whiteGroup, resultP, handicapP, komiP, mainTimeP, overtimeP, gameInfo, authors)
@@ -82,7 +96,9 @@ class GameMetaData() : AbstractTask() {
     }
 
     override fun run() {
-        // Do nothing! We only care about gathering the information, we don't need to do anything with it.
+        Platform.runLater {
+            game.updatedMetaData()
+        }
     }
 
 }

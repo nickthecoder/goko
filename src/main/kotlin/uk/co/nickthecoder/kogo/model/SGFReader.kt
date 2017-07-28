@@ -1,6 +1,8 @@
 package uk.co.nickthecoder.kogo.model
 
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Reads a .sgf file.
@@ -101,8 +103,27 @@ class SGFReader {
 
     private fun updateRootNode(game: Game, sgfNode: SGFNode) {
 
-        game.players[StoneColor.WHITE]!!.label = sgfNode.getPropertyValue("PW") ?: ""
-        game.players[StoneColor.BLACK]!!.label = sgfNode.getPropertyValue("PB") ?: ""
+        game.metaData.blackName = sgfNode.getOptionalPropertyValue("PB")
+        game.metaData.blackRank = sgfNode.getOptionalPropertyValue("BR")
+        game.metaData.whiteName = sgfNode.getOptionalPropertyValue("PW")
+        game.metaData.whiteRank = sgfNode.getOptionalPropertyValue("WR")
+
+        game.metaData.result = sgfNode.getOptionalPropertyValue("RE")
+        game.metaData.komi = sgfNode.getDoublePropertyValue("KM")
+        game.metaData.mainTime.scaledValue = sgfNode.getDoublePropertyValue("TM") ?: 0.0
+        game.metaData.overtime = sgfNode.getOptionalPropertyValue("OT")
+
+        game.metaData.datePlayed = sgfNode.getDatePropertyValue("DT")
+        game.metaData.event = sgfNode.getOptionalPropertyValue("EV")
+        game.metaData.gameName = sgfNode.getOptionalPropertyValue("GN")
+        game.metaData.place = sgfNode.getOptionalPropertyValue("PC")
+        game.metaData.rules = sgfNode.getOptionalPropertyValue("RU")
+        game.metaData.gameComments = sgfNode.getOptionalPropertyValue("GC")
+
+        game.metaData.copyright = sgfNode.getOptionalPropertyValue("CP")
+        game.metaData.annotator = sgfNode.getOptionalPropertyValue("AN")
+        game.metaData.enteredBy = sgfNode.getOptionalPropertyValue("US")
+        game.metaData.source = sgfNode.getOptionalPropertyValue("SO")
 
         game.metaData.komi = sgfNode.getPropertyValue("KM")?.toDouble() ?: 0.0
 
@@ -479,6 +500,28 @@ class SGFNode() {
 
     fun hasProperty(propertyName: String): Boolean {
         return listProperties.get(propertyName) != null
+    }
+
+    fun getOptionalPropertyValue(propertyName: String): String {
+        return getPropertyValue(propertyName) ?: ""
+    }
+
+    fun getDoublePropertyValue(propertyName: String): Double? {
+        return getPropertyValue(propertyName)?.toDouble()
+    }
+
+    fun getIntPropertyValue(propertyName: String): Int? {
+        return getPropertyValue(propertyName)?.toInt()
+    }
+
+    fun getDatePropertyValue(propertyName: String): Date? {
+        val str = getPropertyValue(propertyName)
+        if (str == null) {
+            return null
+        } else {
+            val format = SimpleDateFormat("yyyy-MM-dd")
+            return format.parse(str)
+        }
     }
 
     fun getPropertyValue(propertyName: String): String? {

@@ -9,7 +9,7 @@ class Game(size: Int) {
 
     var file: File? = null
 
-    val metaData = GameMetaData()
+    val metaData = GameMetaData(this)
 
     val board = Board(size, this)
 
@@ -62,6 +62,7 @@ class Game(size: Int) {
                 playerToMove.yourTurn()
             }
         }
+        updatedMetaData()
     }
 
     fun createGnuGo(): GnuGo {
@@ -111,6 +112,8 @@ class Game(size: Int) {
         if (playerToMove.color == player.color) {
             playerToMove = player
         }
+        metaData.blackName = players[StoneColor.BLACK]?.label ?: ""
+        metaData.whiteName = players[StoneColor.WHITE]?.label ?: ""
     }
 
     fun setupStone(point: Point, color: StoneColor) {
@@ -130,7 +133,7 @@ class Game(size: Int) {
     }
 
     fun gameFinished(winner: Player?, matchResult: String = "") {
-        metaData.gameResult = matchResult
+        metaData.result = matchResult
         listeners.forEach {
             it.gameEnded(winner)
         }
@@ -244,6 +247,12 @@ class Game(size: Int) {
     fun updatedCurrentNode() {
         for (listener in listeners) {
             listener.updatedCurrentNode()
+        }
+    }
+
+    fun updatedMetaData() {
+        for (listener in listeners) {
+            listener.updatedMetaData()
         }
     }
 
