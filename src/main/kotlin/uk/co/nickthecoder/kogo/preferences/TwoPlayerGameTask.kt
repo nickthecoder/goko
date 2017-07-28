@@ -1,4 +1,4 @@
-package uk.co.nickthecoder.kogo.shell
+package uk.co.nickthecoder.kogo.preferences
 
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.preferences.Preferences
@@ -9,7 +9,7 @@ class TwoPlayerGameTask(val mainWindow: MainWindow) : TwoPlayerGamePreferences()
     init {
         taskD.copyValuesFrom(Preferences.twoPlayerGamePreferences.taskD)
     }
-    
+
     override fun run() {
         mainWindow.changeView(createView(mainWindow))
     }

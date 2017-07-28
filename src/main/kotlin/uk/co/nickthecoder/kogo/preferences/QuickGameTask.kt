@@ -1,4 +1,4 @@
-package uk.co.nickthecoder.kogo.shell
+package uk.co.nickthecoder.kogo.preferences
 
 import uk.co.nickthecoder.kogo.GnuGoPlayer
 import uk.co.nickthecoder.kogo.LocalPlayer

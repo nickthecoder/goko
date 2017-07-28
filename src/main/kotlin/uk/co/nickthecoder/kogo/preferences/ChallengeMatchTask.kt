@@ -1,4 +1,4 @@
-package uk.co.nickthecoder.kogo.shell
+package uk.co.nickthecoder.kogo.preferences
 
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.preferences.ChallengeMatchPreferences
