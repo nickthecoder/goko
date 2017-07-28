@@ -1,7 +1,7 @@
 
-updatedMetaData event, called on task save. GameInfoView updates its fields.
-
 Bugs
+	Free handicap stones aren't showing up when editing. Where they adde to the root node?
+	
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
 		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).
@@ -21,7 +21,6 @@ Game score chart
 	Click on the chart to jump to that game node.
 
 Edit games
-	Edit meta-data (as a Task)
 	Delete branch (warn when deleting main line) (incluce deleting Passes)
 	Edit button from JosekiView (navigate to the same node in the copy)
 		Create a "NodeNavigation" class?

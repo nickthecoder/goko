@@ -39,6 +39,7 @@ object KoGoActions {
     val MODE_REMOVE_MARK = KoGoAction("mode-remove-mark", KeyCode.DIGIT0, control = true, tooltip = "Mode : Remove marks")
 
     val EDIT_GAME_INFO = KoGoAction("game-info", keyCode = null, label = "Game Info")
+    val DELETE_BRANCH = KoGoAction("delete-branch", keyCode = null, label = "Delete Branch")
 
     // ProblemView
 

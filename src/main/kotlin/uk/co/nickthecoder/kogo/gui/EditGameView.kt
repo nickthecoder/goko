@@ -1,6 +1,7 @@
 package uk.co.nickthecoder.kogo.gui
 
 import javafx.scene.control.SplitPane
+import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.model.*
@@ -19,13 +20,17 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     private val rightBorder = BorderPane()
 
+    private val centerBorder = BorderPane()
+
     private val boardView = BoardView(game)
 
     private val gameInfoView = GameInfoView(game, false)
 
     private val commentView = CommentsView(game, false, Preferences.editGamePreferences)
 
-    val shortcuts = ShortcutHelper("EditGameView", node)
+    private val bottomToolBar = ToolBar()
+
+    private val shortcuts = ShortcutHelper("EditGameView", node)
 
     override fun build() {
         super.build()
@@ -34,9 +39,11 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         commentView.build()
         whole.top = toolBar
         whole.center = split
+        centerBorder.center = boardView.node
+        centerBorder.bottom = bottomToolBar
 
         with(split) {
-            items.addAll(boardView.node, rightBorder)
+            items.addAll(centerBorder, rightBorder)
             dividers[0].position = 0.7
         }
         rightBorder.center = commentView.node
@@ -106,11 +113,13 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         modes.createToggleGroup()
 
         val editGameInfoB = KoGoActions.EDIT_GAME_INFO.createToggleButton(shortcuts) { onEditGameInfo() }
+        val deleteBranchB = KoGoActions.DELETE_BRANCH.createToggleButton(shortcuts) { onDeleteBranch() }
 
 
         boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
 
-        toolBar.items.addAll(saveB, preferencesB, modes, navigation, mainLineB, estimateScoreB, passB, editGameInfoB)
+        toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, deleteBranchB)
+        bottomToolBar.items.addAll(modes, navigation, mainLineB)
 
         preferencesChanged()
         Preferences.listeners.add(this)
@@ -194,6 +203,11 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     fun onEditGameInfo() {
         val prompter = TaskPrompter(game.metaData)
+        prompter.placeOnStage(Stage())
+    }
+
+    fun onDeleteBranch() {
+        val prompter = TaskPrompter(DeleteBranchTask(game))
         prompter.placeOnStage(Stage())
     }
 }

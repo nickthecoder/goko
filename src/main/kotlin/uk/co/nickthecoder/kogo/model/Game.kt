@@ -240,6 +240,18 @@ class Game(size: Int) {
         }
     }
 
+    fun deleteBranch() {
+        if (currentNode == root) {
+            root.children.clear()
+            moved()
+        } else {
+            val node = currentNode
+            currentNode.parent?.children?.remove(node)
+            moveBack()
+            node.parent = null
+        }
+    }
+
     fun clearMarks() {
         currentNode.marks.toList().forEach { removeMark(it.point) }
     }

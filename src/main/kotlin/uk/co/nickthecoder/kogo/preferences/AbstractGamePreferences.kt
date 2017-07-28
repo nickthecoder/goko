@@ -43,6 +43,7 @@ abstract class AbstractGamePreferences : AbstractTask() {
 
         changePlayers(game)
 
+        game.metaData.enteredBy = "Kogo"
         game.start()
         return view
     }
