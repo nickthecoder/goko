@@ -1,5 +1,8 @@
 package uk.co.nickthecoder.kogo.gui
 
+import javafx.event.ActionEvent
+import javafx.scene.control.MenuButton
+import javafx.scene.control.MenuItem
 import javafx.scene.control.SplitPane
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
@@ -29,6 +32,8 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     private val commentView = CommentsView(game, false, Preferences.editGamePreferences)
 
     private val bottomToolBar = ToolBar()
+
+    private val continuationButton = MenuButton()
 
     private val shortcuts = ShortcutHelper("EditGameView", node)
 
@@ -118,10 +123,11 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
 
-        toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, deleteBranchB)
-        bottomToolBar.items.addAll(modes, navigation, mainLineB)
+        toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, deleteBranchB, navigation, mainLineB, continuationButton)
+        bottomToolBar.items.addAll(modes)
 
         preferencesChanged()
+        buildContinuations()
         Preferences.listeners.add(this)
     }
 
@@ -192,8 +198,40 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         gameInfoView.messageLabel.text = score
     }
 
+    fun buildContinuations() {
+        with(continuationButton) {
+            items.clear()
+            text = "Continuations"
+
+            game.currentNode.children.forEach { child ->
+                val text = when (child) {
+                    is PassNode -> "Pass"
+                    is MoveNode -> child.point.toString()
+                    is SetupNode -> "Setup Node"
+                    else -> null
+                }
+                if (text != null) {
+                    val menuItem = MenuItem(text)
+                    menuItem.addEventHandler(ActionEvent.ACTION) {
+                        child.apply(game)
+                    }
+                    continuationButton.items.add(menuItem)
+                }
+            }
+
+            if (continuationButton.items.isEmpty()) {
+                val menuItem = MenuItem("None")
+                menuItem.isDisable = true
+                continuationButton.items.add(menuItem)
+            }
+
+        }
+
+    }
+
     override fun moved() {
         super.moved()
+        buildContinuations()
     }
 
     override fun preferencesChanged() {
