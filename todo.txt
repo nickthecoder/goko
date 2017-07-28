@@ -10,13 +10,6 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
-Use alt for nav
-
-What should happen when setup stones are added, and then later nodes are invalid moves?
-	Perhaps we should create a new branch when adding/removing stones to a setup node which has child nodes.
-		The trouble with this is navigating to this new set-up node.
-		Need a pull-down to list all (or 
-
 Game score chart
 	Show a chart of the game score throughout the game (using GnuGo's estimate).
 	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.

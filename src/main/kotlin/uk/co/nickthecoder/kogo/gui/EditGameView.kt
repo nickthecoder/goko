@@ -163,7 +163,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     fun addSetupStone(point: Point, color: StoneColor) {
         var node = game.currentNode
-        if (node !is SetupNode) {
+        if (node !is SetupNode || node.children.isNotEmpty()) {
             node = SetupNode(game.playerToMove.color)
             game.addNode(node)
             node.apply(game)
