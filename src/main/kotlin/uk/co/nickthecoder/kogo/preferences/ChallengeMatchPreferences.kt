@@ -13,29 +13,18 @@ import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 import uk.co.nickthecoder.paratask.parameters.DoubleParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
 
-open class ChallengeMatchPreferences : AbstractTask(), GameListener {
+open class ChallengeMatchPreferences : AbstractGamePreferences(), GameListener {
 
     override val taskD = TaskDescription("challengeMatch", description =
     """Play aginst the Gnu Go robot.
 Each time you play, the the handicap will change based on your previous results.
 """)
 
-    val boardSizeP = ChoiceParameter<Int>("boardSize", value = 19)
-            .choice("19", 19, "Standard (19x19)")
-            .choice("13", 13, "Medium (13x13)")
-            .choice("9", 9, "Small (9x9)")
-
     val computerLevelP = IntParameter("computerLevel", range = 1..20, value = 10)
 
     val computerPlaysP = ChoiceParameter<StoneColor>("computerPlays", value = StoneColor.BLACK)
             .choice("BLACK", StoneColor.BLACK, "Black")
             .choice("WHITE", StoneColor.WHITE, " White")
-
-    val handicapP = IntParameter("handicap", value = 0, range = 0..9)
-
-    val fixedHandicapPointsP = BooleanParameter("fixedHandicapPoints", value = true)
-
-    val komiP = DoubleParameter("komi", label = "Even Game's Komi", value = 5.0)
 
     val promotionThresholdP = IntParameter(name = "promotionThreshold", value = 3,
             description = "The number of consecutive wins to rank up")
@@ -46,10 +35,6 @@ Each time you play, the the handicap will change based on your previous results.
     val winsP = IntParameter("wins", value = 0)
 
     val losesP = IntParameter("loses", value = 0)
-
-    val timeLimitP = Preferences.timeLimitPreferences.createTimeLimitChoice()
-
-    val rulesP = Preferences.createRulesChoice()
 
     init {
         taskD.addParameters(boardSizeP, computerLevelP, computerPlaysP, handicapP, fixedHandicapPointsP, komiP, timeLimitP, rulesP,
