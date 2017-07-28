@@ -38,6 +38,8 @@ object KoGoActions {
     val MODE_LETTERS = KoGoAction("mode-letters", KeyCode.DIGIT9, label = "A", control = true, tooltip = "Mode : Add letter marks")
     val MODE_REMOVE_MARK = KoGoAction("mode-remove-mark", KeyCode.DIGIT0, control = true, tooltip = "Mode : Remove marks")
 
+    val EDIT_GAME_INFO = KoGoAction("game-info", keyCode = null, label = "Game Info")
+
     // ProblemView
 
     val PROBLEM_RESTART = KoGoAction("problem-reload", KeyCode.F5, control = true, tooltip = "Restart Problem")

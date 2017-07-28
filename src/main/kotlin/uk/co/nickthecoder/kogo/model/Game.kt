@@ -1,9 +1,6 @@
 package uk.co.nickthecoder.kogo.model
 
-import uk.co.nickthecoder.kogo.GnuGo
-import uk.co.nickthecoder.kogo.GnuGoPlayer
-import uk.co.nickthecoder.kogo.LocalPlayer
-import uk.co.nickthecoder.kogo.Player
+import uk.co.nickthecoder.kogo.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -12,7 +9,7 @@ class Game(size: Int) {
 
     var file: File? = null
 
-    val metaData = GameMetaData(this)
+    val metaData = GameMetaData()
 
     val board = Board(size, this)
 
@@ -49,17 +46,17 @@ class Game(size: Int) {
     }
 
     fun start() {
-        metaData.whitePlayer = players[StoneColor.WHITE]!!.label
-        metaData.blackPlayer = players[StoneColor.BLACK]!!.label
+        metaData.whiteName = players[StoneColor.WHITE]!!.label
+        metaData.blackName = players[StoneColor.BLACK]!!.label
         if (metaData.fixedHandicaptPoints) {
             placeHandicap()
-            playerToMove = players[if (metaData.handicap < 2) StoneColor.BLACK else StoneColor.WHITE]!!
+            playerToMove = players[if (metaData.handicap!! < 2) StoneColor.BLACK else StoneColor.WHITE]!!
             playerToMove.yourTurn()
             root.colorToPlay = playerToMove.color
         } else {
             playerToMove = players[StoneColor.BLACK]!!
-            if (metaData.handicap > 2) {
-                freeHandicaps = metaData.handicap
+            if (metaData.handicap!! > 2) {
+                freeHandicaps = metaData.handicap!!
                 playerToMove.placeHandicap()
             } else {
                 playerToMove.yourTurn()
@@ -102,7 +99,7 @@ class Game(size: Int) {
             }
         }
 
-        for (i in 0..metaData.handicap - 1) {
+        for (i in 0..metaData.handicap!! - 1) {
             val h = handicaps[i]
             val point = Point(start + h.x * jump, start + h.y * jump)
             setupStone(point, StoneColor.BLACK)
@@ -142,20 +139,8 @@ class Game(size: Int) {
     var awaitingFinalCount = false
 
     fun countEndGame() {
-        /*
-        val counter = GnuGoPlayer(this, StoneColor.NONE)
-        counter.start()
-        // Tell the counter where the stones are
-        for (x in 0..board.size - 1) {
-            for (y in 0..board.size - 1) {
-                val color = board.getStoneAt(x, y)
-                if (color != StoneColor.NONE) {
-                    counter.stoneChanged(Point(x, y), null)
-                }
-            }
-        }
-        counter.countGame()
-        */
+        val scorer = ScoreEstimator(this)
+        scorer.estimate { countedEndGame(it) }
     }
 
     fun countedEndGame(result: String) {
@@ -211,7 +196,7 @@ class Game(size: Int) {
 
     internal fun moved() {
         val node = currentNode
-        playerToMove = players.get(node.colorToPlay)!!
+        playerToMove = players[node.colorToPlay]!!
         listeners.forEach {
             it.moved()
         }
@@ -290,9 +275,8 @@ class Game(size: Int) {
     fun moveBack(n: Int = 1) {
         for (foo in 1..n) {
             val parent = currentNode.parent
-            if (parent == null) {
-                return
-            }
+            parent ?: return
+
             currentNode.takeBack(this)
             currentNode = parent
             moved()
@@ -308,18 +292,6 @@ class Game(size: Int) {
             nextNode.apply(this)
             currentNode = nextNode
             moved()
-        }
-    }
-
-    fun moveToStart() {
-        while (currentNode.parent != null) {
-            moveBack()
-        }
-    }
-
-    fun moveToEnd() {
-        while (currentNode.children.isNotEmpty()) {
-            moveForward()
         }
     }
 

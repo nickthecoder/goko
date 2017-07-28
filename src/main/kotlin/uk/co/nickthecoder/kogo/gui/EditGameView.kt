@@ -2,12 +2,14 @@ package uk.co.nickthecoder.kogo.gui
 
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.BorderPane
+import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.PreferencesListener
 import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.CompoundButtons
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
+import uk.co.nickthecoder.paratask.project.TaskPrompter
 
 class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWindow, game), PreferencesListener {
 
@@ -103,9 +105,12 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         modes.children.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
         modes.createToggleGroup()
 
+        val editGameInfoB = KoGoActions.EDIT_GAME_INFO.createToggleButton(shortcuts) { onEditGameInfo() }
+
+
         boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
 
-        toolBar.items.addAll(saveB, preferencesB, modes, navigation, mainLineB, estimateScoreB, passB)
+        toolBar.items.addAll(saveB, preferencesB, modes, navigation, mainLineB, estimateScoreB, passB, editGameInfoB)
 
         preferencesChanged()
         Preferences.listeners.add(this)
@@ -185,5 +190,10 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     override fun preferencesChanged() {
         boardView.showMoveNumbers = Preferences.editGameShowMoveNumber!!
         boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
+    }
+
+    fun onEditGameInfo() {
+        val prompter = TaskPrompter(game.metaData)
+        prompter.placeOnStage(Stage())
     }
 }

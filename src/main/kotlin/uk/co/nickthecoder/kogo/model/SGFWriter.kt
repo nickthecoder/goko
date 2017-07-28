@@ -213,12 +213,16 @@ class SGFWriter {
         writeProperty(name, fromPoint(value))
     }
 
-    private fun writeProperty(name: String, value: Int) {
-        writeProperty(name, value.toString())
+    private fun writeProperty(name: String, value: Int?) {
+        if (value != null) {
+            writeProperty(name, value.toString())
+        }
     }
 
-    private fun writeProperty(name: String, value: Double) {
-        writeProperty(name, value.toString())
+    private fun writeProperty(name: String, value: Double?) {
+        if (value != null) {
+            writeProperty(name, value.toString())
+        }
     }
 
     private fun writeProperty(name: String, value: String) {

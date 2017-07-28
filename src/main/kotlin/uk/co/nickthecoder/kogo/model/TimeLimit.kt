@@ -104,21 +104,21 @@ class TimedLimit(
 
     fun main() = "Main Time : ${humanTimePeriod(mainPeriod)}"
 
-    fun byoYomi(): String {
+    fun byoYomi(prefix: String = "\n"): String {
         if (byoYomiPeriod > 0) {
             if (byoYomiMoves!! > 1) {
-                return "\nByo-Yomi : $byoYomiMoves moves in ${humanTimePeriod(byoYomiPeriod)}"
+                return "${prefix}Byo-Yomi : $byoYomiMoves moves in ${humanTimePeriod(byoYomiPeriod)}"
             } else {
-                return "\nByo-Yomi : ${humanTimePeriod(byoYomiPeriod)}"
+                return "${prefix}Byo-Yomi : ${humanTimePeriod(byoYomiPeriod)}"
             }
         } else {
             return ""
         }
     }
 
-    fun overtime(): String {
+    fun overtime(prefix: String = "\n"): String {
         if (overtimePeriods!! > 0) {
-            return "\nPlus $overtimePeriods overtime periods"
+            return "${prefix}Plus $overtimePeriods overtime periods"
         }
         return ""
     }
