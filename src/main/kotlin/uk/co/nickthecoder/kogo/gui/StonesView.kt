@@ -39,7 +39,7 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         game.listeners.add(this)
     }
 
-    fun add(point: Point, image: Image?) {
+    private fun add(point: Point, image: Image?) {
         if (!board.contains(point)) {
             throw IllegalArgumentException("Not within the board")
         }
@@ -53,13 +53,14 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         layoutInArea(imageView, point.x * scale, (board.size - point.y - 1) * scale, scale, scale, 0.0, HPos.LEFT, VPos.TOP)
     }
 
-    fun removeAt(point: Point) {
+    private fun removeAt(point: Point) {
         val oldImageView = array[point.x][point.y]
         array[point.x][point.y] = null
         oldImageView?.let { children.remove(it) }
     }
 
     override fun stoneChanged(point: Point) {
+        println("StoneView stoneChanged")
         val color = board.getStoneAt(point)
         if (color == StoneColor.NONE) {
             removeAt(point)
@@ -72,6 +73,10 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         if (oldScale == boardView.scale) {
             return
         }
+        resetStones()
+    }
+
+    private fun resetStones() {
         scaledWhiteStone = scaleImage("stoneW.png", boardView.scale.toInt())
         scaledBlackStone = scaleImage("stoneB.png", boardView.scale.toInt())
         children.clear()

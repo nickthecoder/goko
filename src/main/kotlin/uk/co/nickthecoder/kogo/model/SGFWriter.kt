@@ -145,7 +145,7 @@ class SGFWriter {
             writer.write(property)
             points.forEach {
                 val pt = fromPoint(it)
-                writer.write("$[$pt]")
+                writer.write("[$pt]")
             }
         }
     }

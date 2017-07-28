@@ -116,8 +116,8 @@ class Game(size: Int) {
         metaData.whiteName = players[StoneColor.WHITE]?.label ?: ""
     }
 
-    fun setupStone(point: Point, color: StoneColor) {
-        board.setStoneAt(point, color)
+    private fun setupStone(point: Point, color: StoneColor) {
+        root.addStone(board, point, color)
     }
 
     fun resign(player: Player) {
@@ -347,6 +347,7 @@ class Game(size: Int) {
         val result = reader.read()
         result.file = this.file
 
+        result.root.apply(result)
         return result
     }
 }
