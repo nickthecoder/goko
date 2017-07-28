@@ -242,6 +242,7 @@ class Game(size: Int) {
 
     fun deleteBranch() {
         if (currentNode == root) {
+            root.children.forEach { it.parent = null }
             root.children.clear()
             moved()
         } else {

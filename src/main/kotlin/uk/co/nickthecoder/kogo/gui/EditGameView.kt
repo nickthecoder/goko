@@ -33,7 +33,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     private val bottomToolBar = ToolBar()
 
-    private val continuationButton = MenuButton()
+    private val branchesButton = MenuButton()
 
     private val shortcuts = ShortcutHelper("EditGameView", node)
 
@@ -117,17 +117,17 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         modes.children.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
         modes.createToggleGroup()
 
-        val editGameInfoB = KoGoActions.EDIT_GAME_INFO.createToggleButton(shortcuts) { onEditGameInfo() }
-        val deleteBranchB = KoGoActions.DELETE_BRANCH.createToggleButton(shortcuts) { onDeleteBranch() }
+        val editGameInfoB = KoGoActions.EDIT_GAME_INFO.createButton(shortcuts) { onEditGameInfo() }
+        val deleteBranchB = KoGoActions.DELETE_BRANCH.createButton(shortcuts) { onDeleteBranch() }
 
 
         boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
 
-        toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, deleteBranchB, navigation, mainLineB, continuationButton)
+        toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, navigation, mainLineB, branchesButton, deleteBranchB)
         bottomToolBar.items.addAll(modes)
 
         preferencesChanged()
-        buildContinuations()
+        buildBranchesMenu()
         Preferences.listeners.add(this)
     }
 
@@ -198,10 +198,10 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         gameInfoView.messageLabel.text = score
     }
 
-    fun buildContinuations() {
-        with(continuationButton) {
+    fun buildBranchesMenu() {
+        with(branchesButton) {
             items.clear()
-            text = "Continuations"
+            text = "Branches"
 
             game.currentNode.children.forEach { child ->
                 val text = when (child) {
@@ -215,14 +215,14 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
                     menuItem.addEventHandler(ActionEvent.ACTION) {
                         child.apply(game)
                     }
-                    continuationButton.items.add(menuItem)
+                    branchesButton.items.add(menuItem)
                 }
             }
 
-            if (continuationButton.items.isEmpty()) {
+            if (branchesButton.items.isEmpty()) {
                 val menuItem = MenuItem("None")
                 menuItem.isDisable = true
-                continuationButton.items.add(menuItem)
+                branchesButton.items.add(menuItem)
             }
 
         }
@@ -231,7 +231,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     override fun moved() {
         super.moved()
-        buildContinuations()
+        buildBranchesMenu()
     }
 
     override fun preferencesChanged() {

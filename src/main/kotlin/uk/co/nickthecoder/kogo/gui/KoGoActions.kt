@@ -19,12 +19,12 @@ object KoGoActions {
     val ESTIMATE_SCORE = KoGoAction("estimateScore", null, label = "Score")
 
     // EditGameView
-    val GO_FIRST = KoGoAction("go-first", KeyCode.HOME, control = true, tooltip = "Rewind to the beginning")
-    val GO_REWIND = KoGoAction("go-rewind", KeyCode.PAGE_UP, control = true, tooltip = "Go back 10 moves")
-    val GO_BACK = KoGoAction("go-back", KeyCode.LEFT, control = true, tooltip = "Go back 1 move")
-    val GO_FORWARD = KoGoAction("go-forward", KeyCode.RIGHT, control = true, tooltip = "Go forward 1 move")
-    val GO_FAST_FORWARD = KoGoAction("go-fastForward", KeyCode.PAGE_DOWN, control = true, tooltip = "Fast Forward 10 moves")
-    val GO_END = KoGoAction("go-last", KeyCode.END, control = true, tooltip = "Fast forward to the end")
+    val GO_FIRST = KoGoAction("go-first", KeyCode.HOME, alt = true, tooltip = "Rewind to the beginning")
+    val GO_REWIND = KoGoAction("go-rewind", KeyCode.PAGE_UP, alt = true, tooltip = "Go back 10 moves")
+    val GO_BACK = KoGoAction("go-back", KeyCode.LEFT, alt = true, tooltip = "Go back 1 move")
+    val GO_FORWARD = KoGoAction("go-forward", KeyCode.RIGHT, alt = true, tooltip = "Go forward 1 move")
+    val GO_FAST_FORWARD = KoGoAction("go-fastForward", KeyCode.PAGE_DOWN, alt = true, tooltip = "Fast Forward 10 moves")
+    val GO_END = KoGoAction("go-last", KeyCode.END, alt = true, tooltip = "Fast forward to the end")
     val GO_MAIN_LINE = KoGoAction("go-mainLine", KeyCode.M, alt = true, label = "Main Line", tooltip = "Return to the main line of play")
 
     val MODE_MOVE = KoGoAction("mode-move", KeyCode.DIGIT1, control = true, tooltip = "Mode : Make moves")
