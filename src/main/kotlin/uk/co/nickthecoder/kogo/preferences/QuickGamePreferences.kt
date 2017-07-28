@@ -19,7 +19,8 @@ open class QuickGamePreferences : AbstractGamePreferences() {
     val computerLevelP = IntParameter("computerLevel", range = 1..20, value = 10)
 
     init {
-        taskD.addParameters(boardSizeP, computerPlaysP, computerLevelP, handicapP, fixedHandicapPointsP, komiP, timeLimitP, rulesP)
+        taskD.addParameters(boardSizeP, computerPlaysP, computerLevelP, handicapP,
+                fixedHandicapPointsP, komiP, timeLimitP, rulesP, colorVariationP)
     }
 
     override fun run() {

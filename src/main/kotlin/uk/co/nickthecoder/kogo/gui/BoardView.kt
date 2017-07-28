@@ -54,6 +54,12 @@ class BoardView(val game: Game) : View {
             updateMoveNumbers()
         }
 
+    var colorVariation: ColorVariation = ColorVariation.NORMAL
+        set(v) {
+            field = v
+            stones.requestLayout()
+        }
+
     override val node: Parent
         get() = container
 

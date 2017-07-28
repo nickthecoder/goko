@@ -82,8 +82,18 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         for (x in 0..board.size - 1) {
             for (y in 0..board.size - 1) {
                 val color = board.getStoneAt(x, y)
-                if (color != StoneColor.NONE) {
-                    add(Point(x, y), if (color == StoneColor.BLACK) scaledBlackStone else scaledWhiteStone)
+                if (color.isStone()) {
+                    val point = Point(x, y)
+                    when (boardView.colorVariation) {
+                        ColorVariation.NORMAL ->
+                            add(point, if (color == StoneColor.BLACK) scaledBlackStone else scaledWhiteStone)
+                        ColorVariation.ONE_COLOR_GO ->
+                            add(point, scaledWhiteStone)
+                        ColorVariation.TWO_COLOR_ONE_COLOR_GO -> {
+                            val foo = (y * board.size + x).hashCode() % 2
+                            add(point, if (foo == 0) scaledBlackStone else scaledWhiteStone)
+                        }
+                    }
                 }
             }
         }

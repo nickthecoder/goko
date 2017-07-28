@@ -10,9 +10,6 @@ Bugs
 
 Sound for countdowns (voice, beeps and large visuals)
 
-
-One Color Go
-
 Game score chart
 	Show a chart of the game score throughout the game (using GnuGo's estimate).
 	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.

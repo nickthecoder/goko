@@ -16,7 +16,8 @@ open class TwoPlayerGamePreferences : AbstractGamePreferences(), GameListener {
     val whitePlayerP = StringParameter("whiteName", label = "Whites's Name", required = false, value = "Mister White")
 
     init {
-        taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP, fixedHandicapPointsP, komiP, timeLimitP, rulesP)
+        taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP,
+                fixedHandicapPointsP, komiP, timeLimitP, rulesP, colorVariationP)
     }
 
     override fun run() {
