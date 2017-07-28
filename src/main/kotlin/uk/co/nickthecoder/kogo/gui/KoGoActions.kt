@@ -12,7 +12,7 @@ object KoGoActions {
     // Various views
     val PREFERENCES = KoGoAction("preferences", KeyCode.P, control = true, tooltip = "Preferences")
     val PASS = KoGoAction("pass", KeyCode.P, alt = true, label = "Pass")
-    val EDIT = KoGoAction("edit", null, label = "Edit", tooltip = "Edit Game")
+    val EDIT = KoGoAction("edit", KeyCode.E, control = true, label = "Edit", tooltip = "Edit Game")
     val SAVE = KoGoAction("save", KeyCode.S, control = true, label = "Save", tooltip = "Save Game")
     val RESIGN = KoGoAction("resign", null, label = "Resign", tooltip = "Resign Game")
     val HINT = KoGoAction("hint", null, label = "Hint")

@@ -1,11 +1,10 @@
 package uk.co.nickthecoder.kogo.gui
 
 import javafx.event.ActionEvent
-import javafx.scene.control.MenuButton
-import javafx.scene.control.MenuItem
-import javafx.scene.control.SplitPane
-import javafx.scene.control.ToolBar
+import javafx.geometry.Orientation
+import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.TilePane
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
@@ -31,7 +30,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     private val commentView = CommentsView(game, false, Preferences.editGamePreferences)
 
-    private val bottomToolBar = ToolBar()
+    private val modesToolBar = ToolBar()
 
     private val branchesButton = MenuButton()
 
@@ -44,15 +43,17 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         commentView.build()
         whole.top = toolBar
         whole.center = split
-        centerBorder.center = boardView.node
-        centerBorder.bottom = bottomToolBar
 
         with(split) {
             items.addAll(centerBorder, rightBorder)
             dividers[0].position = 0.7
         }
+
         rightBorder.center = commentView.node
         rightBorder.top = gameInfoView.node
+
+        centerBorder.center = boardView.node
+        centerBorder.left = modesToolBar
 
         val preferencesB = KoGoActions.PREFERENCES.createButton(shortcuts) { mainWindow.addView(PreferencesView(mainWindow, Preferences.editGamePreferences)) }
 
@@ -113,18 +114,30 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             boardView.removingMark()
         }
 
-        val modes = CompoundButtons()
-        modes.children.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
-        modes.createToggleGroup()
-
         val editGameInfoB = KoGoActions.EDIT_GAME_INFO.createButton(shortcuts) { onEditGameInfo() }
         val deleteBranchB = KoGoActions.DELETE_BRANCH.createButton(shortcuts) { onDeleteBranch() }
-
 
         boardView.showContinuations = Preferences.editGamePreferences.showContinuationsP.value!!
 
         toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, navigation, mainLineB, branchesButton, deleteBranchB)
-        bottomToolBar.items.addAll(modes)
+
+        val modes = TilePane()
+        with(modes) {
+            prefColumns = 1
+            children.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
+            styleClass.add("modes")
+            children.forEach {
+                it as ToggleButton
+                it.minWidth = 40.0
+                it.minHeight = 40.0
+            }
+        }
+
+        val modesToggleGroup = ToggleGroup()
+        modes.children.forEach { modesToggleGroup.toggles.add(it as ToggleButton) }
+
+        modesToolBar.items.addAll(modes)
+        modesToolBar.orientation = Orientation.VERTICAL
 
         preferencesChanged()
         buildBranchesMenu()
