@@ -52,7 +52,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     }
 
     fun addStone(color: StoneColor, point: Point) {
-        command("play ${color.toString().toLowerCase()} ${point}", null)
+        command("play ${color.toString().toLowerCase()} $point", null)
     }
 
     /**
@@ -68,7 +68,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
             for (x in 0..game.board.size - 1) {
                 val point = Point(x, y)
                 val handler = PointStatusHandler(client, point)
-                command("final_status ${point}", handler)
+                command("final_status $point", handler)
             }
         }
         val handler = FinalScoreHandler(client)

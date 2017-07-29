@@ -4,7 +4,6 @@ import javafx.event.ActionEvent
 import javafx.geometry.Orientation
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.TilePane
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences

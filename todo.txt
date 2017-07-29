@@ -12,17 +12,6 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
-Re-do Mode toolbar, don't use TilePane because it doesn't work well when the window is too small.
-
-Check : Listen to game, and update the challenge match win/loss figures.
-
-AbstractGamePreference to have a "style" or "styles" property, which is used to style the home buttons.
-	man-vs-machine man-vs-machine-1cg (for 1 color go) man-vs-machine-1c2cg
-	two-player two-player-1cg two-player-1c2cg two-player-hidden
-	OR
-	Have one main style, and others to overlay additional images.
-		e.g. two-player plaus size9 and one-color
-
 
 New Geometry Variation
 	StoneColor.isPlayable and isEmpty are NOT the same, when neutral points are introduced.

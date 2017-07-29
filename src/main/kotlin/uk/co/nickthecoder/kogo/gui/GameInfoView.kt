@@ -4,9 +4,11 @@ import javafx.application.Platform
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
 import javafx.scene.layout.VBox
+import javafx.scene.media.AudioClip
 import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.Player
 import uk.co.nickthecoder.kogo.model.*
+import uk.co.nickthecoder.kogo.preferences.Preferences
 import java.util.*
 
 /**
@@ -131,6 +133,19 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         stopCountdown()
     }
 
+    var lastPlayed : AudioClip? = null // Prevents the same clip being played again
+    var audioClips = mutableListOf<AudioClip?>()
+
+    init {
+        for (i in 0..10) {
+            if (Preferences.basicPreferences.playSoundsP.value == true) {
+                audioClips.add(KoGo.audioClip("$i.mp3"))
+            } else {
+                audioClips.add(null)
+            }
+        }
+    }
+
     inner class Countdown(val timedLimit: TimedLimit, val color: StoneColor) : Runnable {
 
         var period: Int = 0
@@ -164,14 +179,16 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         }
 
         override fun run() {
+
             while (!finished) {
 
                 val now = Date().time
                 val ellapsedMillis = now - startTimeMillis
                 var timeLeft = startPeriodSeconds - (ellapsedMillis / 1000.0)
-                if (timeLeft < 0) {
+                if (timeLeft < 0.0) {
                     timeLeft = 0.0
                 }
+
                 if (period == 0) {
                     timedLimit.mainPeriod = timeLeft
                 } else if (period == 1) {
@@ -179,7 +196,9 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
                 } else {
                     timedLimit.overtimePeriod = timeLeft
                 }
-                if (timeLeft == 0.0) {
+
+                if (timeLeft <= 0.0) {
+                    lastPlayed = null
                     beginPeriod()
                     if (period < 0) {
                         Platform.runLater {
@@ -187,14 +206,26 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
                         }
                         return
                     }
-                }
+                } else {
+                    if (timeLeft < 11) {
+                        val audioClip = audioClips[timeLeft.toInt()]
+                        if ( audioClip != lastPlayed ) {
+                            audioClip?.play()
+                            lastPlayed = audioClip
+                        }
+                    } else {
+                        lastPlayed = null
+                    }
 
+                }
                 Platform.runLater { updateTimes() }
                 Thread.sleep(1000)
+
             }
         }
 
         fun moved() {
+
             val gameTimeLimit = game.metaData.timeLimit as TimedLimit
 
             if (period == 1) {
