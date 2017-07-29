@@ -20,5 +20,7 @@ interface GameListener {
 
     fun updatedCurrentNode() {}
 
+    fun nodeChanged(node: GameNode) {}
+
     fun updatedMetaData() {}
 }

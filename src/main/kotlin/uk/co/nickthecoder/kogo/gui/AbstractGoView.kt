@@ -6,10 +6,7 @@ import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.HintGenerator
 import uk.co.nickthecoder.kogo.LocalPlayer
 import uk.co.nickthecoder.kogo.ScoreEstimator
-import uk.co.nickthecoder.kogo.model.Board
-import uk.co.nickthecoder.kogo.model.Game
-import uk.co.nickthecoder.kogo.model.GameListener
-import uk.co.nickthecoder.kogo.model.History
+import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 import uk.co.nickthecoder.paratask.project.TaskPrompter
 
@@ -69,8 +66,8 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     }
 
     open fun onEdit() {
-        val copy = game.copy()
-        val view = EditGameView(mainWindow, copy)
+        val follower = FollowGame(game)
+        val view = EditGameView(mainWindow, follower.copy)
         if (boardView.colorVariation != GameVariation.NORMAL) {
             // We probably want to see the current board position when playing one-color-go.
             view.onEnd()

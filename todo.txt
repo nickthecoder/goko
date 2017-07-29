@@ -12,23 +12,20 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
-
-New Geometry Variation
-	StoneColor.isPlayable and isEmpty are NOT the same, when neutral points are introduced.
-	Voids where no stones can be placed, and do NOT count as liberties.
-	Neutral points, where no stones can be placed, but DO count as liberties.
-	Create a GameSetup interface, which is used to place free handicap stones (regular game), voids and neutrals and hidden moves.
-
-Game score chart
-	Show a chart of the game score throughout the game (using GnuGo's estimate).
-	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.
-	Click on the chart to jump to that game node.
+Remove gamelistener.updatedcurrentnode and maybe added/removed mark too
+	Just use node updated
+	Rename moved to changedNode
 
 Edit games
 	Instead of just COPYING a game, also listen to it, adding nodes to the copy as they are played.
 		Add them as the main line in the copy.
 		WHen Undo is implemented in PlayingView, that will be tricky!
 			Will probably have to improve on just the "moved" event.
+
+Game score chart
+	Show a chart of the game score throughout the game (using GnuGo's estimate).
+	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.
+	Click on the chart to jump to that game node.
 
 Undo option when playing games (separate preference for each type of game)
 	When playing a new move, make it the main line, but keep the old node (adding a "Undone" comment).
@@ -40,16 +37,17 @@ SFGReader
 Consider using CopyOnWrite for listeners
 	Maybe create a special generic class for listeners, with weak references too.
 
-
 Use a cut-down version of GoTextProtocol to set up a client/server game across a LAN.
 	Or a propriatory protocol?
 
 Images for each of the Home view's buttons
 
-Consider using move_probabilities for hints, so that multiple points can be returned
-	Sort by value, show the top filled in, and the next N hollow.
-
 Hidden Stone Go (via client server)
 	Parameters for # of black & white stones
 	Parameter for showing your own hidden stones
 
+New Geometry Variation
+	StoneColor.isPlayable and isEmpty are NOT the same, when neutral points are introduced.
+	Voids where no stones can be placed, and do NOT count as liberties.
+	Neutral points, where no stones can be placed, but DO count as liberties.
+	Create a GameSetup interface, which is used to place free handicap stones (regular game), voids and neutrals and hidden moves.

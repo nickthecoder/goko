@@ -234,6 +234,11 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     }
 
+    override fun nodeChanged(node: GameNode) {
+        if (node === game.currentNode) {
+            buildBranchesMenu()
+        }
+    }
     override fun moved() {
         super.moved()
         buildBranchesMenu()

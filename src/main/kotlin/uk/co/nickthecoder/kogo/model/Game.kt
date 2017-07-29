@@ -5,6 +5,11 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 
+/**
+ * Note, this class is NOT thread safe, but this shouldn't be a problem, as all interactions should be done in the
+ * JavaFX thread. Also, all GameListeners will be notified from the JavaFX Thread.
+ * There are a few places where threading is used : GnuGo and the countdown timer in GameInfoView.
+ */
 class Game(size: Int) {
 
     var file: File? = null
@@ -197,6 +202,12 @@ class Game(size: Int) {
     }
 
     var autoPlay: Boolean = true
+
+    internal fun nodeChanged(node: GameNode) {
+        listeners.forEach {
+            it.nodeChanged(node)
+        }
+    }
 
     internal fun moved() {
         val node = currentNode

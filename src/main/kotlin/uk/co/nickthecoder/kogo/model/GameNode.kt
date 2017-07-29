@@ -128,12 +128,33 @@ abstract class GameNode(var colorToPlay: StoneColor) {
     }
 
     open fun sameAs(node: GameNode) = false
-}
 
+    abstract fun copy(): GameNode
+
+    /**
+     * Copy the data not set by the constructor
+     */
+    open protected fun copyDetails(into: GameNode) {
+        into.moveNumber = this.moveNumber
+        this.addedStones.forEach { key, value -> into.addedStones.put(key, value) }
+        this.removedStones.forEach { key, value -> into.removedStones.put(key, value) }
+        this.mutableMarks.forEach { into.mutableMarks.add(it) }
+        into.comment = this.comment
+        into.name = this.name
+        into.moveAnotation = this.moveAnotation
+        into.nodeAnotation = this.nodeAnotation
+    }
+}
 
 class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
 
     override fun toString() = "#$moveNumber SetupNode" // TODO count of stones added
+
+    override fun copy(): SetupNode {
+        val copy = SetupNode(colorToPlay)
+        copyDetails(copy)
+        return copy
+    }
 }
 
 class PassNode(val color: StoneColor) : GameNode(color.opposite()) {
@@ -141,6 +162,12 @@ class PassNode(val color: StoneColor) : GameNode(color.opposite()) {
     override fun sameAs(node: GameNode) = node is PassNode
 
     override fun toString() = "#$moveNumber PassNode"
+
+    override fun copy(): PassNode {
+        val copy = PassNode(colorToPlay)
+        copyDetails(copy)
+        return copy
+    }
 }
 
 class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposite()) {
@@ -176,4 +203,10 @@ class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposit
     override fun sameAs(node: GameNode) = node is MoveNode && this.point == node.point && this.color == node.color
 
     override fun toString() = "#$moveNumber MoveNode $color @ $point"
+
+    override fun copy(): MoveNode {
+        val copy = MoveNode(point, color)
+        copyDetails(copy)
+        return copy
+    }
 }

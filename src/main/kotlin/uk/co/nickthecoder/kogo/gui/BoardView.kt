@@ -173,7 +173,6 @@ class BoardView(val game: Game) : View {
             if (currentNode is MoveNode) {
                 if (!currentNode.hasMarkAt(currentNode.point)) {
                     latestMark.point = currentNode.point
-                    latestMark.colorWhite(board.getStoneAt(currentNode.point) == StoneColor.BLACK)
                 }
             }
         }
@@ -361,7 +360,7 @@ class BoardView(val game: Game) : View {
             }
         }
 
-        override fun moved() {
+        private fun update() {
             marks.clear()
             for (mark in board.game.currentNode.marks) {
                 marks.add(mark.createMarkView())
@@ -371,6 +370,16 @@ class BoardView(val game: Game) : View {
             if (mouseMode == MouseMode.PLAYING) {
                 mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
             }
+        }
+
+        override fun nodeChanged(node: GameNode) {
+            if (node === game.currentNode) {
+                update()
+            }
+        }
+
+        override fun moved() {
+            update()
         }
 
         override fun addedMark(mark: Mark) {
