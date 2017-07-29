@@ -19,8 +19,6 @@ New Geometry Variation
 	Neutral points, where no stones can be placed, but DO count as liberties.
 	Create a GameSetup interface, which is used to place free handicap stones (regular game), voids and neutrals and hidden moves.
 
-Sound for countdowns (voice, beeps and large visuals)
-
 Game score chart
 	Show a chart of the game score throughout the game (using GnuGo's estimate).
 	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.

@@ -173,6 +173,7 @@ class BoardView(val game: Game) : View {
             if (currentNode is MoveNode) {
                 if (!currentNode.hasMarkAt(currentNode.point)) {
                     latestMark.point = currentNode.point
+                    latestMark.colorWhite(board.getStoneAt(currentNode.point) == StoneColor.BLACK)
                 }
             }
         }
