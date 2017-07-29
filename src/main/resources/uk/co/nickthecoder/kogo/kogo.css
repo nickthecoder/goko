@@ -20,6 +20,37 @@
 }
 
 /***********************************************************************************
+    Home buttons
+*************************************************************************************/
+
+.home .button {
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-text-fill: #fff;
+}
+
+.home .button.man-vs-machine {
+    -fx-background-image: url( 'home/man-vs-machine.jpg' );
+}
+.home .button.challenge-match {
+    -fx-background-image: url( 'home/challenge-match.jpg' );
+}
+.home .button.two-player {
+    -fx-background-image: url( 'home/two-player.jpg' );
+}
+.home .button.joseki {
+    -fx-background-image: url( 'home/joseki.jpg' );
+}
+
+.home .button .text {
+    -fx-text-alignment: right;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-stroke-width: 1;
+    -fx-stroke: #000;
+}
+
+/***********************************************************************************
     Prompted Tasks
 ************************************************************************************/
 

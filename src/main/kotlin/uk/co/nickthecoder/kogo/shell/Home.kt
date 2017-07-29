@@ -8,7 +8,7 @@ import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.StringParameter
 import uk.co.nickthecoder.paratask.parameters.TaskParameter
 
-class Home(mainWindow: MainWindow) : GridView(mainWindow) {
+class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0) {
 
     override val title = "Home"
 
@@ -21,7 +21,7 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow) {
             val labelP = compound.find("label") as StringParameter
             val task = taskParameter.value
             if (task is AbstractGamePreferences) {
-                buttons.add(createTaskButton(labelP.value, style = "none") { task.createLauchTask(mainWindow) })
+                buttons.add(createTaskButton(labelP.value, style = task.style) { task.createLauchTask(mainWindow) })
             }
         }
 

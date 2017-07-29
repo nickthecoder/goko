@@ -15,6 +15,8 @@ import uk.co.nickthecoder.paratask.parameters.IntParameter
 
 open class ChallengeMatch : AbstractGamePreferences(), GameListener {
 
+    override val style = "challenge-match"
+
     final override val taskD = TaskDescription("challengeMatch", description =
     """Play aginst the Gnu Go robot.
 Each time you play, the the handicap will change based on your previous results.

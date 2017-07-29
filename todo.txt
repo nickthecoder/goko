@@ -12,16 +12,8 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
-Remove gamelistener.updatedcurrentnode and maybe added/removed mark too
-	Just use node updated
-	Rename moved to changedNode
-Still using "continuation" - rename to branch. BoardView
-
-Edit games
-	Instead of just COPYING a game, also listen to it, adding nodes to the copy as they are played.
-		Add them as the main line in the copy.
-		WHen Undo is implemented in PlayingView, that will be tricky!
-			Will probably have to improve on just the "moved" event.
+Move ProblemPlayer into GameVariation
+	i.e. Create a GoProblem: GameVariation, and have that update the comments when a weird move is played.
 
 Game score chart
 	Show a chart of the game score throughout the game (using GnuGo's estimate).
@@ -31,6 +23,7 @@ Game score chart
 Undo option when playing games (separate preference for each type of game)
 	When playing a new move, make it the main line, but keep the old node (adding a "Undone" comment).
 	When playing against a computer, undo TWO moves
+	When Playing, new branches must be put in the main line i.e. child#0 (boolean on BoardView?)
 
 SFGReader
 	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.

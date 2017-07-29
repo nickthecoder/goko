@@ -23,7 +23,7 @@ class MainWindow(val stage: Stage) {
         addView(home)
 
         whole.center = tabs
-        stage.scene = Scene(whole, 1000.0, 700.0)
+        stage.scene = Scene(whole, 1000.0, 800.0)
         KoGo.style(stage.scene)
         stage.show()
 

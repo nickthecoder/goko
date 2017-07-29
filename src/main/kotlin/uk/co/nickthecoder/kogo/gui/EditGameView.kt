@@ -12,6 +12,7 @@ import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.CompoundButtons
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 import uk.co.nickthecoder.paratask.project.TaskPrompter
+import uk.co.nickthecoder.paratask.util.currentDirectory
 
 class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWindow, game), PreferencesListener {
 
@@ -161,7 +162,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             node.apply(game)
         }
         node.addStone(board, point, color)
-        game.updatedCurrentNode()
+        game.nodeChanged(game.currentNode)
     }
 
     fun removeStone(point: Point) {
@@ -173,7 +174,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
                 node.apply(game)
             }
             node.removeStone(board, point)
-            game.updatedCurrentNode()
+            game.nodeChanged(game.currentNode)
         }
     }
 
@@ -239,6 +240,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             buildBranchesMenu()
         }
     }
+
     override fun moved() {
         super.moved()
         buildBranchesMenu()

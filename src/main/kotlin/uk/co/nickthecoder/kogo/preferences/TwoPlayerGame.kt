@@ -11,6 +11,8 @@ import uk.co.nickthecoder.paratask.parameters.StringParameter
 
 open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
 
+    override val style = "two-player"
+
     final override val taskD = TaskDescription("twoPlayerGame")
 
     val blackPlayerP = StringParameter("blackName", label = "Black's Name", required = false, value = Preferences.yourName)

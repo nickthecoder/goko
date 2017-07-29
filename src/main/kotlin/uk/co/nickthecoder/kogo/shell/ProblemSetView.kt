@@ -10,11 +10,9 @@ import uk.co.nickthecoder.kogo.model.ProblemSetListener
 import uk.co.nickthecoder.kogo.model.SGFReader
 import java.io.File
 
-class ProblemSetView(mainWindow: MainWindow, val problemSet: ProblemSet) : GridView(mainWindow), ProblemSetListener {
+class ProblemSetView(mainWindow: MainWindow, val problemSet: ProblemSet) : GridView(mainWindow, 48.0), ProblemSetListener {
 
     override val title = problemSet.label
-
-    override val buttonSize = 48.0
 
     override val viewStyle = "problem-set"
 

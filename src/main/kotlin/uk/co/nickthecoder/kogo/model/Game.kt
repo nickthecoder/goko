@@ -182,7 +182,7 @@ class Game(size: Int) {
             }
             freeHandicaps--
             root.addStone(board, point, color)
-            updatedCurrentNode()
+            nodeChanged(currentNode)
 
             if (freeHandicaps == 0) {
                 root.colorToPlay = StoneColor.WHITE
@@ -267,12 +267,6 @@ class Game(size: Int) {
 
     fun clearMarks() {
         currentNode.marks.toList().forEach { removeMark(it.point) }
-    }
-
-    fun updatedCurrentNode() {
-        for (listener in listeners) {
-            listener.updatedCurrentNode()
-        }
     }
 
     fun updatedMetaData() {

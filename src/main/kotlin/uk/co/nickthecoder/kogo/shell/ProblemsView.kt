@@ -5,7 +5,7 @@ import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.model.ProblemSet
 import uk.co.nickthecoder.kogo.model.Problems
 
-class ProblemsView(mainWindow: MainWindow) : GridView(mainWindow) {
+class ProblemsView(mainWindow: MainWindow) : GridView(mainWindow, 130.0) {
 
     override val title = "Problems"
 

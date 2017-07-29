@@ -10,6 +10,8 @@ import uk.co.nickthecoder.paratask.parameters.*
 
 abstract class AbstractGamePreferences : AbstractTask() {
 
+    abstract val style : String
+
     val boardSizeP = ChoiceParameter("boardSize", value = 19)
             .choice("19", 19, "Standard (19x19)")
             .choice("13", 13, "Medium (13x13)")

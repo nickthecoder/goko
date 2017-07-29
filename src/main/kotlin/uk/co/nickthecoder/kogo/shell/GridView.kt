@@ -11,9 +11,7 @@ import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.gui.TopLevelView
 import uk.co.nickthecoder.kogo.gui.View
 
-abstract class GridView(mainWindow: MainWindow) : TopLevelView(mainWindow) {
-
-    open val buttonSize = 128.0
+abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) : TopLevelView(mainWindow) {
 
     val buttons = mutableListOf<Button>()
 

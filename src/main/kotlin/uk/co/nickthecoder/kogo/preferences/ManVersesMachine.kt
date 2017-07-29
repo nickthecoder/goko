@@ -12,6 +12,8 @@ import uk.co.nickthecoder.paratask.parameters.IntParameter
 
 open class ManVersesMachine : AbstractGamePreferences() {
 
+    override val style = "man-vs-machine"
+
     final override val taskD = TaskDescription("manVersesMachine", description = "Play a one-off game against the Gnu Go robot.")
 
     val computerPlaysP = ChoiceParameter("computerPlays", value = StoneColor.BLACK)

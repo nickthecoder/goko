@@ -12,7 +12,7 @@ class ProblemPlayer(game: Game, color: StoneColor) : LocalPlayer(game, color) {
         super.makeMove(point)
         if (node.children.size != count) {
             game.currentNode.comment = "Hmm, that move's not not part of the solution!"
-            game.updatedCurrentNode()
+            game.nodeChanged(game.currentNode)
         }
     }
 
@@ -22,7 +22,7 @@ class ProblemPlayer(game: Game, color: StoneColor) : LocalPlayer(game, color) {
         super.pass()
         if (node.children.size != count) {
             game.currentNode.comment = "Hmm, You passed? That's not part of the solution!"
-            game.updatedCurrentNode()
+            game.nodeChanged(game.currentNode)
         }
     }
 
