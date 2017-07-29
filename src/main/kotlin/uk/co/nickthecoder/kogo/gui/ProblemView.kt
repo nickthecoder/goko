@@ -104,7 +104,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
                     game.addMark(mark)
                 }
             }
-        } else if (Preferences.problemsShowContinuations == true) {
+        } else if (Preferences.problemsShowBranches == true) {
             if (currentNode.children.size > 1) {
                 for (child in currentNode.children) {
                     if (child is MoveNode) {

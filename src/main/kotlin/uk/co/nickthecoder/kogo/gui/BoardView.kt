@@ -34,7 +34,7 @@ class BoardView(val game: Game) : View {
 
     val moveNumbers = MarksView(board)
 
-    val continuations = MarksView(board)
+    val branches = MarksView(board)
 
     private var mouseMode = MouseMode.PLAYING
 
@@ -45,7 +45,7 @@ class BoardView(val game: Game) : View {
     var showBranches = ShowBranches.DO_NOT_SHOW
         set(v) {
             field = v
-            updateContinuations()
+            updateBranches()
         }
 
     var showMoveNumbers: Int = 0
@@ -140,8 +140,8 @@ class BoardView(val game: Game) : View {
         return Point((x / pointSize).toInt(), board.size - (y / pointSize).toInt() - 1)
     }
 
-    fun updateContinuations() {
-        continuations.clear()
+    fun updateBranches() {
+        branches.clear()
         val currentNode = game.currentNode
         if (showBranches != ShowBranches.DO_NOT_SHOW) {
             var index = 1
@@ -158,7 +158,7 @@ class BoardView(val game: Game) : View {
                     }
                     markView = SymbolMarkView(mark)
                 }
-                continuations.add(markView)
+                branches.add(markView)
                 index++
             }
         }
@@ -216,7 +216,7 @@ class BoardView(val game: Game) : View {
         }
 
         fun build() {
-            children.addAll(wood, lines, starPoints, boardMarks.node, stones, moveNumbers.node, continuations.node, marks.node, specialMarks.node, clickBoardView.node)
+            children.addAll(wood, lines, starPoints, boardMarks.node, stones, moveNumbers.node, branches.node, marks.node, specialMarks.node, clickBoardView.node)
 
             with(wood) {
                 styleClass.add("wood")
@@ -275,7 +275,7 @@ class BoardView(val game: Game) : View {
             layoutInArea(boardMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(starPoints, marginLeft + scale * 1.5, marginTop + scale * 1.5, playingSize, playingSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(moveNumbers.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
-            layoutInArea(continuations.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
+            layoutInArea(branches.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(marks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(specialMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(clickBoardView.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
@@ -296,7 +296,7 @@ class BoardView(val game: Game) : View {
                 scaleY = scaleX
             }
 
-            with(continuations.node) {
+            with(branches.node) {
                 translateX = (size - logicalSize) / 2
                 translateY = translateX
                 scaleX = scale / pointSize
@@ -367,7 +367,7 @@ class BoardView(val game: Game) : View {
                 marks.add(mark.createMarkView())
             }
             updateMoveNumbers()
-            updateContinuations()
+            updateBranches()
             if (mouseMode == MouseMode.PLAYING) {
                 mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
             }
@@ -385,7 +385,7 @@ class BoardView(val game: Game) : View {
 
         override fun addedMark(mark: Mark) {
             marks.add(mark.createMarkView())
-            updateContinuations()
+            updateBranches()
             updateMoveNumbers()
         }
 
