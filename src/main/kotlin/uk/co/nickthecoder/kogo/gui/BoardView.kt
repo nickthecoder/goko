@@ -404,9 +404,3 @@ enum class ShowBranches(override val label: String) : Labelled {
     NUMBERS("As Numbers"),
     SYMBOLS("As Symbols")
 }
-
-enum class GameVariation(override val label: String) : Labelled {
-    NORMAL("Normal"),
-    ONE_COLOR_GO("One Color Go"),
-    TWO_COLOR_ONE_COLOR_GO("Two Color One Color Go")
-}

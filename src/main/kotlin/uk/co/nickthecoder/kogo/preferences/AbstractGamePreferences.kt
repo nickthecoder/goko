@@ -1,9 +1,9 @@
 package uk.co.nickthecoder.kogo.preferences
 
-import uk.co.nickthecoder.kogo.gui.GameVariation
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.gui.PlayingView
 import uk.co.nickthecoder.kogo.model.Game
+import uk.co.nickthecoder.kogo.model.GameVariation
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.*

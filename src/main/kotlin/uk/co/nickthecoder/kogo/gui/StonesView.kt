@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.model.GameListener
+import uk.co.nickthecoder.kogo.model.GameVariation
 import uk.co.nickthecoder.kogo.model.Point
 import uk.co.nickthecoder.kogo.model.StoneColor
 import uk.co.nickthecoder.kogo.util.array2d

@@ -15,6 +15,7 @@ Bugs
 Remove gamelistener.updatedcurrentnode and maybe added/removed mark too
 	Just use node updated
 	Rename moved to changedNode
+Still using "continuation" - rename to branch. BoardView
 
 Edit games
 	Instead of just COPYING a game, also listen to it, adding nodes to the copy as they are played.
