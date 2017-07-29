@@ -119,23 +119,18 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, navigation, mainLineB, branchesButton, deleteBranchB)
 
-        val modes = TilePane()
-        with(modes) {
-            prefColumns = 1
-            children.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
+        val modesToggleGroup = ToggleGroup()
+        with(modesToolBar) {
+            items.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
             styleClass.add("modes")
-            children.forEach {
+            orientation = Orientation.VERTICAL
+            items.forEach {
                 it as ToggleButton
                 it.minWidth = 40.0
                 it.minHeight = 40.0
+                modesToggleGroup.toggles.add(it)
             }
         }
-
-        val modesToggleGroup = ToggleGroup()
-        modes.children.forEach { modesToggleGroup.toggles.add(it as ToggleButton) }
-
-        modesToolBar.items.addAll(modes)
-        modesToolBar.orientation = Orientation.VERTICAL
 
         preferencesChanged()
         buildBranchesMenu()

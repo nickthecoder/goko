@@ -1,12 +1,9 @@
 package uk.co.nickthecoder.kogo.preferences
 
-import uk.co.nickthecoder.kogo.GnuGoPlayer
-import uk.co.nickthecoder.kogo.LocalPlayer
-import uk.co.nickthecoder.kogo.gui.ColorVariation
+import uk.co.nickthecoder.kogo.gui.GameVariation
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.gui.PlayingView
 import uk.co.nickthecoder.kogo.model.Game
-import uk.co.nickthecoder.kogo.model.StoneColor
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.*
@@ -27,9 +24,7 @@ abstract class AbstractGamePreferences : AbstractTask() {
 
     val timeLimitP = Preferences.timeLimitPreferences.createTimeLimitChoice()
 
-    val rulesP = Preferences.createRulesChoice()
-
-    val colorVariationP = ChoiceParameter("colorVariation", value = ColorVariation.NORMAL).enumChoices()
+    val gameVariationP = ChoiceParameter("gameVariation", value = GameVariation.NORMAL).enumChoices()
 
     fun createView(mainWindow: MainWindow): PlayingView {
 
@@ -37,11 +32,10 @@ abstract class AbstractGamePreferences : AbstractTask() {
         game.metaData.komi = komiP.value!!
         game.metaData.handicap = handicapP.value!!
         game.metaData.fixedHandicaptPoints = fixedHandicapPointsP.value!!
-        game.metaData.japaneseRules = rulesP.value!!
         game.metaData.timeLimit = timeLimitP.value!!
 
         val view = PlayingView(mainWindow, game)
-        view.boardView.colorVariation = colorVariationP.value!!
+        view.boardView.colorVariation = gameVariationP.value!!
 
         changePlayers(game)
 

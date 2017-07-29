@@ -9,7 +9,7 @@ import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.StringParameter
 
-open class TwoPlayerGamePreferences : AbstractGamePreferences(), GameListener {
+open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
 
     final override val taskD = TaskDescription("twoPlayerGame")
 
@@ -19,7 +19,7 @@ open class TwoPlayerGamePreferences : AbstractGamePreferences(), GameListener {
 
     init {
         taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP,
-                fixedHandicapPointsP, komiP, timeLimitP, rulesP, colorVariationP)
+                fixedHandicapPointsP, komiP, timeLimitP, gameVariationP)
     }
 
     override fun run() {
@@ -42,13 +42,13 @@ open class TwoPlayerGamePreferences : AbstractGamePreferences(), GameListener {
 
 
     override fun createLauchTask(mainWindow: MainWindow): Task {
-        return TwoPlayerGameTask(mainWindow, this)
+        return TwoPlayerGameLauncher(mainWindow, this)
     }
 
 }
 
 
-class TwoPlayerGameTask(val mainWindow: MainWindow, parent: Task) : TwoPlayerGamePreferences() {
+class TwoPlayerGameLauncher(val mainWindow: MainWindow, parent: Task) : TwoPlayerGame() {
 
     init {
         taskD.copyValuesFrom(parent.taskD)

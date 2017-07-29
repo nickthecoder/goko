@@ -13,7 +13,7 @@ import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
 
-open class ChallengeMatchPreferences : AbstractGamePreferences(), GameListener {
+open class ChallengeMatch : AbstractGamePreferences(), GameListener {
 
     final override val taskD = TaskDescription("challengeMatch", description =
     """Play aginst the Gnu Go robot.
@@ -37,7 +37,7 @@ Each time you play, the the handicap will change based on your previous results.
     val losesP = IntParameter("loses", value = 0)
 
     init {
-        taskD.addParameters(boardSizeP, computerLevelP, computerPlaysP, handicapP, fixedHandicapPointsP, komiP, timeLimitP, rulesP,
+        taskD.addParameters(boardSizeP, computerLevelP, computerPlaysP, handicapP, fixedHandicapPointsP, komiP, timeLimitP,
                 promotionThresholdP, demotionThresholdP, winsP, losesP
         )
     }
@@ -58,8 +58,8 @@ Each time you play, the the handicap will change based on your previous results.
 
         game.file = Preferences.gameFile("Challenge")
         // Listens for the end of the game to update number of wins/loses.
-        // TODO Re-implement this ...
-        // game.listeners.add(Preferences.challengeMatchPreferences)
+        val challengeMatch = (this as ChallengeMatchLauncher).parent
+        game.listeners.add(challengeMatch)
     }
 
     override fun gameEnded(winner: Player?) {
@@ -118,12 +118,12 @@ Each time you play, the the handicap will change based on your previous results.
     }
 
     override fun createLauchTask(mainWindow: MainWindow): Task {
-        return ChallengeMatchTask(mainWindow, this)
+        return ChallengeMatchLauncher(mainWindow, this)
     }
 }
 
 
-class ChallengeMatchTask(val mainWindow: MainWindow, parent: Task) : ChallengeMatchPreferences() {
+class ChallengeMatchLauncher(val mainWindow: MainWindow, val parent: ChallengeMatch) : ChallengeMatch() {
 
     init {
         taskD.copyValuesFrom(parent.taskD)

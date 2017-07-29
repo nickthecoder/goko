@@ -7,7 +7,6 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 import uk.co.nickthecoder.kogo.KoGo
-import uk.co.nickthecoder.kogo.Player
 import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.kogo.model.Point
 import uk.co.nickthecoder.kogo.model.StoneColor
@@ -85,11 +84,11 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
                 if (color.isStone()) {
                     val point = Point(x, y)
                     when (boardView.colorVariation) {
-                        ColorVariation.NORMAL ->
+                        GameVariation.NORMAL ->
                             add(point, if (color == StoneColor.BLACK) scaledBlackStone else scaledWhiteStone)
-                        ColorVariation.ONE_COLOR_GO ->
+                        GameVariation.ONE_COLOR_GO ->
                             add(point, scaledWhiteStone)
-                        ColorVariation.TWO_COLOR_ONE_COLOR_GO -> {
+                        GameVariation.TWO_COLOR_ONE_COLOR_GO -> {
                             val foo = (y * board.size + x).hashCode() % 2
                             add(point, if (foo == 0) scaledBlackStone else scaledWhiteStone)
                         }

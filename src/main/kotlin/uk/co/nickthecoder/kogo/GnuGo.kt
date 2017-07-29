@@ -19,9 +19,7 @@ import java.util.*
  */
 class GnuGo(val game: Game, level: Int) : GameListener {
 
-    private val rules = if (game.metaData.japaneseRules) "japanese" else "chinese"
-
-    private val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size, "--komi", game.metaData.komi, "--$rules-rules")
+    private val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size, "--komi", game.metaData.komi)
 
     private var writer: Writer? = null
 

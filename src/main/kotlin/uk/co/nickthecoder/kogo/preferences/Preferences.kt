@@ -155,17 +155,10 @@ object Preferences {
         timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, no overtime", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0))
 
         gamesPreferences.gamesP.value.forEach { compound ->
-            val taskParameter = compound.find("game") as TaskParameter
+            val taskParameter = compound.find("type") as TaskParameter
             val task = taskParameter.value!! as AbstractGamePreferences
             timeLimitPreferences.updateTimeLimitChoice(task.timeLimitP)
         }
-    }
-
-    fun createRulesChoice(): ChoiceParameter<Boolean> {
-        val choiceP = ChoiceParameter<Boolean>("rules", value = true)
-        choiceP.addChoice("japanese", true, "Japanese")
-        choiceP.addChoice("chinese", false, "Chinese")
-        return choiceP
     }
 
     private fun jsonTask(task: Task): JsonObject {

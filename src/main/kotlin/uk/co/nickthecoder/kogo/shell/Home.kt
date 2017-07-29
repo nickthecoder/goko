@@ -19,8 +19,10 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow) {
         Preferences.gamesPreferences.gamesP.value.forEach { compound ->
             val taskParameter = compound.find("type") as TaskParameter
             val labelP = compound.find("label") as StringParameter
-            val task = taskParameter.value!! as AbstractGamePreferences
-            buttons.add(createTaskButton(labelP.value, style="none") { task.createLauchTask(mainWindow) })
+            val task = taskParameter.value
+            if (task is AbstractGamePreferences) {
+                buttons.add(createTaskButton(labelP.value, style = "none") { task.createLauchTask(mainWindow) })
+            }
         }
 
         with(buttons) {

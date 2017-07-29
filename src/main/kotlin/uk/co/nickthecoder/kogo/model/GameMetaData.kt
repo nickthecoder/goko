@@ -71,7 +71,6 @@ class GameMetaData(val game: Game) : AbstractTask() {
             updateTimeLimit()
         }
     var fixedHandicaptPoints: Boolean = true // Not saved as an sgf property
-    var japaneseRules: Boolean = true // Here for GnuGo only
 
     init {
         blackGroup.addParameters(blackNameP, blackRankP)

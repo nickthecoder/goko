@@ -1,5 +1,9 @@
 
 Bugs	
+	Only taking a single pass to end the game
+	GnuGo is placing the stones, even when I'm black (was one color go though ;-)
+		I think the handicap stone is being put in the wrong place.	
+
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
 		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).
@@ -8,18 +12,20 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
-Listen to game, and update the challenge match win/loss figures.
+Re-do Mode toolbar, don't use TilePane because it doesn't work well when the window is too small.
 
-Rename ColorVariation to GameVariation
+Check : Listen to game, and update the challenge match win/loss figures.
 
-Allow any number of Playing preferences
-	Name
-	Type (2Player, Man vs Machine, AIChallenge)
-	All parameters from that type
-Need to have a Task object for each Preference, and for it to create another task, which copies the values.
-	i.e. QuickGamePreferences creates QuickGameTask
+AbstractGamePreference to have a "style" or "styles" property, which is used to style the home buttons.
+	man-vs-machine man-vs-machine-1cg (for 1 color go) man-vs-machine-1c2cg
+	two-player two-player-1cg two-player-1c2cg two-player-hidden
+	OR
+	Have one main style, and others to overlay additional images.
+		e.g. two-player plaus size9 and one-color
+
 
 New Geometry Variation
+	StoneColor.isPlayable and isEmpty are NOT the same, when neutral points are introduced.
 	Voids where no stones can be placed, and do NOT count as liberties.
 	Neutral points, where no stones can be placed, but DO count as liberties.
 	Create a GameSetup interface, which is used to place free handicap stones (regular game), voids and neutrals and hidden moves.

@@ -10,9 +10,9 @@ import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
 
-open class QuickGamePreferences : AbstractGamePreferences() {
+open class ManVersesMachine : AbstractGamePreferences() {
 
-    final override val taskD = TaskDescription("quickGame", description = "Play a one-off game against the Gnu Go robot.")
+    final override val taskD = TaskDescription("manVersesMachine", description = "Play a one-off game against the Gnu Go robot.")
 
     val computerPlaysP = ChoiceParameter("computerPlays", value = StoneColor.BLACK)
             .choice("BLACK", StoneColor.BLACK, "Black")
@@ -21,8 +21,8 @@ open class QuickGamePreferences : AbstractGamePreferences() {
     val computerLevelP = IntParameter("computerLevel", range = 1..20, value = 10)
 
     init {
-        taskD.addParameters(boardSizeP, computerPlaysP, computerLevelP, handicapP,
-                fixedHandicapPointsP, komiP, timeLimitP, rulesP, colorVariationP)
+        taskD.addParameters( boardSizeP, computerPlaysP, computerLevelP, handicapP,
+                fixedHandicapPointsP, komiP, timeLimitP, gameVariationP )
     }
 
     override fun run() {
@@ -43,11 +43,11 @@ open class QuickGamePreferences : AbstractGamePreferences() {
     }
 
     override fun createLauchTask(mainWindow: MainWindow): Task {
-        return QuickGameTask(mainWindow, this)
+        return ManVersesMachineLauncher(mainWindow, this)
     }
 }
 
-class QuickGameTask(val mainWindow: MainWindow, parent: Task) : QuickGamePreferences() {
+class ManVersesMachineLauncher(val mainWindow: MainWindow, parent: Task) : ManVersesMachine() {
 
     init {
         taskD.copyValuesFrom(parent.taskD)

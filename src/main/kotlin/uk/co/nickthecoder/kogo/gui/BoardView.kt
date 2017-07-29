@@ -54,7 +54,7 @@ class BoardView(val game: Game) : View {
             updateMoveNumbers()
         }
 
-    var colorVariation: ColorVariation = ColorVariation.NORMAL
+    var colorVariation: GameVariation = GameVariation.NORMAL
         set(v) {
             field = v
             stones.requestLayout()
@@ -395,7 +395,7 @@ enum class ShowBranches(override val label: String) : Labelled {
     SYMBOLS("As Symbols")
 }
 
-enum class ColorVariation(override val label: String) : Labelled {
+enum class GameVariation(override val label: String) : Labelled {
     NORMAL("Normal"),
     ONE_COLOR_GO("One Color Go"),
     TWO_COLOR_ONE_COLOR_GO("Two Color One Color Go")

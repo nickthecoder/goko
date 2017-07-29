@@ -33,7 +33,7 @@ class GamesPreferences : AbstractTask() {
 
 class GameTypeFactory : TaskFactory {
 
-    override val topLevelTasks = listOf<Task>(QuickGamePreferences(), TwoPlayerGamePreferences(), ChallengeMatchPreferences())
+    override val topLevelTasks = listOf<Task>(ManVersesMachine(), TwoPlayerGame(), ChallengeMatch())
 
     override val creationStringToTask = topLevelTasks.associateBy({ it.creationString() }, { it })
 
