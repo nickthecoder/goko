@@ -8,6 +8,7 @@ import uk.co.nickthecoder.kogo.model.TimedLimit
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.TaskParameter
 import uk.co.nickthecoder.paratask.parameters.ValueParameter
+import uk.co.nickthecoder.paratask.util.JsonHelper
 import uk.co.nickthecoder.paratask.util.child
 import uk.co.nickthecoder.paratask.util.homeDirectory
 import java.io.*
@@ -105,16 +106,7 @@ object Preferences {
             val task = preferenceTasksMap[taskName]
             if (task != null) {
                 val jparams = jtask.get("parameters").asArray()
-                for (jparam1 in jparams) {
-                    val jparam = jparam1.asObject()
-                    val paramName = jparam.getString("name", "")
-                    val stringValue = jparam.getString("value", "")
-
-                    val parameter = task.taskD.root.find(paramName)
-                    if (parameter != null && parameter is ValueParameter<*>) {
-                        parameter.stringValue = stringValue
-                    }
-                }
+                JsonHelper.read(jparams, task)
             }
             if (taskName == "timeLimits") {
                 updateTimeLimits()
@@ -132,7 +124,10 @@ object Preferences {
         jroot.add("preferences", jpreferences)
 
         preferenceTasksMap.values.forEach { task ->
-            val jtask = jsonTask(task)
+            val jtask = JsonObject()
+            jtask.add("name", task.taskD.name)
+            val jparameters = JsonHelper.parametersAsJsonArray(task)
+            jtask.add("parameters", jparameters)
             jpreferences.add(jtask)
         }
 
@@ -158,24 +153,6 @@ object Preferences {
             val task = taskParameter.value!! as AbstractGamePreferences
             timeLimitPreferences.updateTimeLimitChoice(task.timeLimitP)
         }
-    }
-
-    private fun jsonTask(task: Task): JsonObject {
-
-        val jtask = JsonObject()
-
-        jtask.add("name", task.taskD.name)
-        val jparameters = JsonArray()
-        jtask.add("parameters", jparameters)
-
-        for (parameter in task.valueParameters()) {
-            val jparameter = JsonObject()
-            jparameter.set("name", parameter.name)
-            jparameter.set("value", parameter.stringValue)
-            jparameters.add(jparameter)
-        }
-
-        return jtask
     }
 }
 

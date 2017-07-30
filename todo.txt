@@ -1,12 +1,5 @@
 
 
-GNUGo not getting remove-stones event.
-
-Undo option when playing games (separate preference for each type of game)
-	When playing a new move, make it the main line, but keep the old node (adding a "Undone" comment).
-	When playing against a computer, undo TWO moves
-	When Playing, new branches must be put in the main line i.e. child#0 (boolean on BoardView?)
-
 MultipleParameter to render as a list and detail. This will allow re-ordering.
 
 Bugs	
