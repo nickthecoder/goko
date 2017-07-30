@@ -17,6 +17,7 @@ object KoGoActions {
     val RESIGN = KoGoAction("resign", null, label = "Resign", tooltip = "Resign Game")
     val HINT = KoGoAction("hint", null, label = "Hint")
     val ESTIMATE_SCORE = KoGoAction("estimateScore", null, label = "Score")
+    val UNDO = KoGoAction("undo", KeyCode.Z, control = true, tooltip = "Undo")
 
     // EditGameView
     val GO_FIRST = KoGoAction("go-first", KeyCode.HOME, alt = true, tooltip = "Rewind to the beginning")

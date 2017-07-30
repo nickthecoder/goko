@@ -24,7 +24,7 @@ open class ManVersesMachine : AbstractGamePreferences() {
 
     init {
         taskD.addParameters( boardSizeP, computerPlaysP, computerLevelP, handicapP,
-                fixedHandicapPointsP, komiP, timeLimitP, gameVariationP )
+                fixedHandicapPointsP, komiP, timeLimitP, allowUndoP, gameVariationP )
     }
 
     override fun run() {

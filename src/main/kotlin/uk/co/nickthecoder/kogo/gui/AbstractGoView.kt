@@ -44,6 +44,8 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     protected val fastForwardB = KoGoActions.GO_FAST_FORWARD.createButton(shortcuts) { history.forward(10) }
     protected val endB = KoGoActions.GO_END.createButton(shortcuts) { onEnd() }
 
+    protected val undoB = KoGoActions.UNDO.createButton(shortcuts) { onUndo() }
+
     override fun build() {
         whole.top = toolBar
         game.listeners.add(this)
@@ -92,6 +94,15 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
             ScoreEstimator(game).estimate() {
                 showScore(it)
             }
+        }
+    }
+
+    fun onUndo() {
+        game.moveBack()
+        // Unless we are playing a 2-player local game, then undo MY previous move
+        // (so far we have only undone my opponents move).
+        if (!game.playerToMove.canClickToPlay()) {
+            game.moveBack()
         }
     }
 

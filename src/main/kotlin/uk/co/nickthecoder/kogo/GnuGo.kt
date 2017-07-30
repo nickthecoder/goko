@@ -55,6 +55,18 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         command("play ${color.toString().toLowerCase()} $point", null)
     }
 
+    fun syncBoard() {
+        command("clear_board", null)
+        for (y in 0..game.board.size - 1) {
+            for (x in 0..game.board.size - 1) {
+                val color = game.board.getStoneAt(x, y)
+                if (color.isStone()) {
+                    addStone(color, Point(x, y))
+                }
+            }
+        }
+    }
+
     /**
      * Generate a move, but do not acturally play it. Used to generate Hints.
      */
@@ -107,7 +119,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     override fun stoneChanged(point: Point) {
         val color = game.board.getStoneAt(point)
         if (color == StoneColor.NONE) {
-            // TODO Remove the stone
+            // TODO During normal play, we don't need to do anything, but when editting... Hmmm
         } else {
             addStone(color, point)
         }

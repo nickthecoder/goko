@@ -10,7 +10,7 @@ import uk.co.nickthecoder.paratask.parameters.*
 
 abstract class AbstractGamePreferences : AbstractTask() {
 
-    abstract val style : String
+    abstract val style: String
 
     val boardSizeP = ChoiceParameter("boardSize", value = 19)
             .choice("19", 19, "Standard (19x19)")
@@ -29,6 +29,8 @@ abstract class AbstractGamePreferences : AbstractTask() {
 
     val timeLimitP = Preferences.timeLimitPreferences.createTimeLimitChoice()
 
+    val allowUndoP = BooleanParameter("allowUndo", value = true)
+
     val gameVariationP = ChoiceParameter("gameVariation", value = GameVariation.NORMAL).enumChoices()
 
     fun createView(mainWindow: MainWindow): PlayingView {
@@ -39,7 +41,7 @@ abstract class AbstractGamePreferences : AbstractTask() {
         game.metaData.fixedHandicaptPoints = fixedHandicapPointsP.value!!
         game.metaData.timeLimit = timeLimitP.value!!
 
-        val view = PlayingView(mainWindow, game)
+        val view = PlayingView(mainWindow, game, allowUndoP.value!!)
         view.boardView.colorVariation = gameVariationP.value!!
 
         changePlayers(game)

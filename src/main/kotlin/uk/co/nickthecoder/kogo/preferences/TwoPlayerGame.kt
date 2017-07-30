@@ -21,7 +21,7 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
 
     init {
         taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP,
-                fixedHandicapPointsP, komiP, timeLimitP, gameVariationP)
+                fixedHandicapPointsP, komiP, timeLimitP, allowUndoP, gameVariationP)
     }
 
     override fun run() {

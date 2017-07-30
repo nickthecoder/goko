@@ -158,7 +158,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         var node = game.currentNode
         if (node !is SetupNode || node.children.isNotEmpty()) {
             node = SetupNode(game.playerToMove.color)
-            game.addNode(node)
+            game.addNode(node,false)
             node.apply(game)
         }
         node.addStone(board, point, color)
@@ -170,7 +170,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             var node = game.currentNode
             if (node !is SetupNode || node.children.isNotEmpty()) {
                 node = SetupNode(game.playerToMove.color)
-                game.addNode(node)
+                game.addNode(node,false)
                 node.apply(game)
             }
             node.removeStone(board, point)

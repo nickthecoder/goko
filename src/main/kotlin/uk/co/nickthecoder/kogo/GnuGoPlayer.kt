@@ -14,6 +14,12 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
     override var timeRemaining: TimeLimit = NoTimeLimit.instance
 
+    /**
+     * When a move is generated, check with this to ensure that the game's current node hasn't changed between
+     * requesting the move, and the move being picked.
+     */
+    private var expectedCurrentNode: GameNode? = null
+
     val gnuGo = GnuGo(game, level)
 
     fun start() {
@@ -25,6 +31,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     }
 
     override fun yourTurn() {
+        expectedCurrentNode = game.currentNode
         gnuGo.generateMove(color, this)
     }
 
@@ -40,13 +47,22 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
 
     override fun generatedMove(point: Point) {
         Platform.runLater {
-            game.move(point, color)
+            if (game.currentNode === expectedCurrentNode) {
+                game.move(point, color)
+            } else {
+                println("Generated move ignored, as the game's current node has changed.")
+                gnuGo.syncBoard()
+            }
         }
     }
 
     override fun generatedPass() {
         Platform.runLater {
-            game.pass()
+            if (game.currentNode === expectedCurrentNode) {
+                game.pass(true)
+            } else {
+                println("Generated move ignored, as the game's current node has changed.")
+            }
         }
     }
 

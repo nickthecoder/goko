@@ -264,7 +264,7 @@ class SGFReader {
                 // But only add ONE pass node, if there are many variations after the pass.
                 if (passNode == null) {
                     passNode = PassNode(game.playerToMove.color)
-                    game.addNode(passNode)
+                    game.addNode(passNode, false)
                 }
                 passNode.apply(game)
             }
@@ -274,7 +274,7 @@ class SGFReader {
                 game.moveBack()
                 game.moveForward()
             } else {
-                game.addNode(gameNode)
+                game.addNode(gameNode, false)
                 gameNode.apply(game)
                 updateNode(game, sgfChild)
             }

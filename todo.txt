@@ -1,4 +1,14 @@
 
+
+GNUGo not getting remove-stones event.
+
+Undo option when playing games (separate preference for each type of game)
+	When playing a new move, make it the main line, but keep the old node (adding a "Undone" comment).
+	When playing against a computer, undo TWO moves
+	When Playing, new branches must be put in the main line i.e. child#0 (boolean on BoardView?)
+
+MultipleParameter to render as a list and detail. This will allow re-ordering.
+
 Bugs	
 	Only taking a single pass to end the game
 	GnuGo is placing the stones, even when I'm black (was one color go though ;-)
@@ -12,6 +22,8 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
+Save GamesPreferences in a readable manner (improve paratask, and then use that code to write the tasks parameters)
+
 Move ProblemPlayer into GameVariation
 	i.e. Create a GoProblem: GameVariation, and have that update the comments when a weird move is played.
 
@@ -19,11 +31,6 @@ Game score chart
 	Show a chart of the game score throughout the game (using GnuGo's estimate).
 	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.
 	Click on the chart to jump to that game node.
-
-Undo option when playing games (separate preference for each type of game)
-	When playing a new move, make it the main line, but keep the old node (adding a "Undone" comment).
-	When playing against a computer, undo TWO moves
-	When Playing, new branches must be put in the main line i.e. child#0 (boolean on BoardView?)
 
 SFGReader
 	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.

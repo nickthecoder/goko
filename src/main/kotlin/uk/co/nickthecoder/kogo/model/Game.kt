@@ -18,7 +18,7 @@ class Game(size: Int) {
 
     val board = Board(size, this)
 
-    var playerToMove: Player = LocalPlayer(this, StoneColor.BLACK)
+    var playerToMove: Player = EditGamePlayer(this, StoneColor.BLACK)
 
     var players = mutableMapOf<StoneColor, Player>()
 
@@ -47,7 +47,7 @@ class Game(size: Int) {
 
     init {
         addPlayer(playerToMove)
-        addPlayer(LocalPlayer(this, StoneColor.WHITE))
+        addPlayer(EditGamePlayer(this, StoneColor.WHITE))
     }
 
     fun start() {
@@ -162,19 +162,19 @@ class Game(size: Int) {
         return players.get(nextColor)!!
     }
 
-    fun pass() {
+    fun pass(onMainLine: Boolean = true) {
         val node = PassNode(playerToMove.color)
-        addAndApplyNode(node)
-        if (currentNode is PassNode) {
+        addAndApplyNode(node, onMainLine)
+        if (currentNode.parent is PassNode) {
             awaitingFinalCount = true
             countEndGame()
         }
     }
 
-    fun move(point: Point, color: StoneColor) {
+    fun move(point: Point, color: StoneColor, onMainLine: Boolean = true) {
         if (freeHandicaps > 0) {
             if (currentNode != root) {
-                throw IllegalStateException("Can only play handicap in the root node")
+                throw IllegalStateException("Can only place handicap stones in the root node")
             }
             freeHandicaps--
             root.addStone(board, point, color)
@@ -187,14 +187,14 @@ class Game(size: Int) {
             return
         }
 
-        if (color != StoneColor.BLACK && color != StoneColor.WHITE) {
+        if (!color.isStone()) {
             throw IllegalArgumentException("Must play black or white")
         }
         if (board.getStoneAt(point) != StoneColor.NONE) {
             throw IllegalArgumentException("This point is already taken")
         }
         val node = MoveNode(point, color)
-        addAndApplyNode(node)
+        addAndApplyNode(node, onMainLine)
     }
 
     var autoPlay: Boolean = true
@@ -278,13 +278,17 @@ class Game(size: Int) {
         gnuGo?.tidyUp()
     }
 
-    fun addNode(node: GameNode) {
+    fun addNode(node: GameNode, onMainLine: Boolean) {
         node.moveNumber = currentNode.moveNumber + 1
         node.parent = currentNode
-        currentNode.children.add(node)
+        if (onMainLine) {
+            currentNode.children.add(0, node)
+        } else {
+            currentNode.children.add(node)
+        }
     }
 
-    private fun addAndApplyNode(node: GameNode) {
+    private fun addAndApplyNode(node: GameNode, onMainLine: Boolean) {
         autoPlay = true
         currentNode.children.forEach { child ->
             if (child.sameAs(node)) {
@@ -292,7 +296,7 @@ class Game(size: Int) {
                 return
             }
         }
-        addNode(node)
+        addNode(node, onMainLine)
         node.apply(this)
     }
 

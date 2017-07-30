@@ -40,7 +40,7 @@ Each time you play, the the handicap will change based on your previous results.
 
     init {
         taskD.addParameters(boardSizeP, computerLevelP, computerPlaysP, handicapP, fixedHandicapPointsP, komiP, timeLimitP,
-                promotionThresholdP, demotionThresholdP, winsP, losesP
+                allowUndoP, promotionThresholdP, demotionThresholdP, winsP, losesP
         )
     }
 

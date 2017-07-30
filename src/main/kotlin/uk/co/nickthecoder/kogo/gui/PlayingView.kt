@@ -5,7 +5,7 @@ import uk.co.nickthecoder.kogo.ScoreEstimator
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 
-open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWindow, game) {
+open class PlayingView(mainWindow: MainWindow, game: Game, val allowUndo: Boolean = true) : AbstractGoView(mainWindow, game) {
 
     override val title = "Playing"
 
@@ -13,7 +13,7 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
 
     val shortcuts = ShortcutHelper("PlayingView", node)
 
-    val gameInfoView = GameInfoView(game,true)
+    val gameInfoView = GameInfoView(game, true)
 
     override fun build() {
         super.build()
@@ -28,6 +28,9 @@ open class PlayingView(mainWindow: MainWindow, game: Game) : AbstractGoView(main
         }
 
         toolBar.items.addAll(saveB, editB, hintB, estimateScoreB, resignB, passB)
+        if (allowUndo) {
+            toolBar.items.add(undoB)
+        }
     }
 
     override fun tidyUp() {
