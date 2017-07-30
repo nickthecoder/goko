@@ -110,10 +110,11 @@ class GnuGo(val game: Game, level: Int) : GameListener {
             val reply = line.substring(space + 1)
             val number = line.substring(1, space).toInt()
             val handler = replyHandlers.remove(number)
-            println("Parsing '$reply' with handler $handler")
+            if (reply.isNotBlank()) {
+                println("Parsing '$reply' with handler $handler")
+            }
             handler?.parseReply(reply)
         }
-
     }
 
     override fun stoneChanged(point: Point) {
