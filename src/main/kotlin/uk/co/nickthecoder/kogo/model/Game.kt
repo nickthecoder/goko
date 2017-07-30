@@ -93,17 +93,13 @@ class Game(size: Int) {
     }
 
     fun placeHandicap() {
-        var start = 3
-        var jump = 6
-        if (board.size < 19) {
-            if (board.size < 13) {
-                start = 1
-                jump = 4
-            } else {
-                start = 2
-                jump = 5
-            }
+        val start: Int
+        if (board.size < 13) {
+            start = 2
+        } else {
+            start = 3
         }
+        val jump = (board.size - 1) / 2 - start
 
         for (i in 0..metaData.handicap!! - 1) {
             val h = handicaps[i]

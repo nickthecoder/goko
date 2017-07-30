@@ -14,7 +14,10 @@ abstract class AbstractGamePreferences : AbstractTask() {
 
     val boardSizeP = ChoiceParameter("boardSize", value = 19)
             .choice("19", 19, "Standard (19x19)")
+            .choice("17", 17, "(17x17)")
+            .choice("15", 15, "(15x15)")
             .choice("13", 13, "Medium (13x13)")
+            .choice("11", 11, "(11x11)")
             .choice("9", 9, "Small (9x9)")
 
 
