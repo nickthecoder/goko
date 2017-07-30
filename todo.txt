@@ -15,18 +15,8 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
-Save GamesPreferences in a readable manner (improve paratask, and then use that code to write the tasks parameters)
-
 Move ProblemPlayer into GameVariation
 	i.e. Create a GoProblem: GameVariation, and have that update the comments when a weird move is played.
-
-Game score chart
-	Show a chart of the game score throughout the game (using GnuGo's estimate).
-	Draw a polyline using the first number, and around it, a polygon using the upper and lower bounds.
-	Click on the chart to jump to that game node.
-
-SFGReader
-	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.
 
 Consider using CopyOnWrite for listeners
 	Maybe create a special generic class for listeners, with weak references too.
@@ -34,14 +24,19 @@ Consider using CopyOnWrite for listeners
 Use a cut-down version of GoTextProtocol to set up a client/server game across a LAN.
 	Or a propriatory protocol?
 
-Images for each of the Home view's buttons
-
-Hidden Stone Go (via client server)
+Hidden Move Go
 	Parameters for # of black & white stones
-	Parameter for showing your own hidden stones
+	Parameter for showing your own hidden stones (As a stone with/without a mark, a mark only or not at all).
+	Parameter for revealed stones (marked or not marked).
 
 New Geometry Variation
 	StoneColor.isPlayable and isEmpty are NOT the same, when neutral points are introduced.
 	Voids where no stones can be placed, and do NOT count as liberties.
 	Neutral points, where no stones can be placed, but DO count as liberties.
 	Create a GameSetup interface, which is used to place free handicap stones (regular game), voids and neutrals and hidden moves.
+
+Later
+=====
+
+SFGReader
+	Comments : Read BYTES, and then convert to a string using the character set as defined within the file.

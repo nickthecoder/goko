@@ -27,7 +27,6 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0) {
 
         with(buttons) {
 
-            add(createTaskButton("Open SGF File", "open-file") { OpenFileTask(mainWindow) })
             add(createButton("Problems", "problems") { ProblemsView(mainWindow) })
             add(createButton("Joseki Dictionary", "joseki") {
                 val joseki = Preferences.josekiDirectionary
@@ -37,6 +36,7 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0) {
                     PreferencesView(mainWindow, Preferences.josekiPreferences)
                 }
             })
+            add(createTaskButton("Open SGF File", "open-file") { OpenFileTask(mainWindow) })
             add(createButton("Preferences", "preferences") { PreferencesView(mainWindow) })
         }
     }

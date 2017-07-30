@@ -41,6 +41,15 @@
 .home .button.joseki {
     -fx-background-image: url( 'home/joseki.jpg' );
 }
+.home .button.problems {
+    -fx-background-image: url( 'home/problems.jpg' );
+}
+.home .button.open-file {
+    -fx-background-image: url( 'home/open-file.png' );
+}
+.home .button.preferences {
+    -fx-background-image: url( 'home/preferences.png' );
+}
 
 .home .button .text {
     -fx-text-alignment: right;
