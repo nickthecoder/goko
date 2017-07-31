@@ -49,6 +49,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
         Platform.runLater {
             if (game.currentNode === expectedCurrentNode) {
                 game.move(point, color)
+                KoGo.stoneSound()
             } else {
                 println("Generated move ignored, as the game's current node has changed.")
                 gnuGo.syncBoard()

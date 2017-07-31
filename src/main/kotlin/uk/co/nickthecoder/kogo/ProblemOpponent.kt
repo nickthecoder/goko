@@ -3,6 +3,7 @@ package uk.co.nickthecoder.kogo
 import uk.co.nickthecoder.kogo.gui.ProblemView
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
+import uk.co.nickthecoder.paratask.util.runLater
 
 /**
  * Automatically play the opponents moves when solving Go problems
@@ -21,7 +22,10 @@ class ProblemOpponent(val game: Game, override val color: StoneColor, val proble
             val nextNode = currentNode.children.firstOrNull()
 
             nextNode?.let {
-                it.apply(game)
+                runLater(500) {
+                    it.apply(game)
+                    KoGo.stoneSound()
+                }
             }
         }
     }

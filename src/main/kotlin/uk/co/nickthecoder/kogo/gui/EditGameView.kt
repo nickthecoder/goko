@@ -5,6 +5,7 @@ import javafx.geometry.Orientation
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
+import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.kogo.preferences.PreferencesListener
@@ -151,6 +152,8 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         if (player.canClickToPlay() && game.canPlayAt(point)) {
             player.makeMove(point)
+            KoGo.audioClip("tap.mp3")?.play()
+            KoGo.stoneSound()
         }
     }
 
@@ -163,6 +166,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         }
         node.addStone(board, point, color)
         game.nodeChanged(game.currentNode)
+        KoGo.stoneSound()
     }
 
     fun removeStone(point: Point) {

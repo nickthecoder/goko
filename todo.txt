@@ -1,7 +1,4 @@
 
-
-MultipleParameter to render as a list and detail. This will allow re-ordering.
-
 Bugs	
 	Only taking a single pass to end the game
 	GnuGo is placing the stones, even when I'm black (was one color go though ;-)
@@ -15,15 +12,6 @@ Bugs
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 
-Move ProblemPlayer into GameVariation
-	i.e. Create a GoProblem: GameVariation, and have that update the comments when a weird move is played.
-
-Consider using CopyOnWrite for listeners
-	Maybe create a special generic class for listeners, with weak references too.
-
-Use a cut-down version of GoTextProtocol to set up a client/server game across a LAN.
-	Or a propriatory protocol?
-
 Hidden Move Go
 	Parameters for # of black & white stones
 	Parameter for showing your own hidden stones (As a stone with/without a mark, a mark only or not at all).
@@ -34,6 +22,8 @@ New Geometry Variation
 	Voids where no stones can be placed, and do NOT count as liberties.
 	Neutral points, where no stones can be placed, but DO count as liberties.
 	Create a GameSetup interface, which is used to place free handicap stones (regular game), voids and neutrals and hidden moves.
+
+Connect to various go servers
 
 Later
 =====

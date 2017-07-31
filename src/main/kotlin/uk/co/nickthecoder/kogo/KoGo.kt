@@ -6,6 +6,7 @@ import javafx.scene.image.Image
 import javafx.scene.media.AudioClip
 import javafx.stage.Stage
 import uk.co.nickthecoder.kogo.gui.MainWindow
+import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.paratask.ParaTaskApp
 import uk.co.nickthecoder.paratask.util.AutoExit
 import java.io.InputStream
@@ -68,6 +69,13 @@ class KoGo : Application() {
             audioClips[name] = audioClip
             return audioClip
         }
+
+        fun stoneSound() {
+            if (Preferences.basicPreferences.playSoundsP.value == true) {
+                audioClip("tap.mp3")?.play()
+            }
+        }
+
     }
 
 }

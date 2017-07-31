@@ -3,6 +3,7 @@ package uk.co.nickthecoder.kogo.gui
 import javafx.scene.Node
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.StackPane
+import uk.co.nickthecoder.kogo.KoGo
 import uk.co.nickthecoder.kogo.model.Board
 import uk.co.nickthecoder.kogo.model.Game
 import uk.co.nickthecoder.kogo.model.GameListener
@@ -26,6 +27,7 @@ class ClickBoardView(val boardView: BoardView) : GameListener {
 
         if (player.canClickToPlay() && game.canPlayAt(point)) {
             player.makeMove(point)
+            KoGo.stoneSound()
         }
     }
 
