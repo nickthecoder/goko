@@ -3,8 +3,7 @@ Bugs
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
 		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).
-	Ko not tested for, and then throws exception when the ko point is played.
-		Use board.copy().hash() and compare with all previous nodes.
+	GnuGo is not following the board correctly e.g. when you Undo a move, and when setup stones are added and removed.
 
 Hidden Move Go
 	Parameters for # of black & white stones

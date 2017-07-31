@@ -60,6 +60,7 @@ class ClickBoardView(val boardView: BoardView) : GameListener {
     }
 
     fun onMouseClicked(event: MouseEvent) {
+        node.requestFocus()
         val point = boardView.toBoardPoint(event.x, event.y)
         if (board.contains(point)) {
             onClickedPoint(point)
