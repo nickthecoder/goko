@@ -1,14 +1,8 @@
 
 Bugs	
-	Only taking a single pass to end the game
-	GnuGo is placing the stones, even when I'm black (was one color go though ;-)
-		I think the handicap stone is being put in the wrong place.	
-
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
 		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).
-	A pass from Go Problems invokes the game scoring algorithm!
-		Also, why is it doing it after a SINGLE pass? Hmm.
 	Ko not tested for, and then throws exception when the ko point is played.
 		Use board.copy().hash() and compare with all previous nodes.
 

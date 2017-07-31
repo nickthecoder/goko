@@ -223,11 +223,22 @@ class Game(size: Int) {
         }
         val copy = board.copy()
         copy.setStoneAt(point, playerToMove.color)
-        copy.removeTakenStones(point)
+        val takenStones = copy.removeTakenStones(point)
         if (copy.checkLiberties(point) != null) {
             return false
         }
-        // TODO Check for kos
+
+        if (takenStones.size == 1) {
+            // Check for ko, by comparing the hashes of previous board positions.
+            val newHash = copy.hashCode()
+            var node: GameNode? = currentNode
+            while (node != null) {
+                if (node.boardHash == newHash) {
+                    return false
+                }
+                node = node.parent
+            }
+        }
         return true
     }
 

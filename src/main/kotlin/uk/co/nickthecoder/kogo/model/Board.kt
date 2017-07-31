@@ -4,9 +4,11 @@ import uk.co.nickthecoder.kogo.util.array2d
 
 class Board(val size: Int, val game: Game) {
 
-    private val points = array2d<StoneColor>(size, size) { StoneColor.NONE }
+    //private val points = array2d<StoneColor>(size, size) { StoneColor.NONE }
 
-    private var isCopy = false
+    private val points: List<MutableList<StoneColor>> = List<MutableList<StoneColor>>(size, { MutableList<StoneColor>(size, { StoneColor.NONE }) })
+
+    var isCopy = false
 
     fun contains(x: Int, y: Int) = x >= 0 && y >= 0 && x < size && y < size
 
@@ -108,8 +110,7 @@ class Board(val size: Int, val game: Game) {
         result.isCopy = true
         for (x in 0..size - 1) {
             for (y in 0..size - 1) {
-                val point = Point(x, y)
-                points[point.x][point.y] = getStoneAt(point)
+                result.points[x][y] = points[x][y]
             }
         }
         return result
@@ -119,5 +120,15 @@ class Board(val size: Int, val game: Game) {
      * The hash is used to detect kos. If the stones on the board are the same as a previous position, and
      * the player to move is the same, then we have a repeated board position, which is illegal Ko move.
      */
-    override fun hashCode(): Int = points.hashCode() xor game.playerToMove.color.hashCode()
+    override fun hashCode(): Int {
+        return points.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is Board) {
+            return other.points == this.points
+        } else {
+            return false
+        }
+    }
 }

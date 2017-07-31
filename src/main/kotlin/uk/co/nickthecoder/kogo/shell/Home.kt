@@ -27,7 +27,14 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0) {
 
         with(buttons) {
 
-            add(createButton("Problems", "problems") { ProblemsView(mainWindow) })
+            add(createButton("Problems", "problems") {
+                val problemsDir = Preferences.problemsDirectory
+                if (problemsDir != null) {
+                    ProblemsView(mainWindow)
+                } else {
+                    PreferencesView(mainWindow, Preferences.problemsPreferences)
+                }
+            })
             add(createButton("Joseki Dictionary", "joseki") {
                 val joseki = Preferences.josekiDirectionary
                 if (joseki != null) {
