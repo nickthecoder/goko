@@ -96,11 +96,19 @@ Each time you play, the the handicap will change based on your previous results.
 
         if (computerPlaysP.value == StoneColor.BLACK) {
             handicapP.value = handicapP.value!! + 1
+            if (handicapP.value == 1) {
+                // 1 stone handicap makes no sense, as we black already has the first move with a zero handicap.
+                handicapP.value = 2
+            }
         } else {
             if (handicapP.value == 0) {
+                // When the computer plays white with no handicap, then promotion is for the computer to play black.
                 computerPlaysP.value = StoneColor.BLACK
             } else {
                 handicapP.value = handicapP.value!! - 1
+                if (handicapP.value == 1) {
+                    handicapP.value = 0
+                }
             }
         }
     }
@@ -110,11 +118,18 @@ Each time you play, the the handicap will change based on your previous results.
 
         if (computerPlaysP.value == StoneColor.WHITE) {
             handicapP.value = handicapP.value!! + 1
+            if (handicapP.value == 1) {
+                // 1 stone handicap makes no sense.
+                handicapP.value == 2
+            }
         } else {
             if (handicapP.value == 0) {
                 computerPlaysP.value = StoneColor.WHITE
             } else {
                 handicapP.value = handicapP.value!! - 1
+                if (handicapP.value == 1) {
+                    handicapP.value = 0
+                }
             }
         }
     }
