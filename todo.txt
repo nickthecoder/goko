@@ -3,7 +3,7 @@ Bugs
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
 		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).
-	GnuGo is not following the board correctly e.g. when you Undo a move, and when setup stones are added and removed.
+	Pass button visible, but disabled on joseki view.
 
 Hidden Move Go
 	Parameters for # of black & white stones

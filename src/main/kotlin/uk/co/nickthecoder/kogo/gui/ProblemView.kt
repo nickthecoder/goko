@@ -62,7 +62,8 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
 
         toolBar.items.addAll(preferencesB, restartB, giveUpB, editB, passB)
 
-        game.root.apply(game)
+        // TODO Is this really needed?
+        game.apply(game.root)
     }
 
     override fun tidyUp() {
@@ -93,8 +94,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         mainWindow.changeView(view)
     }
 
-    override fun moved() {
-        super.moved()
+    fun update() {
         val currentNode = game.currentNode
 
         if (cheat) {
@@ -114,6 +114,16 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
                 }
             }
         }
+    }
+
+    override fun madeMove(gameNode: GameNode) {
+        super.madeMove(gameNode)
+        update()
+    }
+
+    override fun undoneMove(gameNode: GameNode) {
+        super.undoneMove(gameNode)
+        update()
     }
 
     inner class ProblemResults : VBox() {

@@ -13,15 +13,15 @@ class History(val game: Game) : GameListener {
     }
 
     fun forward(n: Int = 1) {
-        for ( foo in 1..n ) {
+        for (foo in 1..n) {
             val i = history.indexOf(game.currentNode)
             if (i >= 0 && i < history.size - 1) {
                 val node = history[i + 1]
-                if ( node.parent == null ) {
+                if (node.parent == null) {
                     // It has been deleted from the game tree.
                     game.moveForward()
                 } else {
-                    node.apply(game)
+                    game.apply(node)
                 }
             } else {
                 game.moveForward()
@@ -53,21 +53,19 @@ class History(val game: Game) : GameListener {
         }
     }
 
-    override fun moved() {
+    override fun madeMove(gameNode: GameNode) {
 
-        val currentNode = game.currentNode
-
-        val c = history.indexOf(currentNode)
+        val c = history.indexOf(gameNode)
         if (c < 0) {
-            val p = history.indexOf(currentNode.parent)
+            val p = history.indexOf(gameNode.parent)
             if (p >= 0) {
                 while (history.size > p + 1) {
                     history.removeAt(history.size - 1)
                 }
-                history.add(currentNode)
+                history.add(gameNode)
             } else {
                 history.clear()
-                var node: GameNode? = currentNode
+                var node: GameNode? = gameNode
                 while (node != null) {
                     history.add(0, node)
                     node = node.parent

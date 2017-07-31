@@ -161,8 +161,8 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         var node = game.currentNode
         if (node !is SetupNode || node.children.isNotEmpty()) {
             node = SetupNode(game.playerToMove.color)
-            game.addNode(node,false)
-            node.apply(game)
+            game.addNode(node, false)
+            game.apply(node)
         }
         node.addStone(board, point, color)
         game.nodeChanged(game.currentNode)
@@ -174,8 +174,8 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             var node = game.currentNode
             if (node !is SetupNode || node.children.isNotEmpty()) {
                 node = SetupNode(game.playerToMove.color)
-                game.addNode(node,false)
-                node.apply(game)
+                game.addNode(node, false)
+                game.apply(node)
             }
             node.removeStone(board, point)
             game.nodeChanged(game.currentNode)
@@ -223,7 +223,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
                 if (text != null) {
                     val menuItem = MenuItem(text)
                     menuItem.addEventHandler(ActionEvent.ACTION) {
-                        child.apply(game)
+                        game.apply(child)
                     }
                     branchesButton.items.add(menuItem)
                 }
@@ -245,8 +245,8 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         }
     }
 
-    override fun moved() {
-        super.moved()
+    override fun madeMove(gameNode: GameNode) {
+        super.madeMove(gameNode)
         buildBranchesMenu()
     }
 

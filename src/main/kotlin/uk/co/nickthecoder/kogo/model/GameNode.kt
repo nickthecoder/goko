@@ -8,10 +8,6 @@ abstract class GameNode(var colorToPlay: StoneColor) {
 
     var parent: GameNode? = null
 
-    var addedStones = mutableMapOf<Point, StoneColor>()
-
-    var removedStones = mutableMapOf<Point, StoneColor>()
-
     private val mutableMarks = mutableListOf<Mark>()
 
     val marks: List<Mark> = mutableMarks
@@ -61,75 +57,6 @@ abstract class GameNode(var colorToPlay: StoneColor) {
         return false
     }
 
-    fun addStoneOnly(board: Board, point: Point, color: StoneColor) {
-        val oldColor = board.getStoneAt(point)
-        if (oldColor.isStone()) {
-            if (removedStones.get(point) == null) {
-                removedStones.put(point, oldColor)
-            }
-        }
-        addedStones.put(point, color)
-    }
-
-    fun addStone(board: Board, point: Point, color: StoneColor) {
-        addStoneOnly(board, point, color)
-        board.setStoneAt(point, color)
-    }
-
-    fun removeStoneOnly(board: Board, point: Point) {
-        val oldColor = board.getStoneAt(point)
-        if (oldColor.isStone()) {
-            if (removedStones.get(point) == null) {
-                removedStones.put(point, oldColor)
-            }
-        }
-    }
-
-    fun removeStone(board: Board, point: Point) {
-        removeStoneOnly(board, point)
-        board.removeStoneAt(point)
-    }
-
-    open fun bodyApply(game: Game) {
-        removedStones.forEach { point, _ ->
-            game.board.removeStoneAt(point)
-        }
-        addedStones.forEach { point, color ->
-            game.setupStone(point, color)
-        }
-    }
-
-    fun apply(game: Game) {
-
-        if (this === game.root && game.currentNode === this) {
-        } else {
-            if (parent != game.currentNode) {
-                throw IllegalArgumentException("$this is not a child of the current node : ${game.currentNode}")
-            }
-        }
-        bodyApply(game)
-        game.currentNode = this
-        game.moved()
-        boardHash = game.board.hashCode()
-    }
-
-    fun takeBack(game: Game) {
-        if (this != game.currentNode) {
-            throw IllegalArgumentException("$this is not the current node : ${game.currentNode}")
-        }
-        bodyTakeBack(game)
-        game.moved()
-    }
-
-    open fun bodyTakeBack(game: Game) {
-        addedStones.forEach { point, _ ->
-            game.board.removeStoneAt(point)
-        }
-        removedStones.forEach { point, color ->
-            game.board.setStoneAt(point, color)
-        }
-    }
-
     open fun sameAs(node: GameNode) = false
 
     abstract fun copy(): GameNode
@@ -139,8 +66,6 @@ abstract class GameNode(var colorToPlay: StoneColor) {
      */
     open protected fun copyDetails(into: GameNode) {
         into.moveNumber = this.moveNumber
-        this.addedStones.forEach { key, value -> into.addedStones.put(key, value) }
-        this.removedStones.forEach { key, value -> into.removedStones.put(key, value) }
         this.mutableMarks.forEach { into.mutableMarks.add(it) }
         into.comment = this.comment
         into.name = this.name
@@ -151,11 +76,40 @@ abstract class GameNode(var colorToPlay: StoneColor) {
 
 class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
 
+
+    var addedStones = mutableMapOf<Point, StoneColor>()
+
+    var removedStones = mutableMapOf<Point, StoneColor>()
+
     override fun toString() = "#$moveNumber SetupNode" // TODO count of stones added
+
+    fun addStone(board: Board, point: Point, color: StoneColor) {
+        val oldColor = board.getStoneAt(point)
+        if (oldColor.isStone()) {
+            if (removedStones.get(point) == null) {
+                removedStones.put(point, oldColor)
+            }
+        }
+        addedStones.put(point, color)
+        board.setStoneAt(point, color)
+    }
+
+    fun removeStone(board: Board, point: Point) {
+        val oldColor = board.getStoneAt(point)
+        if (oldColor.isStone()) {
+            if (removedStones.get(point) == null) {
+                removedStones.put(point, oldColor)
+            }
+        }
+        board.removeStoneAt(point)
+    }
 
     override fun copy(): SetupNode {
         val copy = SetupNode(colorToPlay)
         copyDetails(copy)
+        this.addedStones.forEach { key, value -> copy.addedStones.put(key, value) }
+        this.removedStones.forEach { key, value -> copy.removedStones.put(key, value) }
+
         return copy
     }
 }
@@ -176,32 +130,6 @@ class PassNode(val color: StoneColor) : GameNode(color.opposite()) {
 class MoveNode(var point: Point, var color: StoneColor) : GameNode(color.opposite()) {
 
     var takenStones = setOf<Point>()
-
-    override fun bodyApply(game: Game) {
-        if (game.board.getStoneAt(point) != StoneColor.NONE) {
-            game.board.removeStoneAt(point)
-        }
-        game.board.setStoneAt(point, color)
-        takenStones = game.board.removeTakenStones(point)
-        if (color == StoneColor.BLACK) {
-            game.blackCaptures += takenStones.size
-        } else {
-            game.whiteCaptures += takenStones.size
-        }
-    }
-
-    override fun bodyTakeBack(game: Game) {
-        game.board.removeStoneAt(point)
-        val removedColor = StoneColor.opposite(color)
-        takenStones.forEach { point ->
-            game.board.setStoneAt(point, removedColor)
-        }
-        if (color == StoneColor.BLACK) {
-            game.blackCaptures -= takenStones.size
-        } else {
-            game.whiteCaptures -= takenStones.size
-        }
-    }
 
     override fun sameAs(node: GameNode) = node is MoveNode && this.point == node.point && this.color == node.color
 

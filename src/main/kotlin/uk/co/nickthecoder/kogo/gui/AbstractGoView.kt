@@ -84,7 +84,7 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     fun onEnd() {
         while (game.currentNode.children.isNotEmpty()) {
-            game.currentNode.children[0].apply(game)
+            game.apply(game.currentNode.children[0])
         }
     }
 
@@ -108,9 +108,18 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     open fun showScore(score: String) {}
 
-    override fun moved() {
+    private fun update() {
         val isLocal = game.playerToMove is LocalPlayer
         passB.isDisable = !isLocal
         resignB.isDisable = !isLocal
     }
+
+    override fun madeMove(gameNode: GameNode) {
+        update()
+    }
+
+    override fun undoneMove(gameNode: GameNode) {
+        update()
+    }
+
 }

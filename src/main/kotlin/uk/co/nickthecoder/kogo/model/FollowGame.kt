@@ -16,7 +16,7 @@ class FollowGame(val original: Game) : GameListener {
         original.listeners.add(this)
     }
 
-    override fun moved() {
+    override fun madeMove(gameNode: GameNode) {
         val nodeIndex = mainLineNodeIndex(original.currentNode)
         if (nodeIndex == null) {
             return

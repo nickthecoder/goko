@@ -186,7 +186,11 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
         updateNodeAnotations()
     }
 
-    override fun moved() {
+    override fun madeMove(gameNode: GameNode) {
+        update()
+    }
+
+    override fun undoneMove(gameNode: GameNode) {
         update()
     }
 

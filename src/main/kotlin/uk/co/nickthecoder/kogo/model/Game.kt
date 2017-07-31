@@ -31,7 +31,10 @@ class Game(size: Int) {
 
     var root = SetupNode(playerToMove.color)
 
-    var currentNode: GameNode = root
+    val currentNode: GameNode
+        get() = pCurrentNode
+
+    private var pCurrentNode: GameNode = root
 
     var whiteCaptures: Int = 0
 
@@ -164,8 +167,9 @@ class Game(size: Int) {
 
     fun pass(onMainLine: Boolean = true) {
         val node = PassNode(playerToMove.color)
-        addAndApplyNode(node, onMainLine)
+        apply(addNode(node, onMainLine))
         if (currentNode.parent is PassNode) {
+            // TODO Is this still correct?
             awaitingFinalCount = true
             countEndGame()
         }
@@ -182,7 +186,13 @@ class Game(size: Int) {
 
             if (freeHandicaps == 0) {
                 root.colorToPlay = StoneColor.WHITE
-                moved()
+                // TODO Need to notify that the free handicap stones have been placed.
+
+                playerToMove = players[root.colorToPlay]!!
+                playerToMove.yourTurn()
+                listeners.forEach {
+                    it.nodeChanged(root)
+                }
             }
             return
         }
@@ -194,7 +204,7 @@ class Game(size: Int) {
             throw IllegalArgumentException("This point is already taken")
         }
         val node = MoveNode(point, color)
-        addAndApplyNode(node, onMainLine)
+        apply(addNode(node, onMainLine))
     }
 
     var autoPlay: Boolean = true
@@ -202,18 +212,6 @@ class Game(size: Int) {
     internal fun nodeChanged(node: GameNode) {
         listeners.forEach {
             it.nodeChanged(node)
-        }
-    }
-
-    internal fun moved() {
-        val node = currentNode
-        playerToMove = players[node.colorToPlay]!!
-        listeners.forEach {
-            it.moved()
-        }
-        if (autoPlay) {
-            playerToMove.yourTurn()
-            autoPlay = false
         }
     }
 
@@ -263,7 +261,9 @@ class Game(size: Int) {
         if (currentNode == root) {
             root.children.forEach { it.parent = null }
             root.children.clear()
-            moved()
+            listeners.forEach {
+                it.nodeChanged(root)
+            }
         } else {
             val node = currentNode
             currentNode.parent?.children?.remove(node)
@@ -289,7 +289,14 @@ class Game(size: Int) {
         gnuGo?.tidyUp()
     }
 
-    fun addNode(node: GameNode, onMainLine: Boolean) {
+    fun addNode(node: GameNode, onMainLine: Boolean): GameNode {
+
+        currentNode.children.forEach { child ->
+            if (child.sameAs(node)) {
+                return child
+            }
+        }
+
         node.moveNumber = currentNode.moveNumber + 1
         node.parent = currentNode
         if (onMainLine) {
@@ -297,28 +304,102 @@ class Game(size: Int) {
         } else {
             currentNode.children.add(node)
         }
+        return node
     }
 
-    private fun addAndApplyNode(node: GameNode, onMainLine: Boolean) {
+    fun apply(node: GameNode) {
         autoPlay = true
-        currentNode.children.forEach { child ->
-            if (child.sameAs(node)) {
-                child.apply(this)
-                return
+        if (!currentNode.children.contains(node) && node !== root) {
+            throw IllegalStateException("Node is not a child of the current node")
+        }
+
+        if (node is SetupNode) {
+            node.removedStones.forEach { point, _ ->
+                board.removeStoneAt(point)
+            }
+            node.addedStones.forEach { point, color ->
+                board.setStoneAt(point, color)
             }
         }
-        addNode(node, onMainLine)
-        node.apply(this)
+
+        if (node is MoveNode) {
+            if (board.getStoneAt(node.point) != StoneColor.NONE) {
+                println("Hmm, there's already a stone at ${node.point}")
+                //throw IllegalStateException("Already a stone at ${node.point}")
+            }
+            board.setStoneAt(node.point, node.color)
+            node.takenStones = board.removeTakenStones(node.point)
+            if (node.color == StoneColor.BLACK) {
+                blackCaptures += node.takenStones.size
+            } else {
+                whiteCaptures += node.takenStones.size
+            }
+        }
+
+        pCurrentNode = node
+
+        if (node !is SetupNode) {
+            playerToMove = otherPlayer(playerToMove)
+        }
+
+        node.boardHash = board.hashCode()
+
+        listeners.forEach {
+            it.madeMove(node)
+        }
+
+        if (autoPlay) {
+            playerToMove.yourTurn()
+            autoPlay = false
+        }
+    }
+
+    fun unApply(node: GameNode) {
+        if (node != currentNode) {
+            throw IllegalStateException("Can only unApply the current node")
+        }
+        val parent = node.parent
+        if (parent == null) {
+            throw IllegalStateException("Cannot un-apply the root node")
+        }
+
+        if (node is SetupNode) {
+            node.removedStones.forEach { point, color ->
+                board.setStoneAt(point, color)
+            }
+            node.addedStones.forEach { point, _ ->
+                board.removeStoneAt(point)
+            }
+        }
+
+        if (node is MoveNode) {
+            board.removeStoneAt(node.point)
+            val opposite = node.color.opposite()
+            node.takenStones.forEach { point ->
+                board.setStoneAt(point, opposite)
+            }
+            if (node.color == StoneColor.BLACK) {
+                blackCaptures -= node.takenStones.size
+            } else {
+                whiteCaptures -= node.takenStones.size
+            }
+        }
+
+        if (node !is SetupNode) {
+            playerToMove = otherPlayer(playerToMove)
+        }
+
+        pCurrentNode = parent
+        listeners.forEach {
+            it.undoneMove(node)
+        }
     }
 
     fun moveBack(n: Int = 1) {
         for (foo in 1..n) {
             val parent = currentNode.parent
             parent ?: return
-
-            currentNode.takeBack(this)
-            currentNode = parent
-            moved()
+            unApply(currentNode)
         }
     }
 
@@ -328,9 +409,7 @@ class Game(size: Int) {
                 return
             }
             val nextNode = currentNode.children[0]
-            nextNode.apply(this)
-            currentNode = nextNode
-            moved()
+            apply(nextNode)
         }
     }
 
@@ -364,7 +443,7 @@ class Game(size: Int) {
         val result = reader.read()
         result.file = this.file
 
-        result.root.apply(result)
+        result.apply(result.root)
         return result
     }
 }

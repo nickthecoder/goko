@@ -8,17 +8,28 @@ import uk.co.nickthecoder.kogo.Player
  */
 interface GameListener {
 
-    fun gameEnded(winner: Player?) {}
+    fun madeMove( gameNode : GameNode ) {}
 
-    fun moved() {}
+    fun undoneMove( gameNode : GameNode ) {}
 
     fun addedMark(mark: Mark) {}
 
-    fun removedMark(mark: Mark) {}
-
+    /**
+     * A point on the board has changed. This wil be called before madeMove when a MoveNode is applied.
+     * It is also called for each stone captured.
+     */
     fun stoneChanged(point: Point) {}
 
-    fun nodeChanged(node: GameNode) {}
+    fun removedMark(mark: Mark) {}
+
 
     fun updatedMetaData() {}
+
+    fun gameEnded(winner: Player?) {}
+
+    /**
+     * Unlike all the other methods, this may refer to a node which is NOT the current game node.
+     */
+    fun nodeChanged(node: GameNode) {}
+
 }

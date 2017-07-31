@@ -23,7 +23,7 @@ class ProblemOpponent(val game: Game, override val color: StoneColor, val proble
 
             nextNode?.let {
                 runLater(500) {
-                    it.apply(game)
+                    game.apply(it)
                     KoGo.stoneSound()
                 }
             }

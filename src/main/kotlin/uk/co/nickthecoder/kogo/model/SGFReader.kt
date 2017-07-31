@@ -140,34 +140,37 @@ class SGFReader {
             game.playerToMove = game.players.get(toPlay)!!
         }
 
-        val whites = sgfNode.getPropertyValues("AW")
-        if (whites != null) {
-            whites.forEach { str ->
-                val point = toPoint(game.board, str)
-                if (point != null) {
-                    currentNode.addStoneOnly(game.board, point, StoneColor.WHITE)
+        if (currentNode is SetupNode) {
+            val whites = sgfNode.getPropertyValues("AW")
+            if (whites != null) {
+                whites.forEach { str ->
+                    val point = toPoint(game.board, str)
+                    if (point != null) {
+                        currentNode.addStone(game.board, point, StoneColor.WHITE)
+                    }
                 }
             }
-        }
-        val blacks = sgfNode.getPropertyValues("AB")
-        if (blacks != null) {
-            blacks.forEach { str ->
-                val point = toPoint(game.board, str)
-                if (point != null) {
-                    currentNode.addStoneOnly(game.board, point, StoneColor.BLACK)
+            val blacks = sgfNode.getPropertyValues("AB")
+            if (blacks != null) {
+                blacks.forEach { str ->
+                    val point = toPoint(game.board, str)
+                    if (point != null) {
+                        currentNode.addStone(game.board, point, StoneColor.BLACK)
+                    }
+                }
+            }
+
+            val removed = sgfNode.getPropertyValues("AE")
+            if (removed != null) {
+                removed.forEach { str ->
+                    val point = toPoint(game.board, str)
+                    if (point != null) {
+                        currentNode.removeStone(game.board, point)
+                    }
                 }
             }
         }
 
-        val removed = sgfNode.getPropertyValues("AE")
-        if (removed != null) {
-            removed.forEach { str ->
-                val point = toPoint(game.board, str)
-                if (point != null) {
-                    currentNode.removeStoneOnly(game.board, point)
-                }
-            }
-        }
 
         sgfNode.getPropertyValue("C")?.let {
             currentNode.comment = it
@@ -266,7 +269,7 @@ class SGFReader {
                     passNode = PassNode(game.playerToMove.color)
                     game.addNode(passNode, false)
                 }
-                passNode.apply(game)
+                game.apply(passNode)
             }
             if (gameNode is SetupNode && game.currentNode is SetupNode) {
                 // There are two setup nodes in a row, which seems pointless, so lets merge them into one node.
@@ -274,8 +277,7 @@ class SGFReader {
                 game.moveBack()
                 game.moveForward()
             } else {
-                game.addNode(gameNode, false)
-                gameNode.apply(game)
+                game.apply(game.addNode(gameNode, false))
                 updateNode(game, sgfChild)
             }
             addChildren(game, sgfChild)
@@ -520,7 +522,12 @@ class SGFNode() {
             return null
         } else {
             val format = SimpleDateFormat("yyyy-MM-dd")
-            return format.parse(str)
+            try {
+                return format.parse(str)
+            } catch (e: Exception) {
+                println("Skipping badly formatted date : ${str}. Should be in YYYY-MM-DD format.")
+                return null
+            }
         }
     }
 

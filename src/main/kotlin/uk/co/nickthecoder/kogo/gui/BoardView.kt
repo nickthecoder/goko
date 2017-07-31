@@ -379,7 +379,11 @@ class BoardView(val game: Game) : View {
             }
         }
 
-        override fun moved() {
+        override fun madeMove(gameNode: GameNode) {
+            update()
+        }
+
+        override fun undoneMove(gameNode: GameNode) {
             update()
         }
 

@@ -25,7 +25,8 @@ class OpenFileTask(val mainWindow: MainWindow) : AbstractTask() {
         val view = EditGameView(mainWindow, game)
         mainWindow.changeView(view)
         game.rewindTo(game.root)
-        game.root.apply(game)
+        // TODO Is this really needed?
+        game.apply(game.root)
     }
 
 }

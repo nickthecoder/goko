@@ -1,9 +1,6 @@
 package uk.co.nickthecoder.kogo
 
-import uk.co.nickthecoder.kogo.model.Game
-import uk.co.nickthecoder.kogo.model.GameListener
-import uk.co.nickthecoder.kogo.model.Point
-import uk.co.nickthecoder.kogo.model.StoneColor
+import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.paratask.util.process.BufferedSink
 import uk.co.nickthecoder.paratask.util.process.Exec
 import java.io.OutputStreamWriter
@@ -25,6 +22,8 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
     private val replyHandlers = Collections.synchronizedMap(HashMap<Int, ReplyHandler>())
 
+    private var myNode: GameNode? = null
+
     private var commandNumber = 1
 
     fun start() {
@@ -37,8 +36,9 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         exec.start()
 
         writer = OutputStreamWriter(exec.process!!.outputStream)
-
         println("Started GnuGo")
+
+        syncBoard()
     }
 
     fun placeHandicap(client: GnuGoClient) {
@@ -55,6 +55,10 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         command("play ${color.toString().toLowerCase()} $point", null)
     }
 
+    fun undo() {
+        command("undo", null)
+    }
+
     fun syncBoard() {
         command("clear_board", null)
         for (y in 0..game.board.size - 1) {
@@ -65,11 +69,9 @@ class GnuGo(val game: Game, level: Int) : GameListener {
                 }
             }
         }
+        myNode = game.currentNode
     }
 
-    /**
-     * Generate a move, but do not acturally play it. Used to generate Hints.
-     */
     fun topMoves(color: StoneColor, client: GnuGoClient) {
         val handler = TopMovesHandler(client)
         command("top_moves ${color.toString().toLowerCase()}", handler)
@@ -117,12 +119,25 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         }
     }
 
-    override fun stoneChanged(point: Point) {
-        val color = game.board.getStoneAt(point)
-        if (color == StoneColor.NONE) {
-            // TODO During normal play, we don't need to do anything, but when editting... Hmmm
+    override fun madeMove(gameNode: GameNode) {
+        if (gameNode is MoveNode) {
+            if (gameNode.parent != myNode) {
+                syncBoard()
+            } else {
+                addStone(gameNode.color, gameNode.point)
+                myNode = gameNode
+            }
+        } else if (gameNode is SetupNode) {
+            syncBoard()
+        }
+    }
+
+    override fun undoneMove(gameNode: GameNode) {
+        if (myNode === gameNode) {
+            undo()
+            myNode = gameNode.parent
         } else {
-            addStone(color, point)
+            syncBoard()
         }
     }
 

@@ -80,7 +80,7 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         wTime.text = game.players[StoneColor.WHITE]!!.timeRemaining.details()
     }
 
-    override fun moved() {
+    fun update() {
         if (showTimeLimit) {
             countdown?.moved()
             updateTimes()
@@ -93,6 +93,14 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         gameResultLabel.text = ""
         messageLabel.text = ""
         updateCaptures()
+    }
+
+    override fun madeMove(gameNode: GameNode) {
+        update()
+    }
+
+    override fun undoneMove(gameNode: GameNode) {
+        update()
     }
 
     override fun updatedMetaData() {
@@ -133,7 +141,7 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         stopCountdown()
     }
 
-    var lastPlayed : AudioClip? = null // Prevents the same clip being played again
+    var lastPlayed: AudioClip? = null // Prevents the same clip being played again
     var audioClips = mutableListOf<AudioClip?>()
 
     init {
@@ -209,7 +217,7 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
                 } else {
                     if (timeLeft < 11) {
                         val audioClip = audioClips[timeLeft.toInt()]
-                        if ( audioClip != lastPlayed ) {
+                        if (audioClip != lastPlayed) {
                             audioClip?.play()
                             lastPlayed = audioClip
                         }
