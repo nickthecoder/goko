@@ -68,6 +68,13 @@ class MarksView(val board: Board) {
         node.children.add(markView)
     }
 
+    fun add(markView: MarkView, colorStyle: String) {
+        markViews.add(markView)
+        markView.styleClass.add(colorStyle)
+        markView.marksView = this
+        node.children.add(markView)
+    }
+
     fun remove(point: Point) {
         for (mv in markViews) {
             if (mv.point == point) {

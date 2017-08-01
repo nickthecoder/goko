@@ -13,7 +13,10 @@ class VisualiseTerritory(val game: Game, val color: StoneColor, val marksView: M
     val node = game.currentNode
 
     fun visualise() {
-        game.createGnuGo().influence("territory_value", this, color)
+        // Run later to ensure that GnuGo has been updated first
+        Platform.runLater {
+            game.createGnuGo().influence("territory_value", this, color)
+        }
     }
 
     override fun influenceResults(results: List<List<Double>>) {

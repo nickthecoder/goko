@@ -95,6 +95,9 @@
 .marks > .white {
     -fx-text-fill: #fff;
 }
+.marks > .red {
+    -fx-text-fill: #f00;
+}
 /* Column and row markings around the playing area */
 .marks > .coordinate {
     -fx-font-size: 55px;

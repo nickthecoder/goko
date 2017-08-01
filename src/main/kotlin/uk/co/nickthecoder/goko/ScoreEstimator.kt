@@ -8,8 +8,11 @@ class ScoreEstimator(val game: Game) : GnuGoClient {
     private lateinit var callback: (String) -> Unit
 
     fun score(callback: (String) -> Unit) {
-        this.callback = callback
-        game.createGnuGo().estimateScore(this)
+        // Run later to ensure that GnuGo has been updated first
+        Platform.runLater {
+            this.callback = callback
+            game.createGnuGo().estimateScore(this)
+        }
     }
 
     override fun estimateScoreResults(score: String) {

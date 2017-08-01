@@ -36,6 +36,7 @@ object GoKoActions {
     val RESIGN = GoKoAction("resign", null, label = "Resign", tooltip = "Resign Game")
     val HINT = GoKoAction("hint", null, label = "Hint")
     val ESTIMATE_SCORE = GoKoAction("estimateScore", KeyCode.E, control = true, label = "Score", tooltip = "Estimate Score")
+    val HOTSPOTS = GoKoAction("hotspots", KeyCode.H, control = true, label = "Hotspots", tooltip = "Territory changes depending on whose turn it is")
     val INFLUENCE = GoKoAction("visualiseInfluence", KeyCode.I, control = true, label = "Influence")
     val UNDO = GoKoAction("undo", KeyCode.Z, control = true, tooltip = "Undo")
     val CHECK_GNU_GO = GoKoAction("checkGnuGo", KeyCode.G, control = true, shift = true, tooltip = "Check GnuGo's board is the same as GoKo's")

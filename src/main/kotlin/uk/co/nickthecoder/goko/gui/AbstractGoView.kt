@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.gui
 
+import javafx.scene.control.ToggleGroup
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
@@ -51,8 +52,15 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     protected val reviewB = GoKoActions.REVIEW.createButton(shortcuts) { onEdit() }
     protected val resignB = GoKoActions.RESIGN.createButton(shortcuts) { onResign() }
     protected val hintB = GoKoActions.HINT.createButton(shortcuts) { HintGenerator(game).hint() }
-    protected val influenceB = GoKoActions.INFLUENCE.createButton(shortcuts) { onInfluence("influence") }
-    protected val estimateScoreB = GoKoActions.ESTIMATE_SCORE.createToggleButton(shortcuts) { onEstimateScore() }
+
+    protected val estimateScoreB = GoKoActions.ESTIMATE_SCORE.createToggleButton(shortcuts) { showVisualisations() }
+    protected val hotspotsB = GoKoActions.HOTSPOTS.createToggleButton(shortcuts) { showVisualisations() }
+    protected val influenceB = GoKoActions.INFLUENCE.createToggleButton(shortcuts) { showVisualisations() }
+    protected val visualiseGroup = ToggleGroup()
+
+    init {
+        visualiseGroup.toggles.addAll(influenceB, estimateScoreB, hotspotsB)
+    }
 
     protected val restartB = GoKoActions.GO_FIRST.createButton(shortcuts) { game.rewindTo(game.root) }
     protected val backB = GoKoActions.GO_BACK.createButton(shortcuts) { game.moveBack() }
@@ -62,7 +70,10 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     protected val endB = GoKoActions.GO_END.createButton(shortcuts) { onEnd() }
 
     protected val undoB = GoKoActions.UNDO.createButton(shortcuts) { onUndo() }
-    protected val checkGnuGoBoard = GoKoActions.CHECK_GNU_GO.createButton(shortcuts) { game.createGnuGo().checkBoard() }
+
+    init {
+        GoKoActions.CHECK_GNU_GO.createButton(shortcuts) { game.createGnuGo().checkBoard() }
+    }
 
     override fun build() {
         whole.top = toolBar
@@ -115,27 +126,26 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
         }
     }
 
-    fun onEstimateScore() {
+    fun showVisualisations() {
         boardView.visualisation.clear()
-        if ( estimateScoreB.isSelected ) {
+        if (influenceB.isSelected) {
+            VisualiseInfluence(game, StoneColor.BLACK, "black_influence", boardView.visualisation).visualise()
+            VisualiseInfluence(game, StoneColor.WHITE, "white_influence", boardView.visualisation).visualise()
+        }
+        if (hotspotsB.isSelected) {
+            VisualiseHotspots(game, boardView.visualisation).visualise()
+        }
+        if (estimateScoreB.isSelected) {
             ScoreEstimator(game).score { showScore(it) }
             VisualiseTerritory(game, StoneColor.WHITE, boardView.visualisation).visualise()
             VisualiseTerritory(game, StoneColor.BLACK, boardView.visualisation).visualise()
         }
     }
 
-    fun onInfluence(type: String) {
-        boardView.visualisation.clear()
-        VisualiseInfluence(game, StoneColor.BLACK, "black_$type", boardView.visualisation).visualise()
-        VisualiseInfluence(game, StoneColor.WHITE, "white_$type", boardView.visualisation).visualise()
-    }
-
     open fun showScore(score: String) {}
 
     private fun update() {
-        if (estimateScoreB.isSelected) {
-            onEstimateScore()
-        }
+        showVisualisations()
         val isLocal = game.playerToMove is LocalPlayer
         passB.isDisable = !isLocal
         resignB.isDisable = !isLocal

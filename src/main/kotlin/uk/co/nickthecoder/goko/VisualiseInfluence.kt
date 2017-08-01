@@ -10,7 +10,10 @@ class VisualiseInfluence(val game: Game, val color: StoneColor, val type: String
     val node = game.currentNode
 
     fun visualise() {
-        game.createGnuGo().influence(type, this, color)
+        // Run later to ensure that GnuGo has been updated first
+        Platform.runLater {
+            game.createGnuGo().influence(type, this, color)
+        }
     }
 
     override fun influenceResults(results: List<List<Double>>) {

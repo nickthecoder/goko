@@ -101,14 +101,6 @@ class Game(size: Int) {
         }
         val result = GnuGo(this, 10)
         result.start()
-        for (y in 0..board.size - 1) {
-            for (x in 0..board.size - 1) {
-                val color = board.getStoneAt(x, y)
-                if (color.isStone()) {
-                    result.addStone(color, Point(x, y))
-                }
-            }
-        }
         gnuGo = result
         return result
     }

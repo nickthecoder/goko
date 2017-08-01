@@ -46,6 +46,8 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
     private var currentHandler: ReplyHandler? = null
 
+    private var generatedMove = false
+
     fun start() {
         game.listeners.add(this)
         exec.outSink = object : BufferedSink() {
@@ -69,6 +71,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     fun generateMove(color: StoneColor, client: GnuGoClient) {
         val handler = MoveHandler(client)
         command("genmove ${color.toString().toLowerCase()}", handler)
+        generatedMove = true
     }
 
     fun addStone(color: StoneColor, point: Point) {
@@ -84,6 +87,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     }
 
     fun syncBoard() {
+        Thread.dumpStack()
         command("clear_board", null)
         for (y in 0..game.board.size - 1) {
             for (x in 0..game.board.size - 1) {
@@ -108,6 +112,12 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     }
 
     fun topMoves(color: StoneColor, client: GnuGoClient) {
+        // The top_moves command doesn't work if gnuGo hasn't generated a move, so lets create one, and undo it!
+        // Otherwise we will only be able to get hints when playing against GnuGo.
+        if (!generatedMove) {
+            command("genmove black", null)
+            command("undo", null)
+        }
         val handler = TopMovesHandler(client)
         command("top_moves ${color.toString().toLowerCase()}", handler)
     }
@@ -140,22 +150,23 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         }
     }
 
-    private fun parseLine(line2: String) {
+    private fun parseLine(line: String) {
 
-        val line = line2.trim()
+        println("Parsing line : '$line'")
         var data: String
 
         if (line.startsWith("=")) {
-            data = line.substring(1).trim()
-            val space = line.indexOf(' ')
-            if (space > 0) {
-                data = line.substring(space + 1).trim()
-                val number = line.substring(1, space).toInt()
-                currentHandler = replyHandlers.remove(number)
+            data = line.substring(1)
+            val space = data.indexOf(' ')
+            val number: Int
+            if (space >= 0) {
+                number = data.substring(0, space).toInt()
+                data = data.substring(space + 1).trim()
             } else {
-                println("Hmm, no GnuGo command number found after '='")
-                currentHandler = null
+                number = data.trim().toInt()
+                data = ""
             }
+            currentHandler = replyHandlers.remove(number)
         } else {
             if (line.isBlank()) {
                 currentHandler = null
@@ -216,7 +227,7 @@ abstract class ReplyHandler(val client: GnuGoClient?) {
     abstract fun parseReply(reply: String)
 }
 
-private class MoveHandler(client: GnuGoClient) : ReplyHandler(client) {
+private class MoveHandler(client: GnuGoClient?) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {
         if (reply == "resign") {
@@ -295,6 +306,7 @@ private class FinalScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
         client?.finalScoreResults(reply)
     }
 }
+
 private class EstimateScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {

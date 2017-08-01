@@ -4,6 +4,7 @@ Bugs
 	Pass button visible, but disabled on joseki view and problem view.
 	Can go back/forwards using arrow keys, but no buttons from ProblemView
 		Back should set to Maybe, forward to fail??? (If there is a move available).
+	GnuGo getting out of sync still (maybe from undos)
 
 Task to download KoGo joseki db and weekly problems
 	Maybe renaming them so that 100 is after 99.

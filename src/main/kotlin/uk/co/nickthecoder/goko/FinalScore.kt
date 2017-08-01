@@ -30,17 +30,20 @@ class FinalScore(val game: Game) : GnuGoClient {
     private val marks = mutableListOf<Mark>()
 
     fun score(callback: (String) -> Unit) {
-        this.callback = callback
-        game.createGnuGo().finalScore(this)
+        // Run later to ensure that GnuGo has been updated first
+        Platform.runLater {
+            this.callback = callback
+            game.createGnuGo().finalScore(this)
+        }
     }
 
     override fun finalScoreResults(score: String) {
         Platform.runLater {
             //if (node == game.currentNode) {
-                callback(score)
-                for (mark in marks) {
-                    game.addMark(mark)
-                }
+            callback(score)
+            for (mark in marks) {
+                game.addMark(mark)
+            }
             //}
             marks.clear()
         }
