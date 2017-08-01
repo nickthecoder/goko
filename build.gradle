@@ -35,5 +35,5 @@ dependencies {
 }
 
 defaultTasks 'run'
-mainClassName = "uk.co.nickthecoder.kogo.KoGo"
+mainClassName = "uk.co.nickthecoder.goko.GoKo"
 

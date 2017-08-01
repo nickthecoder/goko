@@ -17,9 +17,14 @@ Check in-sync method of GnuGo, and attach it to a keyboard shortcut, so I can ru
 		and/or temporarily unhiding it in the code ;-)
 	Always call it after the first setup node.
 
+Am I going to stick with the name "Kogo"?
+goko?
 GPL Header
 
-Tidy up code
+Task to download KoGo joseki db and weekly problems
+	Maybe renaming them so that 100 is after 99.
+
+Reset go problem results
 
 Hidden Move Go
 	Parameters for # of black & white stones
