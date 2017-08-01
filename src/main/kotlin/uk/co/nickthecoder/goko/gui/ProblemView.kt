@@ -78,7 +78,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         val restartB = GoKoActions.PROBLEM_RESTART.createButton { onRestart() }
         val giveUpB = GoKoActions.PROBLEM_GIVE_UP.createButton(shortcuts) { onGiveUp() }
 
-        toolBar.items.addAll(preferencesB, restartB, giveUpB, editB, passB)
+        toolBar.items.addAll(preferencesB, restartB, giveUpB, reviewB, passB)
 
         // TODO Is this really needed?
         game.apply(game.root)

@@ -25,6 +25,8 @@ interface GnuGoClient {
     fun topMoves(points: List<Pair<Point, Double>>) {}
     fun generatedPass() {}
     fun generatedResign() {}
-    fun scoreEstimate(score: String) {}
+    fun finalScoreResults(score: String) {}
+    fun estimateScoreResults(score: String) {}
     fun pointStatus(point: Point, status: String) {}
+    fun influenceResults(results: List<List<Double>>) {}
 }

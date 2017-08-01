@@ -30,11 +30,13 @@ object GoKoActions {
     // Various views
     val PREFERENCES = GoKoAction("preferences", KeyCode.P, control = true, tooltip = "Preferences")
     val PASS = GoKoAction("pass", KeyCode.P, alt = true, label = "Pass")
-    val EDIT = GoKoAction("edit", KeyCode.E, control = true, label = "Edit", tooltip = "Edit Game")
+    val EDIT = GoKoAction("edit", null, label = "Edit", tooltip = "Edit Game")
+    val REVIEW = GoKoAction("review", KeyCode.R, control = true, label = "Review", tooltip = "Review Game")
     val SAVE = GoKoAction("save", KeyCode.S, control = true, label = "Save", tooltip = "Save Game")
     val RESIGN = GoKoAction("resign", null, label = "Resign", tooltip = "Resign Game")
     val HINT = GoKoAction("hint", null, label = "Hint")
-    val ESTIMATE_SCORE = GoKoAction("estimateScore", null, label = "Score")
+    val ESTIMATE_SCORE = GoKoAction("estimateScore", KeyCode.E, control = true, label = "Score", tooltip = "Estimate Score")
+    val INFLUENCE = GoKoAction("visualiseInfluence", KeyCode.I, control = true, label = "Influence")
     val UNDO = GoKoAction("undo", KeyCode.Z, control = true, tooltip = "Undo")
     val CHECK_GNU_GO = GoKoAction("checkGnuGo", KeyCode.G, control = true, shift = true, tooltip = "Check GnuGo's board is the same as GoKo's")
 

@@ -163,8 +163,8 @@ class Game(size: Int) {
     var awaitingFinalCount = false
 
     fun countEndGame() {
-        val scorer = ScoreEstimator(this)
-        scorer.estimate { countedEndGame(it) }
+        val scorer = FinalScore(this)
+        scorer.score { countedEndGame(it) }
     }
 
     fun countedEndGame(result: String) {

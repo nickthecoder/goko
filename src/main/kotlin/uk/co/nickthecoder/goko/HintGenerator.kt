@@ -35,7 +35,7 @@ class HintGenerator(val game: Game) : GnuGoClient {
     }
 
     override fun topMoves(points: List<Pair<Point, Double>>) {
-        if (game.currentNode == node) {
+        if (game.currentNode === node) {
             Platform.runLater {
                 points.forEach { (point, probability) ->
                     // I think there's a bug in my version of gnugo - it always returns the last played move as

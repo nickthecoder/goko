@@ -46,13 +46,14 @@ class BoardView(val game: Game) : View {
 
     var clickBoardView: ClickBoardView = ClickBoardView(this@BoardView)
 
+
+    private val boardMarks = MarksView(board) // Star points and labels around the board
     val specialMarks = MarksView(board)
-
     val marks = MarksView(board)
-
     val moveNumbers = MarksView(board)
-
     val branches = MarksView(board)
+    val visualisation = MarksView(board)
+    val marksViews = listOf(boardMarks, specialMarks, marks, visualisation, moveNumbers, branches)
 
     private var mouseMode = MouseMode.PLAYING
 
@@ -222,8 +223,6 @@ class BoardView(val game: Game) : View {
 
         val starPoints = Pane()
 
-        private val boardMarks = MarksView(board) // Star points and labels around the board
-
         private val wood = Region()
 
         init {
@@ -234,7 +233,12 @@ class BoardView(val game: Game) : View {
         }
 
         fun build() {
-            children.addAll(wood, lines, starPoints, boardMarks.node, stones, moveNumbers.node, branches.node, marks.node, specialMarks.node, clickBoardView.node)
+            children.addAll(
+                    wood, lines, starPoints,
+                    boardMarks.node,
+                    stones,
+                    visualisation.node, moveNumbers.node, branches.node, marks.node, specialMarks.node,
+                    clickBoardView.node)
 
             with(wood) {
                 styleClass.add("wood")
@@ -292,47 +296,21 @@ class BoardView(val game: Game) : View {
             layoutInArea(wood, marginLeft, marginTop, size, size, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(boardMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
             layoutInArea(starPoints, marginLeft + scale * 1.5, marginTop + scale * 1.5, playingSize, playingSize, 0.0, HPos.LEFT, VPos.TOP)
-            layoutInArea(moveNumbers.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
-            layoutInArea(branches.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
-            layoutInArea(marks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
-            layoutInArea(specialMarks.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
+            marksViews.filter { it != boardMarks }.forEach { marksView ->
+                layoutInArea(marksView.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
+            }
+
             layoutInArea(clickBoardView.node, marginLeft + scale, marginTop + scale, logicalSize, logicalSize, 0.0, HPos.LEFT, VPos.TOP)
 
             layoutInArea(stones, marginLeft + scale, marginTop + scale, size, size, 0.0, HPos.LEFT, VPos.TOP)
 
-            with(boardMarks.node) {
-                translateX = (size - logicalSize) / 2
-                translateY = translateX
-                scaleX = scale / pointSize
-                scaleY = scaleX
-            }
-
-            with(moveNumbers.node) {
-                translateX = (size - logicalSize) / 2
-                translateY = translateX
-                scaleX = scale / pointSize
-                scaleY = scaleX
-            }
-
-            with(branches.node) {
-                translateX = (size - logicalSize) / 2
-                translateY = translateX
-                scaleX = scale / pointSize
-                scaleY = scaleX
-            }
-
-            with(marks.node) {
-                translateX = (size - logicalSize) / 2
-                translateY = translateX
-                scaleX = scale / pointSize
-                scaleY = scaleX
-            }
-
-            with(specialMarks.node) {
-                translateX = (size - logicalSize) / 2
-                translateY = translateX
-                scaleX = scale / pointSize
-                scaleY = scaleX
+            marksViews.forEach { markView ->
+                with(markView.node) {
+                    translateX = (size - logicalSize) / 2
+                    translateY = translateX
+                    scaleX = scale / pointSize
+                    scaleY = scaleX
+                }
             }
 
             with(clickBoardView.node) {

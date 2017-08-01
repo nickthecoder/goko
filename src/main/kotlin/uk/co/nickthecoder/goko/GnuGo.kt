@@ -44,6 +44,8 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
     private var commandNumber = 1
 
+    private var currentHandler: ReplyHandler? = null
+
     fun start() {
         game.listeners.add(this)
         exec.outSink = object : BufferedSink() {
@@ -77,6 +79,10 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         command("undo", null)
     }
 
+    fun influence(type: String, client: GnuGoClient, color: StoneColor) {
+        command("initial_influence ${color.toString().toLowerCase()} $type", InfluenceHandler(client, this))
+    }
+
     fun syncBoard() {
         command("clear_board", null)
         for (y in 0..game.board.size - 1) {
@@ -107,6 +113,10 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     }
 
     fun estimateScore(client: GnuGoClient) {
+        command("estimate_score", EstimateScoreHandler(client))
+    }
+
+    fun finalScore(client: GnuGoClient) {
         for (y in 0..game.board.size - 1) {
             for (x in 0..game.board.size - 1) {
                 val point = Point(x, y)
@@ -130,29 +140,41 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         }
     }
 
-    private fun parseLine(line: String) {
+    private fun parseLine(line2: String) {
 
-        if (!line.startsWith("=")) {
-            return
+        val line = line2.trim()
+        var data: String
+
+        if (line.startsWith("=")) {
+            data = line.substring(1).trim()
+            val space = line.indexOf(' ')
+            if (space > 0) {
+                data = line.substring(space + 1).trim()
+                val number = line.substring(1, space).toInt()
+                currentHandler = replyHandlers.remove(number)
+            } else {
+                println("Hmm, no GnuGo command number found after '='")
+                currentHandler = null
+            }
+        } else {
+            if (line.isBlank()) {
+                currentHandler = null
+                return
+            }
+            data = line
         }
 
-        val space = line.indexOf(' ')
-        if (space > 0) {
-            val reply = line.substring(space + 1)
-            val number = line.substring(1, space).toInt()
-            val handler = replyHandlers.remove(number)
-            if (reply.isNotBlank()) {
-                println("Parsing '$reply' with handler $handler")
-            }
-            handler?.parseReply(reply)
+        if (data.isNotBlank()) {
+            println("Parsing '$data' with handler $currentHandler")
+            currentHandler?.parseReply(data)
         }
     }
 
     override fun stoneChanged(point: Point) {
-        if ( game.currentNode is SetupNode ) {
+        if (game.currentNode is SetupNode) {
             val color = game.board.getStoneAt(point)
-            if ( color.isStone() ) {
-                addStone( color, point )
+            if (color.isStone()) {
+                addStone(color, point)
             } else {
                 // There is no way to remove a stone from GnuGo's board, so lets just clear it and start afresh.
                 syncBoard()
@@ -270,6 +292,30 @@ private class PointStatusHandler(client: GnuGoClient, val point: Point) : ReplyH
 private class FinalScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {
-        client?.scoreEstimate(reply)
+        client?.finalScoreResults(reply)
+    }
+}
+private class EstimateScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
+
+    override fun parseReply(reply: String) {
+        client?.estimateScoreResults(reply)
+    }
+}
+
+
+private class InfluenceHandler(client: GnuGoClient, val gnuGo: GnuGo) : ReplyHandler(client) {
+
+    var y = 0
+    val results = MutableList(gnuGo.game.board.size, { MutableList(gnuGo.game.board.size, { 0.0 }) })
+
+    override fun parseReply(reply: String) {
+        val values = reply.trim().split(" ").filter { it.isNotBlank() }.map { it.toDouble() }
+        for (i in 0..gnuGo.game.board.size - 1) {
+            results[i][gnuGo.game.board.size - y - 1] = values[i]
+        }
+        y++
+        if (y == gnuGo.game.board.size) {
+            client?.influenceResults(results)
+        }
     }
 }

@@ -145,6 +145,9 @@
     -fx-font-size: 70px;
 }
 
+.marks > .influence {
+    -fx-symbol: "●";
+}
 .marks > .territory {
     -fx-symbol: "●";
     -fx-opacity: 0.5;

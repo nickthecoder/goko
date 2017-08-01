@@ -21,9 +21,7 @@ package uk.co.nickthecoder.goko.gui
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
-import uk.co.nickthecoder.goko.HintGenerator
-import uk.co.nickthecoder.goko.LocalPlayer
-import uk.co.nickthecoder.goko.ScoreEstimator
+import uk.co.nickthecoder.goko.*
 import uk.co.nickthecoder.goko.model.*
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 import uk.co.nickthecoder.paratask.project.TaskPrompter
@@ -50,10 +48,11 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     protected val passB = GoKoActions.PASS.createButton(shortcuts) { onPass() }
     protected val saveB = GoKoActions.SAVE.createButton(shortcuts) { onSave() }
-    protected val editB = GoKoActions.EDIT.createButton(shortcuts) { onEdit() }
+    protected val reviewB = GoKoActions.REVIEW.createButton(shortcuts) { onEdit() }
     protected val resignB = GoKoActions.RESIGN.createButton(shortcuts) { onResign() }
     protected val hintB = GoKoActions.HINT.createButton(shortcuts) { HintGenerator(game).hint() }
-    protected val estimateScoreB = GoKoActions.ESTIMATE_SCORE.createToggleButton { onCalculateScore() }
+    protected val influenceB = GoKoActions.INFLUENCE.createButton(shortcuts) { onInfluence("influence") }
+    protected val estimateScoreB = GoKoActions.ESTIMATE_SCORE.createToggleButton(shortcuts) { onEstimateScore() }
 
     protected val restartB = GoKoActions.GO_FIRST.createButton(shortcuts) { game.rewindTo(game.root) }
     protected val backB = GoKoActions.GO_BACK.createButton(shortcuts) { game.moveBack() }
@@ -107,15 +106,6 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
         }
     }
 
-    fun onCalculateScore() {
-        game.clearMarks()
-        if (estimateScoreB.isSelected) {
-            ScoreEstimator(game).estimate {
-                showScore(it)
-            }
-        }
-    }
-
     fun onUndo() {
         game.moveBack()
         // Unless we are playing a 2-player local game, then undo MY previous move
@@ -125,12 +115,31 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
         }
     }
 
+    fun onEstimateScore() {
+        boardView.visualisation.clear()
+        if ( estimateScoreB.isSelected ) {
+            ScoreEstimator(game).score { showScore(it) }
+            VisualiseTerritory(game, StoneColor.WHITE, boardView.visualisation).visualise()
+            VisualiseTerritory(game, StoneColor.BLACK, boardView.visualisation).visualise()
+        }
+    }
+
+    fun onInfluence(type: String) {
+        boardView.visualisation.clear()
+        VisualiseInfluence(game, StoneColor.BLACK, "black_$type", boardView.visualisation).visualise()
+        VisualiseInfluence(game, StoneColor.WHITE, "white_$type", boardView.visualisation).visualise()
+    }
+
     open fun showScore(score: String) {}
 
     private fun update() {
+        if (estimateScoreB.isSelected) {
+            onEstimateScore()
+        }
         val isLocal = game.playerToMove is LocalPlayer
         passB.isDisable = !isLocal
         resignB.isDisable = !isLocal
+        boardView.visualisation.clear()
     }
 
     override fun madeMove(gameNode: GameNode) {

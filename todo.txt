@@ -1,19 +1,37 @@
 
 Bugs	
 	Home buttons not updating after editing the Games Preferences
-	Challenge match with 2 handicap stones, threw an exception.
-		Black was asked to play a move BEFORE the handicap stones were placed, and then again AFTER them.
-		It chose one of the handicap points, throwing.
-
-	Score takes too long at the start of the game.
-		Need to have a timeout, and kill gnugo process and create another instance.
-		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).
 	Pass button visible, but disabled on joseki view and problem view.
 	Can go back/forwards using arrow keys, but no buttons from ProblemView
 		Back should set to Maybe, forward to fail??? (If there is a move available).
 
 Task to download KoGo joseki db and weekly problems
 	Maybe renaming them so that 100 is after 99.
+
+TimeLimit should be TWO classes, one for the time limit and another for the time remaining.
+	Countdown stuff only in the later.
+
+Aji Vision
+	Use whatever data GnuGo gives to analyse a board.
+	By diffing two territory estimates will show hot-spots
+		Check with an "undecided" group.
+	Color each type of data differently, and maybe let multiple data types overlap.
+		dragon_stones (point) Lists the stones in the dragon
+		dragon_status (dragon point)
+		is_surrounded (dragon point)
+		initial_influence (color)
+			white_influence (float)
+			black_influence (float)
+			white_strength (float)
+			black_strength (float)
+			white_attenuation (float)
+			black_attenuation (float)
+			white_permeability (float)
+			black_permeability (float)
+			territory_value (float)
+			influence_regions (int)
+			non_territory (int)
+		worm_data (point)
 
 Reset go problem results
 
