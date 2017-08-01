@@ -87,7 +87,6 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     }
 
     fun syncBoard() {
-        Thread.dumpStack()
         command("clear_board", null)
         for (y in 0..game.board.size - 1) {
             for (x in 0..game.board.size - 1) {

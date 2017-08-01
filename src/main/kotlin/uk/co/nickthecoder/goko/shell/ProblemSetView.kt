@@ -47,8 +47,8 @@ class ProblemSetView(mainWindow: MainWindow, val problemSet: ProblemSet) : GridV
         buttonBar.children.add(resetB)
     }
 
-    override fun addButtons() {
-        buttons.clear()
+    override fun createButtons() {
+        super.createButtons()
         var i = 1
         problemSet.problems.values.forEach { problem ->
             buttons.add(createButton(i.toString(), problem))
@@ -63,7 +63,7 @@ class ProblemSetView(mainWindow: MainWindow, val problemSet: ProblemSet) : GridV
     fun createView(problem: Problem): TopLevelView = ProblemView(mainWindow, problem)
 
     override fun updated() {
-        addButtons()
+        createButtons()
         buildButtons()
     }
 

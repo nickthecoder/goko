@@ -28,12 +28,12 @@ import uk.co.nickthecoder.paratask.parameters.*
  */
 class GamesPreferences : AbstractTask() {
 
-    override val taskD = TaskDescription("games", description=
-"""
-Add you favourite types of games to the Home page.
+    override val taskD = TaskDescription("games", description =
+    """
+Add your favourite types of games to the Home page.
 """)
 
-    val gamesP = MultipleParameter("games", label="") {
+    val gamesP = MultipleParameter("games", label = "") {
         val compound = CompoundParameter("game")
 
         val labelP = StringParameter("label", value = "")

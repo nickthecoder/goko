@@ -1,6 +1,5 @@
 
 Bugs	
-	Home buttons not updating after editing the Games Preferences
 	Pass button visible, but disabled on joseki view and problem view.
 	Can go back/forwards using arrow keys, but no buttons from ProblemView
 		Back should set result to "Maybe", forward to "Fail"??? (If there is a move available).

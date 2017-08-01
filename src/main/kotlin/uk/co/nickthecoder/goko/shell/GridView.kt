@@ -59,8 +59,12 @@ abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) 
         }
         grid.styleClass.add("grid")
 
-        addButtons()
+        createButtons()
         buildButtons()
+    }
+
+    open fun createButtons() {
+        buttons.clear()
     }
 
     fun buildButtons() {
@@ -80,8 +84,6 @@ abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) 
             }
         }
     }
-
-    abstract fun addButtons()
 
     fun createButton(label: String, style: String?, viewFactory: () -> TopLevelView): Button {
         val button = Button(label)

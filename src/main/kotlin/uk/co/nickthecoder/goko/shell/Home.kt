@@ -26,13 +26,28 @@ import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.StringParameter
 import uk.co.nickthecoder.paratask.parameters.TaskParameter
 
-class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0) {
+class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0), PreferencesListener {
 
     override val title = "Home"
 
     override val viewStyle = "home"
 
-    override fun addButtons() {
+    init {
+        Preferences.listeners.add(this)
+    }
+
+    override fun tidyUp() {
+        super.tidyUp()
+        Preferences.listeners.remove(this)
+    }
+
+    override fun preferencesChanged() {
+        createButtons()
+        buildButtons()
+    }
+
+    override fun createButtons() {
+        super.createButtons()
 
         Preferences.gamesPreferences.gamesP.value.forEach { compound ->
             val taskParameter = compound.find("type") as TaskParameter

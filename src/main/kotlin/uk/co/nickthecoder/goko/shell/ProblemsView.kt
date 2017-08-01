@@ -29,7 +29,8 @@ class ProblemsView(mainWindow: MainWindow) : GridView(mainWindow, 130.0) {
 
     override val viewStyle = "problems"
 
-    override fun addButtons() {
+    override fun createButtons() {
+        super.createButtons()
         Problems.problemSets().forEach {
             buttons.add(createButton(it))
         }
