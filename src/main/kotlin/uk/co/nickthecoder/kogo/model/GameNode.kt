@@ -16,11 +16,11 @@ abstract class GameNode(var colorToPlay: StoneColor) {
 
     var name: String = ""
 
-    var moveAnotation: MoveAnotation? = null
+    var moveAnnotation: MoveAnnotation? = null
 
-    var nodeAnotation: NodeAnotation? = null
+    var nodeAnnotation: NodeAnnotation? = null
 
-    var nodeAnotationVery: Boolean = false
+    var nodeAnnotationVery: Boolean = false
 
     var boardHash: Int = 0
 
@@ -40,7 +40,7 @@ abstract class GameNode(var colorToPlay: StoneColor) {
     }
 
     fun hasLabelMark(text: String): Boolean {
-        for (mark in marks) {
+        marks.forEach { mark ->
             if (mark is LabelMark && mark.text == text) {
                 return true
             }
@@ -49,7 +49,7 @@ abstract class GameNode(var colorToPlay: StoneColor) {
     }
 
     fun hasMarkAt(point: Point): Boolean {
-        for (mark in mutableMarks) {
+        mutableMarks.forEach { mark ->
             if (point == mark.point) {
                 return true
             }
@@ -69,8 +69,8 @@ abstract class GameNode(var colorToPlay: StoneColor) {
         this.mutableMarks.forEach { into.mutableMarks.add(it) }
         into.comment = this.comment
         into.name = this.name
-        into.moveAnotation = this.moveAnotation
-        into.nodeAnotation = this.nodeAnotation
+        into.moveAnnotation = this.moveAnnotation
+        into.nodeAnnotation = this.nodeAnnotation
     }
 }
 
@@ -81,12 +81,12 @@ class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
 
     var removedStones = mutableMapOf<Point, StoneColor>()
 
-    override fun toString() = "#$moveNumber SetupNode" // TODO count of stones added
+    override fun toString() = "#$moveNumber SetupNode"
 
     fun addStone(board: Board, point: Point, color: StoneColor) {
         val oldColor = board.getStoneAt(point)
         if (oldColor.isStone()) {
-            if (removedStones.get(point) == null) {
+            if (removedStones[point] == null) {
                 removedStones.put(point, oldColor)
             }
         }
@@ -97,7 +97,7 @@ class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
     fun removeStone(board: Board, point: Point) {
         val oldColor = board.getStoneAt(point)
         if (oldColor.isStone()) {
-            if (removedStones.get(point) == null) {
+            if (removedStones[point] == null) {
                 removedStones.put(point, oldColor)
             }
         }

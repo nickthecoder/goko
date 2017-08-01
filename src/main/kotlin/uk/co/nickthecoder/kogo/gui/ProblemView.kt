@@ -28,7 +28,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
 
     val firstPlayer = ProblemPlayer(game, game.playerToMove.color)
 
-    val secondPlayer = ProblemOpponent(game, firstPlayer.color.opposite(), this)
+    val secondPlayer = ProblemOpponent(game, firstPlayer.color.opposite())
 
     val shortcuts = ShortcutHelper("ProblemView", node)
 
@@ -106,11 +106,9 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
             }
         } else if (Preferences.problemsShowBranches == true) {
             if (currentNode.children.size > 1) {
-                for (child in currentNode.children) {
-                    if (child is MoveNode) {
-                        val mark = AlternateMark(child.point)
-                        game.addMark(mark)
-                    }
+                currentNode.children.filterIsInstance<MoveNode>().forEach { child ->
+                    val mark = AlternateMark(child.point)
+                    game.addMark(mark)
                 }
             }
         }
@@ -164,7 +162,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
                 toggleGroup = group
                 tooltip = Tooltip(tooltipStr)
                 if (problem.getResult() == result) {
-                    button.setSelected(true)
+                    button.isSelected = true
                 }
             }
 

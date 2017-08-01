@@ -10,7 +10,7 @@ interface View {
 
     fun tidyUp() {}
 
-    open fun hasView(view: View): Boolean {
+    fun hasView(view: View): Boolean {
         return view === this
     }
 }

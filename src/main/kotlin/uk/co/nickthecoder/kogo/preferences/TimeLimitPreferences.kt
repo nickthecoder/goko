@@ -13,7 +13,7 @@ class TimeLimitPreferences : AbstractTask() {
 
     override val taskD = TaskDescription("timeLimits")
 
-    val timeLimitsP = MultipleParameter<CompoundParameter>("timeLimits", minItems = 1) {
+    val timeLimitsP = MultipleParameter("timeLimits", minItems = 1) {
         val timeLimit = TimedLimit("", 30.0, 60.0, 10.0, 60.0, 25, 30.0, 1.0, 3)
         timeLimit.compound
     }

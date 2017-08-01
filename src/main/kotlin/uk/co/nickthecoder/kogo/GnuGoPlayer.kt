@@ -8,7 +8,7 @@ import uk.co.nickthecoder.kogo.model.*
  */
 class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 10) : Player, GnuGoClient {
 
-    override var label = "Gnu Go level ${level}"
+    override var label = "Gnu Go level $level"
 
     override val rank = ""
 

@@ -54,7 +54,7 @@ class KoGo : Application() {
 
         fun audioClip(name: String): AudioClip? {
             var audioClip: AudioClip?
-            val fullName = "audio/${name}"
+            val fullName = "audio/$name"
             if (audioClips.containsKey(fullName)) {
                 return audioClips[name]
             }

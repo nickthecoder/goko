@@ -23,50 +23,50 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
 
     val passedLabel = Label("Passed")
 
-    val moveAnotationsPane = FlowPane()
+    val moveAnnotationsPane = FlowPane()
 
-    val nodeAnotationsPane = FlowPane()
+    val nodeAnnotationsPane = FlowPane()
 
-    val moveAnotationButtons = mutableMapOf<MoveAnotation, ToggleButton>()
+    val moveAnnotationButtons = mutableMapOf<MoveAnnotation, ToggleButton>()
 
-    val nodeAnotationButtons = mutableMapOf<NodeAnotation, Button>()
+    val nodeAnnotationButtons = mutableMapOf<NodeAnnotation, Button>()
 
     override fun build() {
 
-        // Move anotations (good, doubtful, bad, interesting)
-        moveAnotationsPane.styleClass.add("anotations")
+        // Move annotations (good, doubtful, bad, interesting)
+        moveAnnotationsPane.styleClass.add("annotations")
         val moveToggleGroup = ToggleGroup()
-        for (anotation in MoveAnotation.values()) {
-            val name = anotation.toString().toLowerCase()
-            val img = KoGo.imageResource("buttons/move-${name}.png")
+        for (annotation in MoveAnnotation.values()) {
+            val name = annotation.toString().toLowerCase()
+            val img = KoGo.imageResource("buttons/move-$name.png")
             val button = ToggleButton("", ImageView(img))
             button.tooltip = Tooltip(name.capitalize())
-            moveAnotationButtons.put(anotation, button)
+            moveAnnotationButtons.put(annotation, button)
             if (readOnly) {
                 button.isDisable = true
             } else {
-                moveAnotationsPane.children.add(button)
+                moveAnnotationsPane.children.add(button)
                 button.addEventHandler(ActionEvent.ACTION) {
-                    game.currentNode.moveAnotation = if (button.isSelected) anotation else null
+                    game.currentNode.moveAnnotation = if (button.isSelected) annotation else null
                 }
             }
             moveToggleGroup.toggles.add(button)
         }
 
-        // Node anotations (Even, good for B/W, Hotspot, Unclear)
-        nodeAnotationsPane.styleClass.add("anotations")
-        for (anotation in NodeAnotation.values()) {
-            val name = anotation.toString().toLowerCase().replace('_', '-')
-            val img = KoGo.imageResource("buttons/node-${name}.png")
+        // Node annotations (Even, good for B/W, Hotspot, Unclear)
+        nodeAnnotationsPane.styleClass.add("annotations")
+        for (annotation in NodeAnnotation.values()) {
+            val name = annotation.toString().toLowerCase().replace('_', '-')
+            val img = KoGo.imageResource("buttons/node-$name.png")
             val button = Button("", ImageView(img))
             button.tooltip = Tooltip(name.capitalize().replace("-", " "))
-            nodeAnotationButtons.put(anotation, button)
+            nodeAnnotationButtons.put(annotation, button)
             if (readOnly) {
                 button.isDisable = true
             } else {
-                nodeAnotationsPane.children.add(button)
+                nodeAnnotationsPane.children.add(button)
                 button.addEventHandler(ActionEvent.ACTION) {
-                    changeNodeAnotation(anotation)
+                    changeNodeAnnotation(annotation)
                 }
             }
         }
@@ -91,7 +91,7 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
             styleClass.add("passed")
         }
 
-        whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, passedLabel, nodeAnotationsPane, moveAnotationsPane)
+        whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, passedLabel, nodeAnnotationsPane, moveAnnotationsPane)
 
         update()
         game.listeners.add(this)
@@ -102,33 +102,33 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
         Preferences.listeners.remove(this)
     }
 
-    fun changeNodeAnotation(anotation: NodeAnotation) {
+    fun changeNodeAnnotation(annotation: NodeAnnotation) {
         val node = game.currentNode
-        if (node.nodeAnotation != anotation) {
-            node.nodeAnotation = anotation
-            node.nodeAnotationVery = false
+        if (node.nodeAnnotation != annotation) {
+            node.nodeAnnotation = annotation
+            node.nodeAnnotationVery = false
         } else {
-            if (!node.nodeAnotationVery) {
-                node.nodeAnotationVery = true
+            if (!node.nodeAnnotationVery) {
+                node.nodeAnnotationVery = true
             } else {
-                node.nodeAnotation = null
-                node.nodeAnotationVery = false
+                node.nodeAnnotation = null
+                node.nodeAnnotationVery = false
             }
         }
-        updateNodeAnotations()
+        updateNodeAnnotations()
     }
 
-    fun updateNodeAnotations() {
-        nodeAnotationsPane.isVisible = preferences.showNodeAnotationsP.value == true
+    fun updateNodeAnnotations() {
+        nodeAnnotationsPane.isVisible = preferences.showNodeAnnotationsP.value == true
 
         val node = game.currentNode
-        val anotation = node.nodeAnotation
-        val very = node.nodeAnotationVery
+        val annotation = node.nodeAnnotation
+        val very = node.nodeAnnotationVery
         if (readOnly) {
-            nodeAnotationsPane.children.clear()
-            if (anotation != null) {
-                val button = nodeAnotationButtons[anotation]!!
-                nodeAnotationsPane.children.add(button)
+            nodeAnnotationsPane.children.clear()
+            if (annotation != null) {
+                val button = nodeAnnotationButtons[annotation]!!
+                nodeAnnotationsPane.children.add(button)
                 if (very) {
                     button.styleClass.remove("very")
                     button.styleClass.add("very")
@@ -137,8 +137,8 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
                 }
             }
         } else {
-            nodeAnotationButtons.forEach { an, button ->
-                if (an == anotation) {
+            nodeAnnotationButtons.forEach { an, button ->
+                if (an == annotation) {
                     button.styleClass.remove("selected")
                     button.styleClass.add("selected")
                     if (very) {
@@ -154,22 +154,22 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
         }
     }
 
-    fun updateMoveAnotations() {
+    fun updateMoveAnnotations() {
         val node = game.currentNode
-        if (node is SetupNode || preferences.showMoveAnotationsP.value == false) {
-            moveAnotationsPane.isVisible = false
+        if (node is SetupNode || preferences.showMoveAnnotationsP.value == false) {
+            moveAnnotationsPane.isVisible = false
         } else {
-            moveAnotationsPane.isVisible = true
+            moveAnnotationsPane.isVisible = true
 
             if (readOnly) {
-                moveAnotationsPane.children.clear()
-                node.moveAnotation?.let {
-                    moveAnotationsPane.children.add(moveAnotationButtons[it])
+                moveAnnotationsPane.children.clear()
+                node.moveAnnotation?.let {
+                    moveAnnotationsPane.children.add(moveAnnotationButtons[it])
                 }
             } else {
-                for (an in MoveAnotation.values()) {
-                    val button = moveAnotationButtons[an]!!
-                    button.isSelected = node.moveAnotation == an
+                for (an in MoveAnnotation.values()) {
+                    val button = moveAnnotationButtons[an]!!
+                    button.isSelected = node.moveAnnotation == an
                 }
             }
         }
@@ -182,8 +182,8 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
 
             passedLabel.isVisible = game.currentNode is PassNode
         }
-        updateMoveAnotations()
-        updateNodeAnotations()
+        updateMoveAnnotations()
+        updateNodeAnnotations()
     }
 
     override fun madeMove(gameNode: GameNode) {

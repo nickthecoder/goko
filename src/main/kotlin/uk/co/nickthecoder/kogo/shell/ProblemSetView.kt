@@ -7,8 +7,6 @@ import uk.co.nickthecoder.kogo.gui.TopLevelView
 import uk.co.nickthecoder.kogo.model.Problem
 import uk.co.nickthecoder.kogo.model.ProblemSet
 import uk.co.nickthecoder.kogo.model.ProblemSetListener
-import uk.co.nickthecoder.kogo.model.SGFReader
-import java.io.File
 
 class ProblemSetView(mainWindow: MainWindow, val problemSet: ProblemSet) : GridView(mainWindow, 48.0), ProblemSetListener {
 

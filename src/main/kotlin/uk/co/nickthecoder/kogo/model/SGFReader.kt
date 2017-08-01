@@ -16,7 +16,7 @@ Those partially supported are mark using (p)
 
 Move Properties   B, KO (x), MN (x), W
 Setup Properties 	AB, AE, AW, PL
-Node Annotation Properties 	C, DM (p), GB (p), GW (p), HO (p), N, UC (p), V (x) (Ignored the "1" or "2" for NodeAnotations
+Node Annotation Properties 	C, DM (p), GB (p), GW (p), HO (p), N, UC (p), V (x) (Ignored the "1" or "2" for NodeAnnotations
 Move Annotation Properties 	BM, DO, IT, TE
 Markup Properties 	AR (x), CR, DD (x), LB, LN (x), MA, SL (x), SQ, TR
 Root Properties 	AP (x), CA (x), FF (x), GM (x), ST (x), SZ
@@ -53,10 +53,7 @@ class SGFReader {
             val result = mutableListOf<Game>()
 
             while (true) {
-                val sgfRoot = readTree()
-                if (sgfRoot == null) {
-                    break
-                }
+                val sgfRoot = readTree() ?: break
                 val game = Game(size)
                 updateRootNode(game, sgfRoot)
                 addChildren(game, sgfRoot)
@@ -79,10 +76,7 @@ class SGFReader {
     fun read(): Game {
 
         try {
-            val sgfRoot = readTree()
-            if (sgfRoot == null) {
-                throw IOException("No game data found")
-            }
+            val sgfRoot = readTree() ?: throw IOException("No game data found")
 
             // dumpTree(sgfRoot)
 
@@ -137,36 +131,27 @@ class SGFReader {
         val toPlay = toStoneColor(sgfNode.getPropertyValue("PL"))
         if (toPlay != null) {
             game.currentNode.colorToPlay = toPlay
-            game.playerToMove = game.players.get(toPlay)!!
+            game.playerToMove = game.players[toPlay]!!
         }
 
         if (currentNode is SetupNode) {
-            val whites = sgfNode.getPropertyValues("AW")
-            if (whites != null) {
-                whites.forEach { str ->
-                    val point = toPoint(game.board, str)
-                    if (point != null) {
-                        currentNode.addStone(game.board, point, StoneColor.WHITE)
-                    }
+            sgfNode.getPropertyValues("AW")?.forEach { str ->
+                val point = toPoint(game.board, str)
+                if (point != null) {
+                    currentNode.addStone(game.board, point, StoneColor.WHITE)
                 }
             }
-            val blacks = sgfNode.getPropertyValues("AB")
-            if (blacks != null) {
-                blacks.forEach { str ->
-                    val point = toPoint(game.board, str)
-                    if (point != null) {
-                        currentNode.addStone(game.board, point, StoneColor.BLACK)
-                    }
+            sgfNode.getPropertyValues("AB")?.forEach { str ->
+                val point = toPoint(game.board, str)
+                if (point != null) {
+                    currentNode.addStone(game.board, point, StoneColor.BLACK)
                 }
             }
 
-            val removed = sgfNode.getPropertyValues("AE")
-            if (removed != null) {
-                removed.forEach { str ->
-                    val point = toPoint(game.board, str)
-                    if (point != null) {
-                        currentNode.removeStone(game.board, point)
-                    }
+            sgfNode.getPropertyValues("AE")?.forEach { str ->
+                val point = toPoint(game.board, str)
+                if (point != null) {
+                    currentNode.removeStone(game.board, point)
                 }
             }
         }
@@ -179,23 +164,23 @@ class SGFReader {
             currentNode.name = it
         }
 
-        nodeAnotation(sgfNode, currentNode, NodeAnotation.GOOD_FOR_BLACK, "GB")
-        nodeAnotation(sgfNode, currentNode, NodeAnotation.GOOD_FOR_WHITE, "GW")
-        nodeAnotation(sgfNode, currentNode, NodeAnotation.EVEN, "DM")
-        nodeAnotation(sgfNode, currentNode, NodeAnotation.HOTSPOT, "HO")
-        nodeAnotation(sgfNode, currentNode, NodeAnotation.UNCLEAR, "UC")
+        nodeAnnotation(sgfNode, currentNode, NodeAnnotation.GOOD_FOR_BLACK, "GB")
+        nodeAnnotation(sgfNode, currentNode, NodeAnnotation.GOOD_FOR_WHITE, "GW")
+        nodeAnnotation(sgfNode, currentNode, NodeAnnotation.EVEN, "DM")
+        nodeAnnotation(sgfNode, currentNode, NodeAnnotation.HOTSPOT, "HO")
+        nodeAnnotation(sgfNode, currentNode, NodeAnnotation.UNCLEAR, "UC")
 
         if (sgfNode.hasProperty("BM")) {
-            currentNode.moveAnotation = MoveAnotation.BAD
+            currentNode.moveAnnotation = MoveAnnotation.BAD
         }
         if (sgfNode.hasProperty("DO")) {
-            currentNode.moveAnotation = MoveAnotation.DOUBTFUL
+            currentNode.moveAnnotation = MoveAnnotation.DOUBTFUL
         }
         if (sgfNode.hasProperty("IT")) {
-            currentNode.moveAnotation = MoveAnotation.INTERESTING
+            currentNode.moveAnnotation = MoveAnnotation.INTERESTING
         }
         if (sgfNode.hasProperty("TE")) {
-            currentNode.moveAnotation = MoveAnotation.TESUJI
+            currentNode.moveAnnotation = MoveAnnotation.TESUJI
         }
 
         val labels = sgfNode.getPropertyValues("LB")
@@ -238,19 +223,12 @@ class SGFReader {
                 currentNode.addMark(mark)
             }
         }
-        // TODO "DD" to dim out the point
-        // TODO "LN" for lines
-        // TODO Update other node data.
     }
 
-    private fun nodeAnotation(sgfNode: SGFNode, node: GameNode, anotation: NodeAnotation, property: String) {
+    private fun nodeAnnotation(sgfNode: SGFNode, node: GameNode, annotation: NodeAnnotation, property: String) {
         if (sgfNode.hasProperty(property)) {
-            node.nodeAnotation = anotation
-            if (sgfNode.getPropertyValue(property) == "2") {
-                node.nodeAnotationVery = true
-            } else {
-                node.nodeAnotationVery = false
-            }
+            node.nodeAnnotation = annotation
+            node.nodeAnnotationVery = sgfNode.getPropertyValue(property) == "2"
         }
     }
 
@@ -425,10 +403,7 @@ class SGFReader {
         var escaped = false
 
         while (true) {
-            val c = readChar()
-            if (c == null) {
-                throw IOException("End of file while reading property value")
-            }
+            val c = readChar() ?: throw IOException("End of file while reading property value")
             if (escaped) {
                 str += c
                 escaped = false
@@ -484,14 +459,14 @@ class SGFReader {
     }
 }
 
-class SGFNode() {
+class SGFNode {
 
     private val listProperties = mutableMapOf<String, MutableList<String>>()
 
     val chldren = mutableListOf<SGFNode>()
 
     fun addProperty(propertyName: String, value: String) {
-        var list = listProperties.get(propertyName)
+        var list = listProperties[propertyName]
         if (list == null) {
             list = mutableListOf(value)
             listProperties.put(propertyName, list)
@@ -501,7 +476,7 @@ class SGFNode() {
     }
 
     fun hasProperty(propertyName: String): Boolean {
-        return listProperties.get(propertyName) != null
+        return listProperties[propertyName] != null
     }
 
     fun getOptionalPropertyValue(propertyName: String): String {
@@ -510,10 +485,6 @@ class SGFNode() {
 
     fun getDoublePropertyValue(propertyName: String): Double? {
         return getPropertyValue(propertyName)?.toDouble()
-    }
-
-    fun getIntPropertyValue(propertyName: String): Int? {
-        return getPropertyValue(propertyName)?.toInt()
     }
 
     fun getDatePropertyValue(propertyName: String): Date? {
@@ -525,14 +496,14 @@ class SGFNode() {
             try {
                 return format.parse(str)
             } catch (e: Exception) {
-                println("Skipping badly formatted date : ${str}. Should be in YYYY-MM-DD format.")
+                println("Skipping badly formatted date : $str. Should be in YYYY-MM-DD format.")
                 return null
             }
         }
     }
 
     fun getPropertyValue(propertyName: String): String? {
-        val list = listProperties.get(propertyName)
+        val list = listProperties[propertyName]
         if (list == null) {
             return null
         } else {
@@ -541,7 +512,7 @@ class SGFNode() {
     }
 
     fun getPropertyValues(propertyName: String): List<String>? {
-        return listProperties.get(propertyName)
+        return listProperties[propertyName]
     }
 
     override fun toString(): String {

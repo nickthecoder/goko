@@ -26,11 +26,9 @@ class SymbolMarkView : MarkView {
         }
     }
 
-    constructor(point: Point, style: String) : super(point, style) {
-    }
+    constructor(point: Point, style: String) : super(point, style)
 
-    constructor(mark: SymbolMark) : super(mark.point, mark.style) {
-    }
+    constructor(mark: SymbolMark) : super(mark.point, mark.style)
 
     init {
         textProperty().bind(symbolProperty)

@@ -113,7 +113,7 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         } else {
             "${game.metaData.handicap} stones"
         }
-        handicapLabel.text = "Handicap : ${handicap}"
+        handicapLabel.text = "Handicap : $handicap"
 
         val komi = if (game.metaData.komi == null) {
             "Unknown"

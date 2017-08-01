@@ -18,7 +18,7 @@ open class ChallengeMatch : AbstractGamePreferences(), GameListener {
     override val style = "challenge-match"
 
     final override val taskD = TaskDescription("challengeMatch", description =
-    """Play aginst the Gnu Go robot.
+    """Play against the Gnu Go robot.
 Each time you play, the the handicap will change based on your previous results.
 """)
 
@@ -120,7 +120,7 @@ Each time you play, the the handicap will change based on your previous results.
             handicapP.value = handicapP.value!! + 1
             if (handicapP.value == 1) {
                 // 1 stone handicap makes no sense.
-                handicapP.value == 2
+                handicapP.value = 2
             }
         } else {
             if (handicapP.value == 0) {
@@ -134,7 +134,7 @@ Each time you play, the the handicap will change based on your previous results.
         }
     }
 
-    override fun createLauchTask(mainWindow: MainWindow): Task {
+    override fun createLaunchTask(mainWindow: MainWindow): Task {
         return ChallengeMatchLauncher(mainWindow, this)
     }
 }

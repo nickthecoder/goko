@@ -18,9 +18,8 @@ class FollowGame(val original: Game) : GameListener {
 
     override fun madeMove(gameNode: GameNode) {
         val nodeIndex = mainLineNodeIndex(original.currentNode)
-        if (nodeIndex == null) {
-            return
-        }
+        nodeIndex ?: return
+
         var n: GameNode = copy.root
         for (i in 0..nodeIndex - 2) {
             n = n.children[0]

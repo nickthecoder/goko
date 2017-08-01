@@ -1,12 +1,8 @@
 package uk.co.nickthecoder.kogo.model
 
-import uk.co.nickthecoder.kogo.util.array2d
-
 class Board(val size: Int, val game: Game) {
 
-    //private val points = array2d<StoneColor>(size, size) { StoneColor.NONE }
-
-    private val points: List<MutableList<StoneColor>> = List<MutableList<StoneColor>>(size, { MutableList<StoneColor>(size, { StoneColor.NONE }) })
+    private val points = List(size, { MutableList(size, { StoneColor.NONE }) })
 
     var isCopy = false
 
@@ -92,7 +88,7 @@ class Board(val size: Int, val game: Game) {
                 }
                 return group ?: setOf<Point>()
             } else {
-                return setOf<Point>()
+                return setOf()
             }
         }
 

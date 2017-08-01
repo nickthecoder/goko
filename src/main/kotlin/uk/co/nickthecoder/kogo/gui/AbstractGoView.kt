@@ -20,7 +20,7 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     protected val whole = BorderPane()
 
-    override val node = whole
+    final override val node = whole
 
     protected val toolBar = ToolBar()
 
@@ -91,7 +91,7 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     fun onCalculateScore() {
         game.clearMarks()
         if (estimateScoreB.isSelected) {
-            ScoreEstimator(game).estimate() {
+            ScoreEstimator(game).estimate {
                 showScore(it)
             }
         }

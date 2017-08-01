@@ -14,12 +14,12 @@ class EditGamePreferences : AbstractTask(), CommentsPreferences {
     override val taskD = TaskDescription("editGame")
 
     val showMoveNumbersP = IntParameter(name = "showMoveNumbers", value = 0)
-    override val showNodeAnotationsP = BooleanParameter(name = "showNodeAnotations", value = true)
-    override val showMoveAnotationsP = BooleanParameter(name = "showMoveAnotations", value = true)
+    override val showNodeAnnotationsP = BooleanParameter(name = "showNodeAnnotations", value = true)
+    override val showMoveAnnotationsP = BooleanParameter(name = "showMoveAnnotations", value = true)
     val showBranchesP = ChoiceParameter("showBraches", value = ShowBranches.DO_NOT_SHOW).enumChoices()
 
     init {
-        taskD.addParameters(showMoveNumbersP, showNodeAnotationsP, showMoveAnotationsP, showBranchesP)
+        taskD.addParameters(showMoveNumbersP, showNodeAnnotationsP, showMoveAnnotationsP, showBranchesP)
     }
 
     override fun run() {

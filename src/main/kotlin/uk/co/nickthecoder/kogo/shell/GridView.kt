@@ -9,7 +9,6 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.gui.TopLevelView
-import uk.co.nickthecoder.kogo.gui.View
 
 abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) : TopLevelView(mainWindow) {
 

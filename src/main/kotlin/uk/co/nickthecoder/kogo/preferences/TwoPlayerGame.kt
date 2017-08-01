@@ -43,7 +43,7 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
     }
 
 
-    override fun createLauchTask(mainWindow: MainWindow): Task {
+    override fun createLaunchTask(mainWindow: MainWindow): Task {
         return TwoPlayerGameLauncher(mainWindow, this)
     }
 

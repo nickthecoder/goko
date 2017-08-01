@@ -1,6 +1,5 @@
 package uk.co.nickthecoder.kogo
 
-import uk.co.nickthecoder.kogo.gui.ProblemView
 import uk.co.nickthecoder.kogo.model.*
 import uk.co.nickthecoder.kogo.preferences.Preferences
 import uk.co.nickthecoder.paratask.util.runLater
@@ -8,7 +7,7 @@ import uk.co.nickthecoder.paratask.util.runLater
 /**
  * Automatically play the opponents moves when solving Go problems
  */
-class ProblemOpponent(val game: Game, override val color: StoneColor, val problemView: ProblemView) : Player {
+class ProblemOpponent(val game: Game, override val color: StoneColor) : Player {
 
     override var label = "Opponent"
 

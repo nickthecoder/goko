@@ -7,8 +7,6 @@ import uk.co.nickthecoder.kogo.model.*
  */
 class ScoreEstimator(val game: Game) : GnuGoClient {
 
-    private val node = game.currentNode
-
     private lateinit var callback: (String) -> Unit
 
     private val marks = mutableListOf<Mark>()

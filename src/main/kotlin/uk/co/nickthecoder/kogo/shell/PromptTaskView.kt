@@ -7,7 +7,6 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import uk.co.nickthecoder.kogo.gui.MainWindow
 import uk.co.nickthecoder.kogo.gui.TopLevelView
-import uk.co.nickthecoder.kogo.gui.View
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.fields.TaskForm
 

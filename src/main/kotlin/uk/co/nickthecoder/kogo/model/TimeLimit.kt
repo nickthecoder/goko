@@ -29,7 +29,7 @@ class NoTimeLimit : TimeLimit {
     }
 }
 
-val timeScales = mapOf<String, Double>("hours" to 60.0 * 60, "minutes" to 60.0, "seconds" to 1.0)
+val timeScales = mapOf("hours" to 60.0 * 60, "minutes" to 60.0, "seconds" to 1.0)
 
 /**
  * All time periods are in stored in seconds.

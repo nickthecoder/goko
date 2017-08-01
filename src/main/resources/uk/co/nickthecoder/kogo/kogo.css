@@ -219,31 +219,31 @@
     -fx-font-size: 120%;
 }
 
-.anotations {
+.annotations {
     -fx-alignment: center;
     -fx-padding: 6px 0 6px 0;
 }
 
-.anotations > .toggle-button {
+.annotations > .toggle-button {
     -fx-opacity: 0.3;
 }
-.anotations > .toggle-button:selected {
+.annotations > .toggle-button:selected {
     -fx-opacity: 1.0;
 }
 
 /* Three state : .button, .button.selected and .button.selected.very */
-.anotations > .button {
+.annotations > .button {
     -fx-opacity: 0.3;
 }
-.anotations > .button.selected {
+.annotations > .button.selected {
     -fx-opacity: 0.7;
 }
-.anotations > .button.very {
+.annotations > .button.very {
     -fx-opacity: 1.0;
 }
 
 /* When .selected or .selected.very, make it look like a depressed toggle button (adaptedfrom moderna.css) */
-.anotations > .button.selected {
+.annotations > .button.selected {
     -fx-background-color:
         -fx-shadow-highlight-color,
         linear-gradient(to bottom, derive(-fx-outer-border, -20%), -fx-outer-border),
@@ -253,7 +253,7 @@
             derive(-fx-color, -11%) 50%);
     -fx-background-insets: 0 0 -1 0, 0, 1;
 }
-.anotations > .button.selected:focused {
+.annotations > .button.selected:focused {
     -fx-background-color:
         -fx-focus-color,
         linear-gradient(to bottom,

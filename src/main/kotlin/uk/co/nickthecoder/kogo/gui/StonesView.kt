@@ -11,14 +11,13 @@ import uk.co.nickthecoder.kogo.model.GameListener
 import uk.co.nickthecoder.kogo.model.GameVariation
 import uk.co.nickthecoder.kogo.model.Point
 import uk.co.nickthecoder.kogo.model.StoneColor
-import uk.co.nickthecoder.kogo.util.array2d
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
 
 /**
  * Renders stones in a visually appealing way. Note, that JavaFX 8 does NOT scale down images nicely, they end up
- * pixelated, so I've had to revert to using awt's scaling. This will lead to more headaches if I ever get around to
+ * pixelated, so I've had to revert to using AWT's scaling. This will lead to more headaches if I ever get around to
  * porting this application to Android (where AWT isn't available!). Grr.
  */
 class StonesView(val boardView: BoardView) : Pane(), GameListener {
@@ -33,7 +32,7 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
 
     var oldScale = 0.0
 
-    val array = array2d<ImageView?>(game.board.size, game.board.size) { null }
+    val array = List(board.size, { MutableList<ImageView?>(board.size, { null }) })
 
     init {
         game.listeners.add(this)
@@ -111,14 +110,14 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         }
 
         // Create a buffered image with transparency
-        val bimage = BufferedImage(img.getWidth(null).toInt(), img.getHeight(null).toInt(), BufferedImage.TYPE_INT_ARGB)
+        val bufferedImage = BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB)
 
         // Draw the image on to the buffered image
-        val bGr = bimage.createGraphics()
+        val bGr = bufferedImage.createGraphics()
         bGr.drawImage(img, 0, 0, null)
         bGr.dispose()
 
         // Return the buffered image
-        return bimage
+        return bufferedImage
     }
 }

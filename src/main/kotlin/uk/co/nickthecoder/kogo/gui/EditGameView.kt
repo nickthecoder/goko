@@ -13,7 +13,6 @@ import uk.co.nickthecoder.kogo.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.CompoundButtons
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 import uk.co.nickthecoder.paratask.project.TaskPrompter
-import uk.co.nickthecoder.paratask.util.currentDirectory
 
 class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWindow, game), PreferencesListener {
 

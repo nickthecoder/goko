@@ -12,10 +12,6 @@ abstract class SymbolMark(point: Point, style: String) : Mark(point, style) {
     override fun createMarkView() = SymbolMarkView(this)
 }
 
-class MouseMark(point: Point) : SymbolMark(point, "mouse")
-
-class LatestMark(point: Point) : SymbolMark(point, "latest")
-
 class MainLineMark(point: Point) : SymbolMark(point, "main-line")
 
 class AlternateMark(point: Point) : SymbolMark(point, "alternate")
@@ -45,20 +41,7 @@ class TerritoryMark(point: Point, val color: StoneColor) : SymbolMark(point, "te
 
 class LabelMark(point: Point, val text: String) : Mark(point, "label-mark") {
 
-    constructor(point: Point, text: Char) : this(point, text.toString())
-
     override fun createMarkView() = MarkView(this)
 
     override fun toString() = "Label @ $point = '$text'"
-
-    fun number(): Int? {
-        try {
-            val i = Integer.parseInt(text)
-            if (i > 0) {
-                return i
-            }
-        } catch (e: Exception) {
-        }
-        return null
-    }
 }

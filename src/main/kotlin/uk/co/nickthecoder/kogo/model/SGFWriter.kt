@@ -44,10 +44,8 @@ class SGFWriter {
     }
 
     fun write(game: Game) {
-        try {
+        writer.use { writer ->
             writeSingleGame(game)
-        } finally {
-            writer.close()
         }
     }
 
@@ -174,27 +172,27 @@ class SGFWriter {
             writeProperty("C", node.comment)
         }
 
-        val anotationProperty = when (node.nodeAnotation) {
+        val annotationProperty = when (node.nodeAnnotation) {
             null -> null
-            NodeAnotation.GOOD_FOR_WHITE -> "GW"
-            NodeAnotation.GOOD_FOR_BLACK -> "GB"
-            NodeAnotation.HOTSPOT -> "HO"
-            NodeAnotation.EVEN -> "DM"
-            NodeAnotation.UNCLEAR -> "UN"
+            NodeAnnotation.GOOD_FOR_WHITE -> "GW"
+            NodeAnnotation.GOOD_FOR_BLACK -> "GB"
+            NodeAnnotation.HOTSPOT -> "HO"
+            NodeAnnotation.EVEN -> "DM"
+            NodeAnnotation.UNCLEAR -> "UN"
         }
-        if (anotationProperty != null) {
-            writeProperty(anotationProperty, if (node.nodeAnotationVery) "2" else "1")
+        if (annotationProperty != null) {
+            writeProperty(annotationProperty, if (node.nodeAnnotationVery) "2" else "1")
         }
 
-        val moveAnotationProperty = when (node.moveAnotation) {
+        val moveAnnotationProperty = when (node.moveAnnotation) {
             null -> null
-            MoveAnotation.TESUJI -> "TE"
-            MoveAnotation.INTERESTING -> "IT"
-            MoveAnotation.DOUBTFUL -> "DO"
-            MoveAnotation.BAD -> "BM"
+            MoveAnnotation.TESUJI -> "TE"
+            MoveAnnotation.INTERESTING -> "IT"
+            MoveAnnotation.DOUBTFUL -> "DO"
+            MoveAnnotation.BAD -> "BM"
         }
-        if (moveAnotationProperty != null) {
-            writeProperty(moveAnotationProperty)
+        if (moveAnnotationProperty != null) {
+            writeProperty(moveAnnotationProperty)
         }
     }
 
@@ -230,7 +228,7 @@ class SGFWriter {
     }
 
     private fun writeProperty(name: String, value: String) {
-        writer.write("${name}[$value]")
+        writer.write("$name[$value]")
     }
 
     private fun writeOptionalProperty(name: String, value: String?) {
@@ -242,14 +240,6 @@ class SGFWriter {
     private fun writeOptionalProperty(name: String, value: Double?, saveZeros: Boolean = true) {
         if (value != null) {
             if (saveZeros || value != 0.0) {
-                writeProperty(name, value)
-            }
-        }
-    }
-
-    private fun writeOptionalProperty(name: String, value: Int?, saveZeros: Boolean = true) {
-        if (value != null) {
-            if (saveZeros || value != 0) {
                 writeProperty(name, value)
             }
         }

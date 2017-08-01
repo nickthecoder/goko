@@ -44,7 +44,7 @@ open class ManVersesMachine : AbstractGamePreferences() {
         game.file = Preferences.gameFile("Quick")
     }
 
-    override fun createLauchTask(mainWindow: MainWindow): Task {
+    override fun createLaunchTask(mainWindow: MainWindow): Task {
         return ManVersesMachineLauncher(mainWindow, this)
     }
 }

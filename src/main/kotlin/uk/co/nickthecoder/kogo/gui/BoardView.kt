@@ -258,7 +258,7 @@ class BoardView(val game: Game) : View {
                 marginTop = (height - width) / 2
             }
             // By flooring the scale, the lines of the grid will always be aligned to pixels on the screen, and therefore
-            // won't need antialiasing, which can give inellegant results. The only down side, is that the board scales in
+            // won't need anti-aliasing, which can give inelegant results. The only down side, is that the board scales in
             // jumps when the view is resized by dragging.
             scale = Math.floor(size / (board.size + 2))
             size = scale * (board.size + 2)

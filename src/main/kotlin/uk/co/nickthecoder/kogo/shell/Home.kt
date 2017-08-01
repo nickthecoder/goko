@@ -21,7 +21,7 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0) {
             val labelP = compound.find("label") as StringParameter
             val task = taskParameter.value
             if (task is AbstractGamePreferences) {
-                buttons.add(createTaskButton(labelP.value, style = task.style) { task.createLauchTask(mainWindow) })
+                buttons.add(createTaskButton(labelP.value, style = task.style) { task.createLaunchTask(mainWindow) })
             }
         }
 

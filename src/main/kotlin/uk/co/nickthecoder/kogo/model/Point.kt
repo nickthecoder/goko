@@ -9,7 +9,7 @@ data class Point(var x: Int, var y: Int) {
     companion object {
         val xLabels = listOf("A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T")
 
-        fun labelX(x: Int) = if (x >= 0 && x < 19) xLabels[x] else (x + 1).toString()
+        fun labelX(x: Int) = if (x in 0..18) xLabels[x] else (x + 1).toString()
 
         fun labelY(y: Int) = (y + 1).toString()
 

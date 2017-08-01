@@ -7,7 +7,6 @@ import com.eclipsesource.json.PrettyPrint
 import uk.co.nickthecoder.kogo.model.TimedLimit
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.TaskParameter
-import uk.co.nickthecoder.paratask.parameters.ValueParameter
 import uk.co.nickthecoder.paratask.util.JsonHelper
 import uk.co.nickthecoder.paratask.util.child
 import uk.co.nickthecoder.paratask.util.homeDirectory

@@ -13,11 +13,11 @@ class ProblemsPreferences : AbstractTask(), CommentsPreferences {
     val directoryP = FileParameter("directory", expectFile = false, value = currentDirectory, required = false)
     val showBranchesP = BooleanParameter("showBranches", value = true)
     val automaticOpponentP = BooleanParameter("automaticOpponent", value = true, description = "The computer can play the 2nd player's moves")
-    override val showNodeAnotationsP = BooleanParameter(name = "showNodeAnotations", value = true)
-    override val showMoveAnotationsP = BooleanParameter(name = "showMoveAnotations", value = true)
+    override val showNodeAnnotationsP = BooleanParameter(name = "showNodeAnnotations", value = true)
+    override val showMoveAnnotationsP = BooleanParameter(name = "showMoveAnnotations", value = true)
 
     init {
-        taskD.addParameters(directoryP, showBranchesP, automaticOpponentP, showNodeAnotationsP, showMoveAnotationsP)
+        taskD.addParameters(directoryP, showBranchesP, automaticOpponentP, showNodeAnnotationsP, showMoveAnnotationsP)
     }
 
     override fun run() {

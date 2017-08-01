@@ -1,17 +1,13 @@
 package uk.co.nickthecoder.kogo.gui
 
 import javafx.scene.control.SplitPane
-import uk.co.nickthecoder.kogo.ScoreEstimator
 import uk.co.nickthecoder.kogo.model.Game
-import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 
 open class PlayingView(mainWindow: MainWindow, game: Game, val allowUndo: Boolean = true) : AbstractGoView(mainWindow, game) {
 
     override val title = "Playing"
 
     protected val split = SplitPane()
-
-    val shortcuts = ShortcutHelper("PlayingView", node)
 
     val gameInfoView = GameInfoView(game, true)
 

@@ -121,10 +121,6 @@ class Game(size: Int) {
         metaData.whiteName = players[StoneColor.WHITE]?.label ?: ""
     }
 
-    fun setupStone(point: Point, color: StoneColor) {
-        board.setStoneAt(point, color)
-    }
-
     fun resign(player: Player) {
         val winner = otherPlayer(player)
         gameFinished(winner, winner.letter + "+Resign")
@@ -154,7 +150,7 @@ class Game(size: Int) {
     fun countedEndGame(result: String) {
         val winChar = if (result.isEmpty()) "" else result.substring(0, 1)
         val winColor = if (winChar == "B") StoneColor.BLACK else if (winChar == "W") StoneColor.WHITE else null
-        val winner = players.get(winColor)
+        val winner = players[winColor]
         if (awaitingFinalCount) {
             gameFinished(winner, result)
         }
@@ -162,7 +158,7 @@ class Game(size: Int) {
 
     fun otherPlayer(player: Player): Player {
         val nextColor = StoneColor.opposite(player.color)
-        return players.get(nextColor)!!
+        return players[nextColor]!!
     }
 
     fun pass(onMainLine: Boolean = true) {
@@ -358,10 +354,7 @@ class Game(size: Int) {
         if (node != currentNode) {
             throw IllegalStateException("Can only unApply the current node")
         }
-        val parent = node.parent
-        if (parent == null) {
-            throw IllegalStateException("Cannot un-apply the root node")
-        }
+        val parent = node.parent ?: throw IllegalStateException("Cannot un-apply the root node")
 
         if (node is SetupNode) {
             node.removedStones.forEach { point, color ->

@@ -15,7 +15,7 @@ class GamesPreferences : AbstractTask() {
 Add you favourite types of games to the Home page.
 """)
 
-    val gamesP = MultipleParameter<CompoundParameter>("games", label="") {
+    val gamesP = MultipleParameter("games", label="") {
         val compound = CompoundParameter("game")
 
         val labelP = StringParameter("label", value = "")

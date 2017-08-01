@@ -1,9 +1,25 @@
 
 Bugs	
+	Challenge match with 2 handicap stones, threw an exception.
+		Black was asked to play a move BEFORE the handicap stones were placed, and then again AFTER them.
+		It chose one of the handicap points, throwing.
+
 	Score takes too long at the start of the game.
 		Need to have a timeout, and kill gnugo process and create another instance.
 		Also need to "lock" the game, preventing user from moving until board has been scanned (don't need to wait for gnu go process though).
-	Pass button visible, but disabled on joseki view.
+	Pass button visible, but disabled on joseki view and problem view.
+	Can go back/forwards using arrow keys, but no buttons from ProblemView
+		Back should set to Maybe, forward to fail??? (If there is a move available).
+
+Check in-sync method of GnuGo, and attach it to a keyboard shortcut, so I can run it whenever I like, without there being a button visible.
+	Maybe also have a Preference, to run it after *EVERY* move and undo.
+	I could even hide this parameter, so that it can only be set by editing the preferences file manually.
+		and/or temporarily unhiding it in the code ;-)
+	Always call it after the first setup node.
+
+GPL Header
+
+Tidy up code
 
 Hidden Move Go
 	Parameters for # of black & white stones
@@ -15,6 +31,9 @@ New Geometry Variation
 	Voids where no stones can be placed, and do NOT count as liberties.
 	Neutral points, where no stones can be placed, but DO count as liberties.
 	Create a GameSetup interface, which is used to place free handicap stones (regular game), voids and neutrals and hidden moves.
+
+Note. When other game variations are implemented, they must have a "Supports GnuGo" boolean.
+	Don't show the "score" button in this case.
 
 Connect to various go servers
 

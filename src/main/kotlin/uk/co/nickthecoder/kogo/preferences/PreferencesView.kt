@@ -41,11 +41,6 @@ class PreferencesView(mainWindow: MainWindow, val initialPage: Task? = null) : T
     }
 
     override fun hasView(view: View): Boolean {
-        for (tab in tabs.tabs) {
-            if (tab.hasView(view)) {
-                return true
-            }
-        }
-        return super.hasView(view)
+        return if (tabs.tabs.any { it.hasView(view) }) true else super.hasView(view)
     }
 }

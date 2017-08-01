@@ -2,6 +2,6 @@ package uk.co.nickthecoder.kogo.model
 
 /**
  */
-enum class MoveAnotation {
+enum class MoveAnnotation {
     TESUJI, BAD, DOUBTFUL, INTERESTING
 }

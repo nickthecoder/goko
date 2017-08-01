@@ -53,5 +53,5 @@ abstract class AbstractGamePreferences : AbstractTask() {
 
     abstract fun changePlayers(game: Game)
 
-    abstract fun createLauchTask(mainWindow: MainWindow): Task
+    abstract fun createLaunchTask(mainWindow: MainWindow): Task
 }
