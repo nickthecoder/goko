@@ -21,6 +21,8 @@ package uk.co.nickthecoder.goko
 import uk.co.nickthecoder.goko.model.*
 import uk.co.nickthecoder.paratask.util.process.BufferedSink
 import uk.co.nickthecoder.paratask.util.process.Exec
+import uk.co.nickthecoder.paratask.util.runLater
+import java.io.IOException
 import java.io.OutputStreamWriter
 import java.io.Writer
 import java.util.*
@@ -32,9 +34,9 @@ import java.util.*
  * Uses the GTP protocal, running in a separate process. Therefore the results from a command are not returned immediatly,
  * instead the results are passed back via GnuGoClient.
  */
-class GnuGo(val game: Game, level: Int) : GameListener {
+class GnuGo(val game: Game, val level: Int) : GameListener {
 
-    private val exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size, "--komi", game.metaData.komi)
+    private var exec: Exec? = null
 
     private var writer: Writer? = null
 
@@ -50,17 +52,45 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
     fun start() {
         game.listeners.add(this)
-        exec.outSink = object : BufferedSink() {
+        startProcess()
+        println("Started GnuGo")
+    }
+
+    private fun startProcess() {
+        generatedMove = false
+        exec = Exec("gnugo", "--mode", "gtp", "--level", level, "--boardsize", game.board.size, "--komi", game.metaData.komi)
+        exec?.outSink = object : BufferedSink() {
             override fun sink(line: String) {
                 parseLine(line)
             }
         }
-        exec.start()
+        exec?.start()
 
-        writer = OutputStreamWriter(exec.process!!.outputStream)
-        println("Started GnuGo")
+        writer = OutputStreamWriter(exec?.process!!.outputStream)
 
         syncBoard()
+    }
+
+    var respawning = false
+
+    @Synchronized
+    internal fun respawn(failedCommandNumber: Int) {
+        respawning = true
+
+        println("Respawning from failed command #$failedCommandNumber")
+        val retryHanders = replyHandlers.filter { (number, _) ->
+            number > failedCommandNumber
+        }.map { (_, handler) -> handler }
+
+        replyHandlers.clear()
+        exec?.kill()
+        startProcess()
+        respawning = false
+
+        retryHanders.forEach { handler ->
+            println("Re-issuing command '${handler.command}'")
+            command(handler.command!!, handler)
+        }
     }
 
     fun placeHandicap(client: GnuGoClient) {
@@ -75,11 +105,11 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     }
 
     fun addStone(color: StoneColor, point: Point) {
-        command("play ${color.toString().toLowerCase()} $point", null)
+        command("play ${color.toString().toLowerCase()} $point", NullReplyHandler())
     }
 
     fun undo() {
-        command("undo", null)
+        command("undo", NullReplyHandler())
     }
 
     fun influence(type: String, client: GnuGoClient, color: StoneColor) {
@@ -87,7 +117,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
     }
 
     fun syncBoard() {
-        command("clear_board", null)
+        command("clear_board", NullReplyHandler())
         for (y in 0..game.board.size - 1) {
             for (x in 0..game.board.size - 1) {
                 val color = game.board.getStoneAt(x, y)
@@ -114,8 +144,8 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         // The top_moves command doesn't work if gnuGo hasn't generated a move, so lets create one, and undo it!
         // Otherwise we will only be able to get hints when playing against GnuGo.
         if (!generatedMove) {
-            command("genmove black", null)
-            command("undo", null)
+            command("genmove black", NullReplyHandler())
+            command("undo", NullReplyHandler())
         }
         val handler = TopMovesHandler(client)
         command("top_moves ${color.toString().toLowerCase()}", handler)
@@ -125,32 +155,50 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         command("estimate_score", EstimateScoreHandler(client))
     }
 
+    /**
+     * This command assumes that we are very near the end of the game, if we aren't then the command takes a VERY long time
+     * to complete, therefore we need to add a timeout feature, which will kill the GnuGo process if the command takes too
+     * long.
+     */
     fun finalScore(client: GnuGoClient) {
+
         for (y in 0..game.board.size - 1) {
             for (x in 0..game.board.size - 1) {
                 val point = Point(x, y)
-                val handler = PointStatusHandler(client, point)
-                command("final_status $point", handler)
+                val handler2 = PointStatusHandler(client, point)
+                command("final_status $point", handler2)
             }
         }
-        val handler = FinalScoreHandler(client)
+
+        // Note, that final_score is called AFTER the final_status, because this is the command that has the time-out
+        // code, and therefore, we do not want to resend the final_status commands.
+        val handler = FinalScoreHandler(client, this)
         command("final_score", handler)
     }
 
     @Synchronized
-    private fun command(command: String, handler: ReplyHandler?) {
+    private fun command(command: String, handler: ReplyHandler) {
         val number = commandNumber++
-        replyHandlers.put(number, handler)
+        handler.running(command, number)
+        replyHandlers[number] = handler
 
         println("Sending command : '$number $command'")
         writer?.let {
-            it.appendln("$number $command")
-            it.flush()
+            try {
+                it.appendln("$number $command")
+                it.flush()
+            } catch(e: IOException) {
+                // Do nothing - probably caused by the process being killed by respawning
+            }
         }
     }
 
     private fun parseLine(line: String) {
 
+        if (respawning) {
+            println("Ignore output during re-spawning : '$line'")
+            return
+        }
         println("Parsing line : '$line'")
         var data: String
 
@@ -216,14 +264,27 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
     fun tidyUp() {
         game.listeners.remove(this)
-        exec.kill()
+        exec?.kill()
     }
 
 }
 
 abstract class ReplyHandler(val client: GnuGoClient?) {
 
+    var command: String? = null
+    var commandNumber: Int = -1
+
+    open fun running(command: String, commandNumber: Int) {
+        this.command = command
+        this.commandNumber = commandNumber
+    }
+
     abstract fun parseReply(reply: String)
+}
+
+private class NullReplyHandler : ReplyHandler(null) {
+
+    override fun parseReply(reply: String) {}
 }
 
 private class MoveHandler(client: GnuGoClient?) : ReplyHandler(client) {
@@ -299,9 +360,23 @@ private class PointStatusHandler(client: GnuGoClient, val point: Point) : ReplyH
     }
 }
 
-private class FinalScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
+private class FinalScoreHandler(client: GnuGoClient, val gnuGo: GnuGo) : ReplyHandler(client) {
+
+    var completedOk = false
+
+    override fun running(command: String, commandNumber: Int) {
+        super.running(command, commandNumber)
+        completedOk = false
+        runLater(1000 * 30) {
+            if (!completedOk) {
+                gnuGo.respawn(commandNumber)
+                client?.finalScoreResults("Timedout")
+            }
+        }
+    }
 
     override fun parseReply(reply: String) {
+        completedOk = true
         client?.finalScoreResults(reply)
     }
 }

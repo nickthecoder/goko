@@ -7,8 +7,6 @@ Bugs
 Task to download KoGo joseki db and weekly problems
 	Maybe renaming them so that 100 is after 99.
 
-Implement a timeout for FinalScorer
-
 LocalPlayer.yourTurn should call the view to let it know that it can accept input.
 	Remove Player.canClickToPlay
 	LocalPlayer will need a ref to the view.
