@@ -27,6 +27,9 @@ object GoKoActions {
     // MainWindow
     val CLOSE_TAB = GoKoAction("tab.close", KeyCode.W, control = true, tooltip = "Close Tab")
 
+    // ProblemSetView
+    val PROBLEMS_RESET = GoKoAction("reset", null, null, label = "Reset", tooltip = "Reset Problem Results")
+
     // Various views
     val PREFERENCES = GoKoAction("preferences", KeyCode.P, control = true, tooltip = "Preferences")
     val PASS = GoKoAction("pass", KeyCode.P, alt = true, label = "Pass")

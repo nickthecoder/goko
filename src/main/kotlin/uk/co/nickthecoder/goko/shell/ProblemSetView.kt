@@ -19,10 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package uk.co.nickthecoder.goko.shell
 
 import javafx.scene.control.Button
+import javafx.scene.layout.HBox
+import uk.co.nickthecoder.goko.gui.GoKoActions
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.gui.ProblemView
 import uk.co.nickthecoder.goko.gui.TopLevelView
 import uk.co.nickthecoder.goko.model.Problem
+import uk.co.nickthecoder.goko.model.ProblemResult
 import uk.co.nickthecoder.goko.model.ProblemSet
 import uk.co.nickthecoder.goko.model.ProblemSetListener
 
@@ -32,27 +35,43 @@ class ProblemSetView(mainWindow: MainWindow, val problemSet: ProblemSet) : GridV
 
     override val viewStyle = "problem-set"
 
-    init {
+    val resetB = GoKoActions.PROBLEMS_RESET.createButton() { onReset() }
+
+    val buttonBar = HBox()
+
+    override fun build() {
         problemSet.listeners.add(this)
+        super.build()
+        whole.bottom = buttonBar
+        buttonBar.styleClass.add("buttons")
+        buttonBar.children.add(resetB)
     }
 
     override fun addButtons() {
         buttons.clear()
         var i = 1
-        problemSet.problems.forEach { problem ->
+        problemSet.problems.values.forEach { problem ->
             buttons.add(createButton(i.toString(), problem))
             i++
         }
     }
 
     fun createButton(label: String, problem: Problem): Button {
-        return createButton(label, style = problem.getResult().style()) { createView(problem) }
+        return createButton(label, style = problem.result.style()) { createView(problem) }
     }
 
     fun createView(problem: Problem): TopLevelView = ProblemView(mainWindow, problem)
 
     override fun updated() {
         addButtons()
+        buildButtons()
+    }
+
+    fun onReset() {
+        problemSet.problems.values.forEach { problem ->
+            problem.result = ProblemResult.UNTRIED
+        }
+        problemSet.saveResults()
         buildButtons()
     }
 }

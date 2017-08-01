@@ -22,6 +22,7 @@ import javafx.event.ActionEvent
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Button
+import javafx.scene.layout.BorderPane
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
@@ -32,17 +33,21 @@ abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) 
 
     val buttons = mutableListOf<Button>()
 
+    val whole = BorderPane()
+
     val hbox = HBox()
 
     val vbox = VBox()
 
     val grid = GridPane()
 
-    override val node: Node = vbox
+    override val node: Node = whole
 
     abstract val viewStyle: String
 
     override fun build() {
+        whole.center = vbox
+
         with(vbox) {
             children.add(hbox)
             alignment = Pos.CENTER
@@ -63,6 +68,8 @@ abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) 
         val columns = Math.ceil(Math.sqrt(buttons.size.toDouble())).toInt()
         var column = 0
         var row = 0
+
+        grid.children.clear()
 
         buttons.forEach { button ->
             grid.add(button, column, row)

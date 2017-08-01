@@ -63,18 +63,15 @@ object Problems {
  */
 class ProblemSet(directory: File, page: Int = 0, label: String) {
 
-    val problems = mutableListOf<Problem>()
+    /**
+     * Maps the problem's label to the problem. The label is either the file's name or the index of the problem
+     * in the compound game file.
+     */
+    val problems = mutableMapOf<String, Problem>()
 
     val label: String
 
     val listeners = mutableListOf<ProblemSetListener>()
-
-    /*
-     * Has the problem been solved?
-     * The key is either the Filename (when each problem is within its own sgf file), or a the problemNumber + 1
-     * (as a string) when the problems are all stored in a single sgf file.
-     */
-    var results: MutableMap<String, ProblemResult>? = null
 
     init {
         val lister = FileLister(extensions = listOf("sgf"))
@@ -90,7 +87,7 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
             var previousProblem: ProblemWithinCompoundFile? = null
             for (i in (page * Problems.pageSize)..(-1 + Math.min((page + 1) * Problems.pageSize, games.size))) {
                 val problem = ProblemWithinCompoundFile(this, list[0], i)
-                problems.add(problem)
+                problems[problem.label] = problem
                 previousProblem?.nextProblem = problem
                 previousProblem = problem
             }
@@ -99,7 +96,8 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
             // Read only one game from each sgf file
             count = list.size
             for (i in (page * Problems.pageSize)..(-1 + Math.min((page + 1) * Problems.pageSize, list.size))) {
-                problems.add(OneProblemPerFile(this, list[i]))
+                val problem = OneProblemPerFile(this, list[i])
+                problems[problem.label] = problem
             }
         }
 
@@ -108,26 +106,12 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
         } else {
             label
         }
-    }
-
-    fun result(label: String): ProblemResult {
-        if (results == null) {
-            loadResults()
-        }
-        return results?.get(label) ?: ProblemResult.UNTRIED
-    }
-
-    fun setResult(label: String, result: ProblemResult) {
-        if (results == null) {
-            loadResults()
-        }
-        results?.put(label, result)
+        loadResults()
     }
 
     fun resultsFile(): File = File(Preferences.problemResultsDirectory, "$label.json")
 
     fun loadResults() {
-        val results = mutableMapOf<String, ProblemResult>()
 
         val input = resultsFile()
         if (input.exists()) {
@@ -140,35 +124,30 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
                 if (jresult.get("result") != null) {
                     val str = jresult.getString("result", "")
                     val result = ProblemResult.safeValueOf(str)
-                    results.put(label, result)
+                    problems[label]?.result = result
                 }
             }
         }
-        this.results = results
     }
 
     fun saveResults() {
-        results?.let { results ->
+        val jroot = JsonObject()
+        val jresults = JsonArray()
+        jroot.add("results", jresults)
 
-            val jroot = JsonObject()
-            val jresults = JsonArray()
-            jroot.add("results", jresults)
-
-            results.forEach { key, value ->
-                val jresult = JsonObject()
-                jresult.add("label", key)
-                jresult.add("result", value.toString())
-                jresults.add(jresult)
-            }
-
-            val output = resultsFile()
-            output.parentFile.mkdirs()
-
-            BufferedWriter(OutputStreamWriter(FileOutputStream(output))).use {
-                jroot.writeTo(it, PrettyPrint.indentWithSpaces(4))
-            }
+        problems.values.forEach { problem ->
+            val jresult = JsonObject()
+            jresult.add("label", problem.label)
+            jresult.add("result", problem.result.toString())
+            jresults.add(jresult)
         }
 
+        val output = resultsFile()
+        output.parentFile.mkdirs()
+
+        BufferedWriter(OutputStreamWriter(FileOutputStream(output))).use {
+            jroot.writeTo(it, PrettyPrint.indentWithSpaces(4))
+        }
         updated()
     }
 
@@ -186,7 +165,7 @@ abstract class Problem(val problemSet: ProblemSet) {
     abstract val label: String
 
     fun saveResult(result: ProblemResult) {
-        problemSet.setResult(label, result)
+        this.result = result
         problemSet.saveResults()
     }
 
@@ -194,7 +173,7 @@ abstract class Problem(val problemSet: ProblemSet) {
 
     abstract fun next(): Problem?
 
-    fun getResult() = problemSet.result(label)
+    var result: ProblemResult = ProblemResult.UNTRIED
 }
 
 class ProblemWithinCompoundFile(problemSet: ProblemSet, val file: File, val problemNumber: Int) : Problem(problemSet) {
@@ -221,7 +200,7 @@ class OneProblemPerFile(problemSet: ProblemSet, val file: File) : Problem(proble
 
     override fun next(): Problem? {
         var found = false
-        for (problem in problemSet.problems) {
+        for (problem in problemSet.problems.values) {
             if (found) {
                 return problem
             }

@@ -179,7 +179,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
                 }
                 toggleGroup = group
                 tooltip = Tooltip(tooltipStr)
-                if (problem.getResult() == result) {
+                if (problem.result == result) {
                     button.isSelected = true
                 }
             }
