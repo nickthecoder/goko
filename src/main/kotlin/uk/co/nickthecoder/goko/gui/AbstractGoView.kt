@@ -146,9 +146,9 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     private fun update() {
         showVisualisations()
-        val isLocal = game.playerToMove is LocalPlayer
-        passB.isDisable = !isLocal
-        resignB.isDisable = !isLocal
+        val canClick = game.playerToMove.canClickToPlay()
+        passB.isDisable = !canClick
+        resignB.isDisable = !canClick
         boardView.visualisation.clear()
     }
 

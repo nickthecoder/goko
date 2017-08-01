@@ -69,16 +69,13 @@ class JosekiView(mainWindow: MainWindow, josekiDatabase: File)
     }
 
     fun update() {
-        println("Updating joseki view")
         val currentNode = game.currentNode
         boardView.branches.clear()
 
         for (child in currentNode.children) {
-            println("Child move : $child")
             if (child is MoveNode) {
                 if (!currentNode.hasMarkAt(child.point)) {
                     val mark = AlternateMark(child.point)
-                    println("Added atlternate mark at ${child.point}")
                     boardView.branches.add(SymbolMarkView(mark))
                 }
             }
@@ -86,13 +83,11 @@ class JosekiView(mainWindow: MainWindow, josekiDatabase: File)
     }
 
     override fun madeMove(gameNode: GameNode) {
-        println("madeMove joseki view")
         super.madeMove(gameNode)
         update()
     }
 
     override fun undoneMove(gameNode: GameNode) {
-        println("UndoneMode joseki view")
         super.undoneMove(gameNode)
         update()
     }
