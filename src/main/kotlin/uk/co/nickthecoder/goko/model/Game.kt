@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package uk.co.nickthecoder.goko.model
 
 import uk.co.nickthecoder.goko.*
+import uk.co.nickthecoder.goko.preferences.Preferences
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -348,6 +349,10 @@ class Game(size: Int) {
 
         listeners.forEach {
             it.madeMove(node)
+        }
+
+        if (Preferences.advancedPreferences.checkGnuGoSyncP.value == true) {
+            createGnuGo().checkBoard()
         }
 
         if (autoPlay) {

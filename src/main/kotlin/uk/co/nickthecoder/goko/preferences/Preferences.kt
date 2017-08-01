@@ -54,6 +54,7 @@ object Preferences {
     val editGamePreferences = EditGamePreferences()
     val editGameShowMoveNumber by editGamePreferences.showMoveNumbersP
 
+    val advancedPreferences = AdvancedPreferences()
 
     val preferencesFile = homeDirectory.child(".config", "goko", "preferences.json")
 
@@ -77,6 +78,7 @@ object Preferences {
         addPreferenceTask(problemsPreferences)
         addPreferenceTask(josekiPreferences)
         addPreferenceTask(editGamePreferences)
+        addPreferenceTask(advancedPreferences)
 
         if (preferencesFile.exists()) {
             load()

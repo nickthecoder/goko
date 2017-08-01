@@ -1,10 +1,7 @@
 
-Bugs	
-	GnuGo getting out of sync still (maybe from undos)??? May be fixed already.
-		Preference to continually check that gnuGo is in sync
-	Don't do final score after resign - it could take too long!
+Bugs
 
-Task to download KoGo joseki db and weekly problems
+Task to download Kogo joseki db and weekly problems
 	Maybe renaming them so that 100 is after 99.
 
 LocalPlayer.yourTurn should call the view to let it know that it can accept input.
@@ -12,9 +9,13 @@ LocalPlayer.yourTurn should call the view to let it know that it can accept inpu
 	LocalPlayer will need a ref to the view.
 	ProblemPlayer and ProblemOpponent should both extend LocalPlayer.
 
+Implement greyed out stones (part of SGF)
+
 Allow for dispute resolution at the end of the game.
 	Do final count, and prompt each "clickable" player if they agree.
 	If not, then copy the board and have them continue playing, without passing, until all dead stones have been removed.
+		Actually, just rememeber the node that game ended on.
+		All points played are marked (or greyed out).
 	Need a message to tell players that playing into your own territory will NOT count against them.
 	Now take off the dead stones from the end-of-game copy and score that. (Assuming Japanese rules of course).
 

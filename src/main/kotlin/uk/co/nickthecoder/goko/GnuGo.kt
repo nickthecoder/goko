@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package uk.co.nickthecoder.goko
 
 import uk.co.nickthecoder.goko.model.*
+import uk.co.nickthecoder.goko.preferences.Preferences
 import uk.co.nickthecoder.paratask.util.process.BufferedSink
 import uk.co.nickthecoder.paratask.util.process.Exec
 import uk.co.nickthecoder.paratask.util.runLater
@@ -199,7 +200,6 @@ class GnuGo(val game: Game, val level: Int) : GameListener {
             println("Ignore output during re-spawning : '$line'")
             return
         }
-        println("Parsing line : '$line'")
         var data: String
 
         if (line.startsWith("=")) {
@@ -223,8 +223,10 @@ class GnuGo(val game: Game, val level: Int) : GameListener {
         }
 
         if (data.isNotBlank()) {
-            println("Parsing '$data' with handler $currentHandler")
-            currentHandler?.parseReply(data)
+            currentHandler?.let {
+                println("Returned data : '$data' for ${it.javaClass.simpleName}")
+                it.parseReply(data)
+            }
         }
     }
 
@@ -322,6 +324,7 @@ private class CheckBoardHandler(val game: Game, val color: StoneColor) : ReplyHa
     override fun parseReply(reply: String) {
         if (reply.isNotBlank()) {
             val points = reply.trim().split(' ').map { Point.fromString(it) }
+            var failed = false
 
             for (y in 0..game.board.size - 1) {
                 for (x in 0..game.board.size - 1) {
@@ -329,15 +332,21 @@ private class CheckBoardHandler(val game: Game, val color: StoneColor) : ReplyHa
                     val gokosColor = game.board.getStoneAt(x, y)
                     if (color == gokosColor) {
                         if (!points.contains(point)) {
-                            println("Point $point is $color on my board, but not on GnuGo's")
+                            println("**** Point $point is $color on my board, but not on GnuGo's")
+                            failed = true
                         }
                     }
                     if (gokosColor == StoneColor.NONE) {
                         if (points.contains(point)) {
-                            println("Point $point is EMPTY on my board, but is $color on GnuGo's")
+                            println("**** Point $point is EMPTY on my board, but is $color on GnuGo's")
+                            failed = true
                         }
                     }
                 }
+            }
+            if (failed) {
+                println("**** Board not is sync, therefore re-syncing")
+                game.createGnuGo().syncBoard()
             }
         }
     }
@@ -367,7 +376,7 @@ private class FinalScoreHandler(client: GnuGoClient, val gnuGo: GnuGo) : ReplyHa
     override fun running(command: String, commandNumber: Int) {
         super.running(command, commandNumber)
         completedOk = false
-        runLater(1000 * 30) {
+        runLater(Preferences.advancedPreferences.finalScoreTimeoutP.value.scaledValue.toLong()) {
             if (!completedOk) {
                 gnuGo.respawn(commandNumber)
                 client?.finalScoreResults("Timedout")
