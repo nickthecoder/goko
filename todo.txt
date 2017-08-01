@@ -17,8 +17,6 @@ Check in-sync method of GnuGo, and attach it to a keyboard shortcut, so I can ru
 		and/or temporarily unhiding it in the code ;-)
 	Always call it after the first setup node.
 
-Am I going to stick with the name "Kogo"?
-goko?
 GPL Header
 
 Task to download KoGo joseki db and weekly problems
