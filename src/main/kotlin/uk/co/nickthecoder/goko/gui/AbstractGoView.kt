@@ -63,6 +63,7 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     protected val endB = GoKoActions.GO_END.createButton(shortcuts) { onEnd() }
 
     protected val undoB = GoKoActions.UNDO.createButton(shortcuts) { onUndo() }
+    protected val checkGnuGoBoard = GoKoActions.CHECK_GNU_GO.createButton(shortcuts) { game.createGnuGo().checkBoard() }
 
     override fun build() {
         whole.top = toolBar

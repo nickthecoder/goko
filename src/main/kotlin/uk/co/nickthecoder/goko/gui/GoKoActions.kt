@@ -36,6 +36,7 @@ object GoKoActions {
     val HINT = GoKoAction("hint", null, label = "Hint")
     val ESTIMATE_SCORE = GoKoAction("estimateScore", null, label = "Score")
     val UNDO = GoKoAction("undo", KeyCode.Z, control = true, tooltip = "Undo")
+    val CHECK_GNU_GO = GoKoAction("checkGnuGo", KeyCode.G, control = true, shift = true, tooltip = "Check GnuGo's board is the same as GoKo's")
 
     // EditGameView
     val GO_FIRST = GoKoAction("go-first", KeyCode.HOME, alt = null, tooltip = "Rewind to the beginning")

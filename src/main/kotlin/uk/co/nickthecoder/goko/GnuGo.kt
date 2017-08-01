@@ -88,6 +88,17 @@ class GnuGo(val game: Game, level: Int) : GameListener {
             }
         }
         myNode = game.currentNode
+        println("GnuGo. Sync complete")
+    }
+
+    /**
+     * Compares GnuGo's version of the board with mine, and reports any inconsistancies on the console.
+     */
+    fun checkBoard() {
+        val handlerB = CheckBoardHandler(game, StoneColor.BLACK)
+        command("list_stones black", handlerB)
+        val handlerW = CheckBoardHandler(game, StoneColor.WHITE)
+        command("list_stones white", handlerW)
     }
 
     fun topMoves(color: StoneColor, client: GnuGoClient) {
@@ -137,6 +148,18 @@ class GnuGo(val game: Game, level: Int) : GameListener {
         }
     }
 
+    override fun stoneChanged(point: Point) {
+        if ( game.currentNode is SetupNode ) {
+            val color = game.board.getStoneAt(point)
+            if ( color.isStone() ) {
+                addStone( color, point )
+            } else {
+                // There is no way to remove a stone from GnuGo's board, so lets just clear it and start afresh.
+                syncBoard()
+            }
+        }
+    }
+
     override fun madeMove(gameNode: GameNode) {
         if (gameNode is MoveNode) {
             if (gameNode.parent != myNode) {
@@ -166,7 +189,7 @@ class GnuGo(val game: Game, level: Int) : GameListener {
 
 }
 
-abstract class ReplyHandler(val client: GnuGoClient) {
+abstract class ReplyHandler(val client: GnuGoClient?) {
 
     abstract fun parseReply(reply: String)
 }
@@ -175,15 +198,15 @@ private class MoveHandler(client: GnuGoClient) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {
         if (reply == "resign") {
-            client.generatedResign()
+            client?.generatedResign()
             return
         }
         if (reply == "PASS") {
-            client.generatedPass()
+            client?.generatedPass()
             return
         }
         val point = Point.fromString(reply)
-        client.generatedMove(point)
+        client?.generatedMove(point)
     }
 }
 
@@ -194,9 +217,35 @@ private class TopMovesHandler(client: GnuGoClient) : ReplyHandler(client) {
             val pairList = reply.trim().split(' ').withIndex().groupBy { it.index / 2 }.map { it.value.map { it.value } }
             val results = pairList.map { Pair(Point.fromString(it[0]), it[1].toDouble()) }
 
-            client.topMoves(results)
+            client?.topMoves(results)
         } else {
-            client.topMoves(listOf())
+            client?.topMoves(listOf())
+        }
+    }
+}
+
+private class CheckBoardHandler(val game: Game, val color: StoneColor) : ReplyHandler(null) {
+
+    override fun parseReply(reply: String) {
+        if (reply.isNotBlank()) {
+            val points = reply.trim().split(' ').map { Point.fromString(it) }
+
+            for (y in 0..game.board.size - 1) {
+                for (x in 0..game.board.size - 1) {
+                    val point = Point(x, y)
+                    val gokosColor = game.board.getStoneAt(x, y)
+                    if (color == gokosColor) {
+                        if (!points.contains(point)) {
+                            println("Point $point is $color on my board, but not on GnuGo's")
+                        }
+                    }
+                    if (gokosColor == StoneColor.NONE) {
+                        if (points.contains(point)) {
+                            println("Point $point is EMPTY on my board, but is $color on GnuGo's")
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -206,7 +255,7 @@ private class PlaceHandicapHandler(client: GnuGoClient) : ReplyHandler(client) {
     override fun parseReply(reply: String) {
         reply.split(" ").forEach {
             val point = Point.fromString(it)
-            client.generatedMove(point)
+            client?.generatedMove(point)
         }
     }
 }
@@ -214,13 +263,13 @@ private class PlaceHandicapHandler(client: GnuGoClient) : ReplyHandler(client) {
 private class PointStatusHandler(client: GnuGoClient, val point: Point) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {
-        client.pointStatus(point, reply)
+        client?.pointStatus(point, reply)
     }
 }
 
 private class FinalScoreHandler(client: GnuGoClient) : ReplyHandler(client) {
 
     override fun parseReply(reply: String) {
-        client.scoreEstimate(reply)
+        client?.scoreEstimate(reply)
     }
 }

@@ -1,5 +1,6 @@
 
 Bugs	
+	Home buttons not updating after editing the Games Preferences
 	Challenge match with 2 handicap stones, threw an exception.
 		Black was asked to play a move BEFORE the handicap stones were placed, and then again AFTER them.
 		It chose one of the handicap points, throwing.
@@ -10,14 +11,6 @@ Bugs
 	Pass button visible, but disabled on joseki view and problem view.
 	Can go back/forwards using arrow keys, but no buttons from ProblemView
 		Back should set to Maybe, forward to fail??? (If there is a move available).
-
-Check in-sync method of GnuGo, and attach it to a keyboard shortcut, so I can run it whenever I like, without there being a button visible.
-	Maybe also have a Preference, to run it after *EVERY* move and undo.
-	I could even hide this parameter, so that it can only be set by editing the preferences file manually.
-		and/or temporarily unhiding it in the code ;-)
-	Always call it after the first setup node.
-
-GPL Header
 
 Task to download KoGo joseki db and weekly problems
 	Maybe renaming them so that 100 is after 99.

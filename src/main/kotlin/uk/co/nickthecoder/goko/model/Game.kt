@@ -114,6 +114,7 @@ class Game(size: Int) {
     }
 
     fun placeHandicap() {
+        println("Placing fixed handicap stones.")
         val start: Int
         if (board.size < 13) {
             start = 2
@@ -125,8 +126,9 @@ class Game(size: Int) {
         for (i in 0..metaData.handicap!! - 1) {
             val h = handicaps[i]
             val point = Point(start + h.x * jump, start + h.y * jump)
+            println("Placing fixed handicap stone @ $point")
             root.addStone(board, point, StoneColor.BLACK)
-            board.setStoneAt(point, StoneColor.BLACK)
+            println("Placed fixed handicap stone @ $point")
         }
     }
 
