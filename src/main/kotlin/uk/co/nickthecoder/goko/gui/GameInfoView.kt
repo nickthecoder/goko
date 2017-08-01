@@ -144,7 +144,9 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
     }
 
     override fun gameEnded(winner: Player?) {
-        vBox.children.add(gameResultLabel)
+        if (gameResultLabel.parent == null) {
+            vBox.children.add(gameResultLabel)
+        }
         gameResultLabel.text = "Game Result : ${game.metaData.result}"
         stopCountdown()
     }

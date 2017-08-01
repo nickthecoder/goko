@@ -136,13 +136,11 @@ class Game(size: Int) {
     fun resign(player: Player) {
         val winner = otherPlayer(player)
         gameFinished(winner, winner.letter + "+Resign")
-        countEndGame()
     }
 
     fun lostOnTime(player: Player) {
         val winner = otherPlayer(player)
         gameFinished(winner, winner.letter + "+Time")
-        countEndGame()
     }
 
     fun gameFinished(winner: Player?, matchResult: String = "") {
@@ -152,19 +150,17 @@ class Game(size: Int) {
         }
     }
 
-    var awaitingFinalCount = false
-
     fun countEndGame() {
         val scorer = FinalScore(this)
-        scorer.score { countedEndGame(it) }
-    }
-
-    fun countedEndGame(result: String) {
-        val winChar = if (result.isEmpty()) "" else result.substring(0, 1)
-        val winColor = if (winChar == "B") StoneColor.BLACK else if (winChar == "W") StoneColor.WHITE else null
-        val winner = players[winColor]
-        if (awaitingFinalCount) {
-            gameFinished(winner, result)
+        scorer.score { scoreString ->
+            val winnerLetter = if (scoreString.isEmpty()) "" else scoreString.substring(0, 1)
+            if (winnerLetter == "W" || winnerLetter == "B") {
+                val winColor = if (winnerLetter == "B") StoneColor.BLACK else if (winnerLetter == "W") StoneColor.WHITE else null
+                val winner = players[winColor]
+                gameFinished(winner, scoreString)
+            } else {
+                playerToMove.yourTurn()
+            }
         }
     }
 
@@ -177,8 +173,6 @@ class Game(size: Int) {
         val node = PassNode(playerToMove.color)
         apply(addNode(node, onMainLine))
         if (currentNode.parent is PassNode) {
-            // TODO Is this still correct?
-            awaitingFinalCount = true
             countEndGame()
         }
     }
