@@ -26,7 +26,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 import uk.co.nickthecoder.goko.GoKo
 import uk.co.nickthecoder.goko.model.GameListener
-import uk.co.nickthecoder.goko.model.GameVariation
+import uk.co.nickthecoder.goko.model.GameVariationType
 import uk.co.nickthecoder.goko.model.Point
 import uk.co.nickthecoder.goko.model.StoneColor
 import java.awt.image.BufferedImage
@@ -102,11 +102,11 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
                 if (color.isStone()) {
                     val point = Point(x, y)
                     when (boardView.colorVariation) {
-                        GameVariation.NORMAL ->
+                        GameVariationType.NORMAL ->
                             add(point, if (color == StoneColor.BLACK) scaledBlackStone else scaledWhiteStone)
-                        GameVariation.ONE_COLOR_GO ->
+                        GameVariationType.ONE_COLOR_GO ->
                             add(point, scaledWhiteStone)
-                        GameVariation.TWO_COLOR_ONE_COLOR_GO -> {
+                        GameVariationType.TWO_COLOR_ONE_COLOR_GO -> {
                             val foo = (y * board.size + x).hashCode() % 2
                             add(point, if (foo == 0) scaledBlackStone else scaledWhiteStone)
                         }

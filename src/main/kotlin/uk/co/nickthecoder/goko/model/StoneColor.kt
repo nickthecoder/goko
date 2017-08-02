@@ -18,14 +18,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.model
 
-enum class StoneColor {
-    BLACK, WHITE, NONE, EDGE;
+enum class StoneColor(val isAStone : Boolean, val isLiberty: Boolean, val playable: Boolean, val grahicName: String?) {
+
+    BLACK(true, false, false, "stoneB"),
+    WHITE(true, false, false, "stoneW"),
+    NONE(false, true, true, null),
+    EDGE(false, false, false, null),
+
+    HIDDEN_WHITE(true, false, false, null),
+    HIDDEN_BLACK(true, false, false, null),
+    HIDDEN_BOTH(false, true, true, null);
 
     companion object {
         fun opposite(color: StoneColor) = if (color == WHITE) BLACK else WHITE
     }
 
-    fun isStone() = this == BLACK || this == WHITE
+    // TODO Remove this function, and rename isAStone to isStone
+    fun isStone() = isAStone
 
     fun opposite(): StoneColor {
         if (this == WHITE) return BLACK

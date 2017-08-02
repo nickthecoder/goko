@@ -75,6 +75,15 @@ abstract class GameNode(var colorToPlay: StoneColor) {
         return false
     }
 
+    fun getMarkAt(point: Point): Mark? {
+        mutableMarks.forEach { mark ->
+            if (point == mark.point) {
+                return mark
+            }
+        }
+        return null
+    }
+
     open fun sameAs(node: GameNode) = false
 
     abstract fun copy(): GameNode
@@ -93,7 +102,6 @@ abstract class GameNode(var colorToPlay: StoneColor) {
 }
 
 class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
-
 
     var addedStones = mutableMapOf<Point, StoneColor>()
 

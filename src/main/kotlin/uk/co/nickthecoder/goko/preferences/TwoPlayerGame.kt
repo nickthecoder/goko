@@ -22,9 +22,11 @@ import uk.co.nickthecoder.goko.LocalPlayer
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.model.Game
 import uk.co.nickthecoder.goko.model.GameListener
+import uk.co.nickthecoder.goko.model.GameVariationType
 import uk.co.nickthecoder.goko.model.StoneColor
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.TaskDescription
+import uk.co.nickthecoder.paratask.parameters.IntParameter
 import uk.co.nickthecoder.paratask.parameters.StringParameter
 
 open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
@@ -37,9 +39,25 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
 
     val whitePlayerP = StringParameter("whiteName", label = "Whites's Name", required = false, value = "Mister White")
 
+    val hiddenMovesBlackP = IntParameter("hiddenMovesBlack", value = 0)
+    val hiddenMovesWhiteP = IntParameter("hiddenMovesWhite", value = 0)
+
     init {
         taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP,
-                fixedHandicapPointsP, komiP, timeLimitP, allowUndoP, gameVariationP)
+                fixedHandicapPointsP, komiP, timeLimitP, allowUndoP, gameVariationP, hiddenMovesBlackP, hiddenMovesWhiteP)
+
+        hiddenMovesBlackP.hidden = true
+        hiddenMovesWhiteP.hidden = true
+
+        gameVariationP.listen {
+            val isHiddenMoveGo = gameVariationP.value == GameVariationType.HIDDEN_MOVE_GO
+            hiddenMovesBlackP.hidden = !isHiddenMoveGo
+            hiddenMovesWhiteP.hidden = !isHiddenMoveGo
+            handicapP.hidden = isHiddenMoveGo
+            if (isHiddenMoveGo) {
+                handicapP.value = 0
+            }
+        }
     }
 
     override fun run() {

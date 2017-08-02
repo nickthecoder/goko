@@ -22,6 +22,7 @@ import uk.co.nickthecoder.goko.GnuGoPlayer
 import uk.co.nickthecoder.goko.LocalPlayer
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.model.Game
+import uk.co.nickthecoder.goko.model.GameVariationType
 import uk.co.nickthecoder.goko.model.StoneColor
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.TaskDescription
@@ -41,8 +42,13 @@ open class ManVersesMachine : AbstractGamePreferences() {
     val computerLevelP = IntParameter("computerLevel", range = 1..20, value = 10)
 
     init {
-        taskD.addParameters( boardSizeP, computerPlaysP, computerLevelP, handicapP,
-                fixedHandicapPointsP, komiP, timeLimitP, allowUndoP, gameVariationP )
+        taskD.addParameters(boardSizeP, computerPlaysP, computerLevelP, handicapP,
+                fixedHandicapPointsP, komiP, timeLimitP, allowUndoP, gameVariationP)
+
+        // Cannot play Hidden move etc against the computer.
+        GameVariationType.values().filter { it.twoPlayerOnly }.forEach {
+            gameVariationP.removeKey(it.name)
+        }
     }
 
     override fun run() {

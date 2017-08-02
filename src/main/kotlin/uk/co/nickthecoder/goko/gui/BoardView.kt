@@ -73,7 +73,7 @@ class BoardView(val game: Game) : View {
             updateMoveNumbers()
         }
 
-    var colorVariation: GameVariation = GameVariation.NORMAL
+    var colorVariation: GameVariationType = GameVariationType.NORMAL
         set(v) {
             field = v
             stones.requestLayout()

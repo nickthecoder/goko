@@ -59,6 +59,8 @@ class Game(size: Int) {
 
     var blackCaptures: Int = 0
 
+    var variation = StandardGo(this)
+
     /**
      * The number of handicap stones the black player still has to play.
      * Is zero when using fixed handicap points (on the star points).
@@ -219,7 +221,7 @@ class Game(size: Int) {
     }
 
     fun canPlayAt(point: Point): Boolean {
-        if (!board.contains(point) || board.getStoneAt(point) != StoneColor.NONE) {
+        if (!board.contains(point) || board.getStoneAt(point).playable) {
             return false
         }
         val copy = board.copy()
@@ -241,6 +243,10 @@ class Game(size: Int) {
             }
         }
         return true
+    }
+
+    fun getMarkAt(point: Point): Mark? {
+        return currentNode.getMarkAt(point)
     }
 
     fun addMark(mark: Mark) {

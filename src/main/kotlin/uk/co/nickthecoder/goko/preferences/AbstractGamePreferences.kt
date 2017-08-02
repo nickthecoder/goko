@@ -21,7 +21,7 @@ package uk.co.nickthecoder.goko.preferences
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.gui.PlayingView
 import uk.co.nickthecoder.goko.model.Game
-import uk.co.nickthecoder.goko.model.GameVariation
+import uk.co.nickthecoder.goko.model.GameVariationType
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.*
@@ -49,7 +49,7 @@ abstract class AbstractGamePreferences : AbstractTask() {
 
     val allowUndoP = BooleanParameter("allowUndo", value = true)
 
-    val gameVariationP = ChoiceParameter("gameVariation", value = GameVariation.NORMAL).enumChoices()
+    val gameVariationP = ChoiceParameter("gameVariation", value = GameVariationType.NORMAL).enumChoices()
 
     fun createView(mainWindow: MainWindow): PlayingView {
 
