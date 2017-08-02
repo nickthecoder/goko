@@ -54,7 +54,7 @@ class Game(size: Int) {
 
     var blackCaptures: Int = 0
 
-    var variation: GameVariation = StandardGo(this, GameVariationType.NORMAL)
+    var variation: GameVariation = StandardGo(this)
 
     private var gnuGo: GnuGo? = null
 

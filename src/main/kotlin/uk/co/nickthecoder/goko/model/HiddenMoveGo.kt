@@ -1,11 +1,8 @@
 package uk.co.nickthecoder.goko.model
 
 import uk.co.nickthecoder.goko.Player
-import uk.co.nickthecoder.goko.gui.SymbolMarkView
 
 class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMoveCountWhite: Int) : GameVariation, GameListener {
-
-    override val type = GameVariationType.HIDDEN_MOVE_GO
 
     enum class State { HIDDEN_BLACK, HIDDEN_WHITE, NORMAL }
 
@@ -133,6 +130,8 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
 
         return null
     }
+
+    override fun displayColor(point: Point): StoneColor = board.getStoneAt(point)
 
     override fun capturedStones(points: Set<Point>) {
         points.forEach { point ->

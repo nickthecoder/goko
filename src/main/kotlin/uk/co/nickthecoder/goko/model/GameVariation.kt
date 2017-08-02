@@ -2,8 +2,6 @@ package uk.co.nickthecoder.goko.model
 
 interface GameVariation {
 
-    val type: GameVariationType
-
     fun start()
 
     /**
@@ -18,4 +16,6 @@ interface GameVariation {
     fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean = true): String?
 
     fun capturedStones(points: Set<Point>) {}
+
+    fun displayColor(point: Point): StoneColor
 }

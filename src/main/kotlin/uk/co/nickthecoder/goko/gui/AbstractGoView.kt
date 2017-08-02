@@ -99,10 +99,6 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     open fun onEdit() {
         val follower = FollowGame(game)
         val view = EditGameView(mainWindow, follower.copy)
-        if (game.variation.type != GameVariationType.NORMAL) {
-            // We probably want to see the current board position when playing one-color-go.
-            view.onEnd()
-        }
         mainWindow.addViewAfter(this, view)
     }
 

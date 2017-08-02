@@ -1,8 +1,6 @@
 package uk.co.nickthecoder.goko.model
 
-open class StandardGo(val game: Game, gameVariationType: GameVariationType) : GameVariation {
-
-    override val type = gameVariationType
+open class StandardGo(val game: Game) : GameVariation {
 
     val board
         get() = game.board
@@ -91,6 +89,7 @@ open class StandardGo(val game: Game, gameVariationType: GameVariationType) : Ga
         }
     }
 
+
     companion object {
 
         val handicapInfo = listOf(
@@ -98,5 +97,35 @@ open class StandardGo(val game: Game, gameVariationType: GameVariationType) : Ga
                 Point(1, 1),
                 Point(1, 0), Point(1, 2), Point(0, 1), Point(2, 1))
 
+    }
+
+    override fun displayColor(point: Point): StoneColor = board.getStoneAt(point)
+
+}
+
+class OneColorGo(game: Game) : StandardGo(game) {
+
+    override fun displayColor(point: Point): StoneColor {
+        val stone = board.getStoneAt(point)
+        if (stone == StoneColor.NONE) {
+            return stone
+        } else {
+            return StoneColor.WHITE
+        }
+    }
+
+}
+
+class TwoColorOneColorGo(game: Game) : StandardGo(game) {
+
+    override fun displayColor(point: Point): StoneColor {
+
+        val stone = board.getStoneAt(point)
+        if (stone == StoneColor.NONE) {
+            return stone
+        } else {
+            val foo = (point.y * board.size + point.x).hashCode() % 2
+            return if (foo == 0) StoneColor.WHITE else StoneColor.BLACK
+        }
     }
 }

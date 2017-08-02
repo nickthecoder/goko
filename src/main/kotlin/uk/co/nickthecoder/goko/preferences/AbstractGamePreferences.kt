@@ -20,10 +20,7 @@ package uk.co.nickthecoder.goko.preferences
 
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.gui.PlayingView
-import uk.co.nickthecoder.goko.model.Game
-import uk.co.nickthecoder.goko.model.GameVariation
-import uk.co.nickthecoder.goko.model.GameVariationType
-import uk.co.nickthecoder.goko.model.StandardGo
+import uk.co.nickthecoder.goko.model.*
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.*
@@ -72,7 +69,11 @@ abstract class AbstractGamePreferences : AbstractTask() {
     }
 
     open fun createGameVariation(game: Game): GameVariation {
-        return StandardGo(game, gameVariationP.value ?: GameVariationType.NORMAL)
+        return when (gameVariationP.value) {
+            GameVariationType.ONE_COLOR_GO -> OneColorGo(game)
+            GameVariationType.TWO_COLOR_ONE_COLOR_GO -> TwoColorOneColorGo(game)
+            else -> StandardGo(game)
+        }
     }
 
     abstract fun initialiseGame(game: Game)

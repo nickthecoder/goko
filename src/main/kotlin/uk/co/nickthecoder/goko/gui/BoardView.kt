@@ -185,8 +185,9 @@ class BoardView(val game: Game) : View {
         if (showMoveNumbers == 0) {
             if (currentNode is MoveNode) {
                 if (!currentNode.hasMarkAt(currentNode.point)) {
+                    val stoneColor = game.variation.displayColor(currentNode.point)
                     latestMark.point = currentNode.point
-                    latestMark.colorWhite(currentNode.color == StoneColor.BLACK)
+                    latestMark.colorWhite(stoneColor == StoneColor.BLACK)
                 }
             }
         }
