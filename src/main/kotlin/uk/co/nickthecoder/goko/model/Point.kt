@@ -24,6 +24,18 @@ data class Point(var x: Int, var y: Int) {
         return xLabels[x] + (y + 1).toString()
     }
 
+    fun isTouching(other: Point): Boolean {
+        var dx = x - other.x
+        var dy = y - other.y
+        if (dx == -1) {
+            dx = 1
+        }
+        if (dy == -1) {
+            dy = 1
+        }
+        return (dx == 1 && dy == 0) || (dx == 0 && dy == 1)
+    }
+
     companion object {
         val xLabels = listOf("A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T")
 

@@ -1,9 +1,25 @@
 
 Bugs
 	Cannot place free handicaps on two player game.
+	OneColorGo show latestMark in white on white
+	HiddenStones are sometimes revealed when they don't have to be.
+		When a group of hidden-only stones are removed, they don't need to be revealed.
+		We'd need to change how taken stones are returned. As a list of lists, rather than one big list.
 
-Current Task
+Current Task - HiddenMoveGo
+	Reveal stones used to capture
+	Check for stones with no liberties at the start of the game - rare!
+		What if two pon nukis take each other? Take both of them.
+		Place all stones, check for liberties, and remember those to remove in a single list
+		Remove the dead stones after all liberties are checked.
+
+	Allow # of hidden moves to be zero
 	Don't allow undo/redo while playing hidden move go.
+	Prevent "Review" and Score etc
+	Reveal all stones at the end of the game
+	Use StoneColor.graphic
+
+Consider placing free handicaps as real moves, rather than setup-stones.
 
 Add some standard games is preferences are empty.
 

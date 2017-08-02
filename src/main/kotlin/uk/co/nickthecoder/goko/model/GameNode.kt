@@ -117,7 +117,9 @@ class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
             }
         }
         addedStones.put(point, color)
-        board.setStoneAt(point, color)
+        if ( board.game.currentNode == this) {
+            board.setStoneAt(point, color)
+        }
     }
 
     fun removeStone(board: Board, point: Point) {
@@ -127,7 +129,9 @@ class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
                 removedStones.put(point, oldColor)
             }
         }
-        board.removeStoneAt(point)
+        if ( board.game.currentNode == this) {
+            board.removeStoneAt(point)
+        }
     }
 
     override fun copy(): SetupNode {

@@ -53,11 +53,11 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
         gnuGo.generateMove(color, this)
     }
 
-    override fun makeMove(point: Point) {
+    override fun makeMove(point: Point, onMainLine: Boolean) {
         throw IllegalStateException("It's GnuGoPlayer's turn!")
     }
 
-    override fun pass() {
+    override fun pass(onMainLine: Boolean) {
         throw IllegalStateException("It's GnuGoPlayer's turn!")
     }
 
@@ -66,7 +66,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     override fun generatedMove(point: Point) {
         Platform.runLater {
             if (game.currentNode === expectedCurrentNode) {
-                game.move(point, color)
+                game.variation.makeMove(point, color)
                 GoKo.stoneSound()
             } else {
                 println("Generated move ignored, as the game's current node has changed.")
@@ -78,7 +78,7 @@ class GnuGoPlayer(val game: Game, override val color: StoneColor, level: Int = 1
     override fun generatedPass() {
         Platform.runLater {
             if (game.currentNode === expectedCurrentNode) {
-                game.pass(true)
+                game.variation.makeMove(null, color)
             } else {
                 println("Generated move ignored, as the game's current node has changed.")
             }

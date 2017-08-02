@@ -43,7 +43,7 @@ interface Player {
 
     fun canClickToPlay(): Boolean
 
-    fun makeMove(point: Point)
+    fun makeMove(point: Point, onMainLine: Boolean = true)
 
-    fun pass()
+    fun pass(onMainLine: Boolean = true)
 }

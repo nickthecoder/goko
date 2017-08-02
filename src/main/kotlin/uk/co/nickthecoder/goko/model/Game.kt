@@ -43,11 +43,6 @@ class Game(size: Int) {
 
     val listeners = mutableListOf<GameListener>()
 
-    val handicaps = listOf(
-            Point(0, 0), Point(2, 2), Point(2, 0), Point(0, 2),
-            Point(1, 1),
-            Point(1, 0), Point(1, 2), Point(0, 1), Point(2, 1))
-
     var root = SetupNode(playerToMove.color)
 
     val currentNode: GameNode
@@ -59,13 +54,7 @@ class Game(size: Int) {
 
     var blackCaptures: Int = 0
 
-    var variation = StandardGo(this)
-
-    /**
-     * The number of handicap stones the black player still has to play.
-     * Is zero when using fixed handicap points (on the star points).
-     */
-    var freeHandicaps: Int = 0
+    var variation: GameVariation = StandardGo(this, GameVariationType.NORMAL)
 
     private var gnuGo: GnuGo? = null
 
@@ -77,20 +66,8 @@ class Game(size: Int) {
     fun start() {
         metaData.whiteName = players[StoneColor.WHITE]!!.label
         metaData.blackName = players[StoneColor.BLACK]!!.label
-        if (metaData.fixedHandicaptPoints) {
-            placeHandicap()
-            playerToMove = players[if (metaData.handicap!! < 2) StoneColor.BLACK else StoneColor.WHITE]!!
-            playerToMove.yourTurn()
-            root.colorToPlay = playerToMove.color
-        } else {
-            playerToMove = players[StoneColor.BLACK]!!
-            if (metaData.handicap!! > 2) {
-                freeHandicaps = metaData.handicap!!
-                playerToMove.placeHandicap()
-            } else {
-                playerToMove.yourTurn()
-            }
-        }
+        variation.start()
+
         updatedMetaData()
     }
 
@@ -106,25 +83,6 @@ class Game(size: Int) {
         result.start()
         gnuGo = result
         return result
-    }
-
-    fun placeHandicap() {
-        println("Placing fixed handicap stones.")
-        val start: Int
-        if (board.size < 13) {
-            start = 2
-        } else {
-            start = 3
-        }
-        val jump = (board.size - 1) / 2 - start
-
-        for (i in 0..metaData.handicap!! - 1) {
-            val h = handicaps[i]
-            val point = Point(start + h.x * jump, start + h.y * jump)
-            println("Placing fixed handicap stone @ $point")
-            root.addStone(board, point, StoneColor.BLACK)
-            println("Placed fixed handicap stone @ $point")
-        }
     }
 
     fun addPlayer(player: Player) {
@@ -172,7 +130,10 @@ class Game(size: Int) {
         return players[nextColor]!!
     }
 
-    fun pass(onMainLine: Boolean = true) {
+    fun pass(color: StoneColor, onMainLine: Boolean = true) {
+        if (color != playerToMove.color) {
+            throw IllegalArgumentException("It is ${playerToMove.color}'s turn")
+        }
         val node = PassNode(playerToMove.color)
         apply(addNode(node, onMainLine))
         if (currentNode.parent is PassNode) {
@@ -181,25 +142,8 @@ class Game(size: Int) {
     }
 
     fun move(point: Point, color: StoneColor, onMainLine: Boolean = true) {
-        if (freeHandicaps > 0) {
-            if (currentNode != root) {
-                throw IllegalStateException("Can only place handicap stones in the root node")
-            }
-            freeHandicaps--
-            root.addStone(board, point, color)
-            nodeChanged(currentNode)
-
-            if (freeHandicaps == 0) {
-                root.colorToPlay = StoneColor.WHITE
-                // TODO Need to notify that the free handicap stones have been placed.
-
-                playerToMove = players[root.colorToPlay]!!
-                playerToMove.yourTurn()
-                listeners.forEach {
-                    it.nodeChanged(root)
-                }
-            }
-            return
+        if (color != playerToMove.color) {
+            throw IllegalArgumentException("It is ${playerToMove.color}'s turn")
         }
 
         if (!color.isStone()) {
@@ -221,16 +165,17 @@ class Game(size: Int) {
     }
 
     fun canPlayAt(point: Point): Boolean {
-        if (!board.contains(point) || board.getStoneAt(point).playable) {
+        if (!board.contains(point) || board.getStoneAt(point) != StoneColor.NONE) {
             return false
         }
         val copy = board.copy()
         copy.setStoneAt(point, playerToMove.color)
         val takenStones = copy.removeTakenStones(point)
-        if (copy.checkLiberties(point) != null) {
-            return false
+        if (takenStones.size == 0) {
+            if (copy.checkLiberties(point) != null) {
+                return false
+            }
         }
-
         if (takenStones.size == 1) {
             // Check for ko, by comparing the hashes of previous board positions.
             val newHash = copy.hashCode()
@@ -359,6 +304,10 @@ class Game(size: Int) {
 
         if (Preferences.advancedPreferences.checkGnuGoSyncP.value == true) {
             createGnuGo().checkBoard()
+        }
+
+        if (node is MoveNode && node.takenStones.isNotEmpty()) {
+            variation.capturedStones(node.takenStones)
         }
 
         if (autoPlay) {

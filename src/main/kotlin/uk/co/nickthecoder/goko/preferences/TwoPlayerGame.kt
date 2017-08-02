@@ -20,10 +20,7 @@ package uk.co.nickthecoder.goko.preferences
 
 import uk.co.nickthecoder.goko.LocalPlayer
 import uk.co.nickthecoder.goko.gui.MainWindow
-import uk.co.nickthecoder.goko.model.Game
-import uk.co.nickthecoder.goko.model.GameListener
-import uk.co.nickthecoder.goko.model.GameVariationType
-import uk.co.nickthecoder.goko.model.StoneColor
+import uk.co.nickthecoder.goko.model.*
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.IntParameter
@@ -39,8 +36,8 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
 
     val whitePlayerP = StringParameter("whiteName", label = "Whites's Name", required = false, value = "Mister White")
 
-    val hiddenMovesBlackP = IntParameter("hiddenMovesBlack", value = 0)
-    val hiddenMovesWhiteP = IntParameter("hiddenMovesWhite", value = 0)
+    val hiddenMovesBlackP = IntParameter("hiddenMovesBlack", value = 3)
+    val hiddenMovesWhiteP = IntParameter("hiddenMovesWhite", value = 3)
 
     init {
         taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP,
@@ -53,10 +50,10 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
             val isHiddenMoveGo = gameVariationP.value == GameVariationType.HIDDEN_MOVE_GO
             hiddenMovesBlackP.hidden = !isHiddenMoveGo
             hiddenMovesWhiteP.hidden = !isHiddenMoveGo
+
             handicapP.hidden = isHiddenMoveGo
-            if (isHiddenMoveGo) {
-                handicapP.value = 0
-            }
+            fixedHandicapPointsP.hidden = isHiddenMoveGo
+            handicapP.value = 0
         }
     }
 
@@ -64,7 +61,7 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
         Preferences.save()
     }
 
-    override fun changePlayers(game: Game) {
+    override fun initialiseGame(game: Game) {
 
         val blackPlayer = LocalPlayer(game, StoneColor.BLACK, blackPlayerP.value)
         val whitePlayer = LocalPlayer(game, StoneColor.WHITE, whitePlayerP.value)
@@ -74,10 +71,20 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
 
         game.addPlayer(blackPlayer)
         game.addPlayer(whitePlayer)
+        if (gameVariationP.value == GameVariationType.HIDDEN_MOVE_GO) {
+        }
 
         game.file = Preferences.gameFile("Two Player")
     }
 
+    override fun createGameVariation(game: Game): GameVariation {
+        if (gameVariationP.value == GameVariationType.HIDDEN_MOVE_GO) {
+            return HiddenMoveGo(game,
+                    hiddenMoveCountBlack = hiddenMovesBlackP.value!!,
+                    hiddenMoveCountWhite = hiddenMovesWhiteP.value!!)
+        }
+        return super.createGameVariation(game)
+    }
 
     override fun createLaunchTask(mainWindow: MainWindow): Task {
         return TwoPlayerGameLauncher(mainWindow, this)

@@ -21,7 +21,9 @@ package uk.co.nickthecoder.goko.preferences
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.gui.PlayingView
 import uk.co.nickthecoder.goko.model.Game
+import uk.co.nickthecoder.goko.model.GameVariation
 import uk.co.nickthecoder.goko.model.GameVariationType
+import uk.co.nickthecoder.goko.model.StandardGo
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.*
@@ -60,16 +62,20 @@ abstract class AbstractGamePreferences : AbstractTask() {
         game.metaData.timeLimit = timeLimitP.value!!
 
         val view = PlayingView(mainWindow, game, allowUndoP.value!!)
-        view.boardView.colorVariation = gameVariationP.value!!
 
-        changePlayers(game)
+        game.variation = createGameVariation(game)
+        initialiseGame(game)
 
         game.metaData.enteredBy = "GoKo"
         game.start()
         return view
     }
 
-    abstract fun changePlayers(game: Game)
+    open fun createGameVariation(game: Game): GameVariation {
+        return StandardGo(game, gameVariationP.value ?: GameVariationType.NORMAL)
+    }
+
+    abstract fun initialiseGame(game: Game)
 
     abstract fun createLaunchTask(mainWindow: MainWindow): Task
 }

@@ -47,12 +47,12 @@ class ProblemOpponent(val game: Game, override val color: StoneColor) : Player {
         }
     }
 
-    override fun makeMove(point: Point) {
-        game.move(point, color)
+    override fun makeMove(point: Point, onMainLine: Boolean) {
+        game.variation.makeMove(point, color, onMainLine)
     }
 
-    override fun pass() {
-        game.pass()
+    override fun pass(onMainLine: Boolean) {
+        game.variation.makeMove(null, color, onMainLine)
     }
 
     override fun canClickToPlay(): Boolean {

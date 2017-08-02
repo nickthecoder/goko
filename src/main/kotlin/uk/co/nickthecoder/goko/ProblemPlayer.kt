@@ -24,20 +24,20 @@ import uk.co.nickthecoder.goko.model.StoneColor
 
 class ProblemPlayer(game: Game, color: StoneColor) : LocalPlayer(game, color) {
 
-    override fun makeMove(point: Point) {
+    override fun makeMove(point: Point, onMainLine: Boolean) {
         val node = game.currentNode
         val count = node.children.size
-        super.makeMove(point)
+        super.makeMove(point, onMainLine)
         if (node.children.size != count) {
             game.currentNode.comment = "Hmm, that move's not not part of the solution!"
             game.nodeChanged(game.currentNode)
         }
     }
 
-    override fun pass() {
+    override fun pass(onMainLine: Boolean) {
         val node = game.currentNode
         val count = node.children.size
-        super.pass()
+        super.pass(onMainLine)
         if (node.children.size != count) {
             game.currentNode.comment = "Hmm, You passed? That's not part of the solution!"
             game.nodeChanged(game.currentNode)

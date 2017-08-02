@@ -43,7 +43,7 @@ class ClickBoardView(val boardView: BoardView) : GameListener {
     var onClickedPoint: (Point) -> Unit = { point ->
         val player = game.playerToMove
 
-        if (player.canClickToPlay() && game.canPlayAt(point)) {
+        if (player.canClickToPlay() && game.variation.canPlayAt(point)) {
             player.makeMove(point)
             GoKo.stoneSound()
         }

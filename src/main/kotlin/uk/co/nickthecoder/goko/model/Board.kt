@@ -22,6 +22,10 @@ class Board(val size: Int, val game: Game) {
 
     private val points = List(size, { MutableList(size, { StoneColor.NONE }) })
 
+    /**
+     * A copy of the board is made when testing if a move would be self atari
+     * The copy shares the same Game, but should NOT fire events when stones are placed.
+     */
     var isCopy = false
 
     fun contains(x: Int, y: Int) = x >= 0 && y >= 0 && x < size && y < size
@@ -66,12 +70,12 @@ class Board(val size: Int, val game: Game) {
 
     fun checkLiberties(point: Point): Set<Point>? {
 
-        val color = getStoneAt(point)
-        val opposite = if (color == StoneColor.BLACK) StoneColor.WHITE else StoneColor.BLACK
+        val color = getStoneAt(point).realColor()
+        val opposite = color.opposite()
         val group = mutableSetOf<Point>()
 
         fun surrounded(innerPoint: Point): Boolean {
-            val c = getStoneAt(innerPoint)
+            val c = getStoneAt(innerPoint).realColor()
             if (c == StoneColor.NONE) {
                 return false
             }
@@ -99,7 +103,7 @@ class Board(val size: Int, val game: Game) {
     fun removeTakenStones(point: Point): Set<Point> {
 
         fun removeTakenStonesQuarter(innerPoint: Point): Set<Point> {
-            if (contains(innerPoint) && getStoneAt(innerPoint) != getStoneAt(point)) {
+            if (contains(innerPoint) && getStoneAt(innerPoint).realColor() != getStoneAt(point).realColor()) {
                 val group = checkLiberties(innerPoint)
                 group?.forEach {
                     removeStoneAt(it)

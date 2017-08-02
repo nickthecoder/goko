@@ -55,7 +55,7 @@ open class ManVersesMachine : AbstractGamePreferences() {
         Preferences.save()
     }
 
-    override fun changePlayers(game: Game) {
+    override fun initialiseGame(game: Game) {
         val human = LocalPlayer(game, StoneColor.opposite(computerPlaysP.value!!), Preferences.yourName, Preferences.yourRank)
         human.timeRemaining = game.metaData.timeLimit.copy()
 

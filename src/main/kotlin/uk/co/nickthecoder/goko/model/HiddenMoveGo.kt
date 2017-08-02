@@ -1,73 +1,125 @@
 package uk.co.nickthecoder.goko.model
 
-class HiddenMoveGo(game: Game, val hiddenMoveCountBlack: Int, val hiddenMoveCountWhite: Int) : StandardGo(game) {
+import uk.co.nickthecoder.goko.Player
+import uk.co.nickthecoder.goko.gui.SymbolMarkView
 
-    var isSettingUp: Boolean = true
+class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMoveCountWhite: Int) : GameVariation, GameListener {
 
-    var hiddenBlackMoves = listOf<Point>()
-    var hiddenWhiteMoves = listOf<Point>()
+    override val type = GameVariationType.HIDDEN_MOVE_GO
+
+    enum class State { HIDDEN_BLACK, HIDDEN_WHITE, NORMAL }
+
+    var state = State.HIDDEN_BLACK
+
+    val board
+        get() = game.board
+
+    val hiddenBlackMoves = mutableSetOf<Point>()
+    val hiddenWhiteMoves = mutableSetOf<Point>()
+
+    override fun start() {
+        game.playerToMove = game.players[StoneColor.BLACK]!!
+        game.playerToMove.yourTurn()
+        game.listeners.add(this)
+    }
 
     override fun canPlayAt(point: Point?): Boolean {
-        if (point != null) {
-            val color = board.getStoneAt(point)
-            if (color == StoneColor.HIDDEN_BLACK) {
-                board.setStoneAt(point, StoneColor.BLACK)
-            } else if (color == StoneColor.HIDDEN_WHITE) {
-                board.setStoneAt(point, StoneColor.WHITE)
+
+        when (state) {
+            State.HIDDEN_BLACK -> {
+                if (point == null) {
+                    return hiddenBlackMoves.size == hiddenMoveCountBlack
+                }
+                return true
+            }
+            State.HIDDEN_WHITE -> {
+                if (point == null) {
+                    return hiddenWhiteMoves.size == hiddenMoveCountWhite
+                }
+                return true
+            }
+            State.NORMAL -> {
+                if (point == null) {
+                    return true // Can always pass
+                } else {
+                    val color = board.getStoneAt(point)
+                    if (color == StoneColor.HIDDEN_BLACK || color == StoneColor.HIDDEN_WHITE) {
+                        reveal(point)
+                        return false
+                    }
+
+                    val result = game.canPlayAt(point)
+
+                    if (color == StoneColor.HIDDEN_BOTH) {
+                        reveal(point)
+                    }
+
+                    return result
+                }
             }
         }
-        return super.canPlayAt(point)
     }
 
     /**
      * Make a move at point, or null for a pass.
      */
-    override fun playAt(point: Point?, onMainLine: Boolean): String? {
-        if (isSettingUp) {
+    override fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean): String? {
+
+        if (state == State.NORMAL) {
 
             if (point == null) {
-                return endSetup(onMainLine)
+                game.pass(color, onMainLine)
             } else {
+                game.move(point, color, onMainLine)
+            }
+
+        } else {
+
+            if (point == null) {
+                return endSetup()
+            } else {
+                val list = if (color == StoneColor.BLACK) hiddenBlackMoves else hiddenWhiteMoves
+
                 if (game.getMarkAt(point) == null) {
-                    game.addMark(TerritoryMark(point, game.playerToMove.color))
+                    list.add(point)
+                    game.addMark(TerritoryMark(point, color))
                 } else {
+                    list.remove(point)
                     game.removeMark(point)
                 }
             }
-            return null
 
-        } else {
-            return super.playAt(point, onMainLine)
         }
+        return null
+
     }
 
-    private fun requiredHiddenCount(): Int {
-        if (game.playerToMove.color == StoneColor.BLACK) {
-            return hiddenMoveCountBlack
-        } else {
-            return hiddenMoveCountWhite
-        }
-    }
+    private fun endSetup(): String? {
 
-    private fun endSetup(onMainLine: Boolean): String? {
-        val marks = game.currentNode.marks
-        if (marks.size != requiredHiddenCount()) {
-            return "You must play ${requiredHiddenCount()} before passing"
-        }
-
-        if (game.playerToMove.color == StoneColor.BLACK) {
-            hiddenBlackMoves = marks.map { it.point }
-            game.pass(onMainLine)
+        if (state == State.HIDDEN_BLACK) {
+            if (hiddenBlackMoves.size != hiddenMoveCountBlack) {
+                return "You must play $hiddenMoveCountBlack before passing"
+            }
+            state = State.HIDDEN_WHITE
+            game.playerToMove = game.players[StoneColor.WHITE]!!
 
         } else {
-            hiddenWhiteMoves = marks.map { it.point }
-            isSettingUp = false
-            val node = SetupNode(StoneColor.BLACK)
+            if (hiddenWhiteMoves.size != hiddenMoveCountWhite) {
+                return "You must play $hiddenMoveCountWhite before passing"
+            }
+            state = State.NORMAL
+            game.playerToMove = game.players[StoneColor.BLACK]!!
+        }
+
+        game.clearMarks()
+
+        if (state == State.NORMAL) {
+            val node = game.root
             hiddenBlackMoves.forEach { point ->
                 if (hiddenWhiteMoves.contains(point)) {
                     node.addStone(board, point, StoneColor.HIDDEN_BOTH)
                 } else {
-                    node.addStone(board, point, StoneColor.BLACK)
+                    node.addStone(board, point, StoneColor.HIDDEN_BLACK)
                 }
             }
             hiddenWhiteMoves.forEach { point ->
@@ -75,31 +127,40 @@ class HiddenMoveGo(game: Game, val hiddenMoveCountBlack: Int, val hiddenMoveCoun
                     node.addStone(board, point, StoneColor.HIDDEN_WHITE)
                 }
             }
-            game.addNode(node, onMainLine)
-            game.apply(node)
-
+            game.root.name = "Hidden Moves"
         }
+        game.playerToMove.yourTurn()
+
         return null
     }
 
-    /**
-     * Special instruction to help the player make her move, or null if this is a regular move
-     */
-    override fun moveMessage(): String? = null
+    override fun capturedStones(points: Set<Point>) {
+        points.forEach { point ->
 
-    /**
-     * The special stone at point was used to capture a group.
-     * Specifically here so that HiddenMoveGo can turn a hidden stone into a real one.
-     */
-    override fun usedToCapture(point: Point) {
-        val color = board.getStoneAt(point)
-        if (color == StoneColor.HIDDEN_WHITE) {
-            board.setStoneAt(point, StoneColor.WHITE)
-            game.addMark(CircleMark(point))
-        } else if (color == StoneColor.HIDDEN_WHITE) {
-            board.setStoneAt(point, StoneColor.BLACK)
-            game.addMark(CircleMark(point))
+            hiddenBlackMoves.filter { it.isTouching(point) }.forEach {
+                reveal(it)
+            }
+            hiddenWhiteMoves.filter { it.isTouching(point) }.forEach {
+                reveal(it)
+            }
         }
+    }
+
+    fun reveal(point: Point) {
+        val realColor = board.getStoneAt(point).realColor()
+        board.setStoneAt(point, realColor)
+        game.addMark(CircleMark(point))
+
+        val wasColor = if (hiddenWhiteMoves.remove(point)) StoneColor.WHITE else StoneColor.BLACK
+        hiddenBlackMoves.remove(point)
+
+        game.root.removeStone(game.board, point)
+        game.root.addStone(game.board, point, wasColor)
+    }
+
+    override fun gameEnded(winner: Player?) {
+        hiddenBlackMoves.toList().forEach { reveal(it) }
+        hiddenWhiteMoves.toList().forEach { reveal(it) }
     }
 
 }

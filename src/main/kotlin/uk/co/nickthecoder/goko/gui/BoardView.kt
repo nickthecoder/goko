@@ -73,12 +73,6 @@ class BoardView(val game: Game) : View {
             updateMoveNumbers()
         }
 
-    var colorVariation: GameVariationType = GameVariationType.NORMAL
-        set(v) {
-            field = v
-            stones.requestLayout()
-        }
-
     override val node: Parent
         get() = container
 
@@ -130,7 +124,7 @@ class BoardView(val game: Game) : View {
             var show = true
 
             if (mouseMode == MouseMode.PLAYING || mouseMode == MouseMode.ADDING_STONES) {
-                if (board.getStoneAt(point).isStone()) {
+                if (!board.getStoneAt(point).isClickable) {
                     show = false
                 }
             } else if (mouseMode == MouseMode.REMOVING_STONES) {

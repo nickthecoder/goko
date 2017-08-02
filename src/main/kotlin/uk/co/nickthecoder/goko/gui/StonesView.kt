@@ -64,6 +64,7 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
 
         val imageView = ImageView(image)
         array[point.x][point.y] = imageView
+
         children.add(imageView)
 
         val scale = boardView.scale
@@ -101,15 +102,19 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
                 val color = board.getStoneAt(x, y)
                 if (color.isStone()) {
                     val point = Point(x, y)
-                    when (boardView.colorVariation) {
-                        GameVariationType.NORMAL ->
-                            add(point, if (color == StoneColor.BLACK) scaledBlackStone else scaledWhiteStone)
+                    when (game.variation.type) {
                         GameVariationType.ONE_COLOR_GO ->
                             add(point, scaledWhiteStone)
                         GameVariationType.TWO_COLOR_ONE_COLOR_GO -> {
                             val foo = (y * board.size + x).hashCode() % 2
                             add(point, if (foo == 0) scaledBlackStone else scaledWhiteStone)
                         }
+                        else ->
+                            if (color == StoneColor.BLACK) {
+                                add(point, scaledBlackStone)
+                            } else if (color == StoneColor.WHITE) {
+                                add(point, scaledWhiteStone)
+                            }
                     }
                 }
             }

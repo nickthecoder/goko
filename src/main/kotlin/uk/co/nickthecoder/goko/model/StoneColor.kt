@@ -18,20 +18,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.model
 
-enum class StoneColor(val isAStone : Boolean, val isLiberty: Boolean, val playable: Boolean, val grahicName: String?) {
+/**
+ * isClickable is used to determine if the mouse pointer should show a mark at the point while moving over it.
+ * In HiddenMoveGo, the hidden stones are clickable.
+ */
+enum class StoneColor(val isAStone: Boolean, val isLiberty: Boolean, val isClickable: Boolean = false) {
 
-    BLACK(true, false, false, "stoneB"),
-    WHITE(true, false, false, "stoneW"),
-    NONE(false, true, true, null),
-    EDGE(false, false, false, null),
+    BLACK(true, false),
+    WHITE(true, false),
+    NONE(false, true, true),
+    EDGE(false, false),
 
-    HIDDEN_WHITE(true, false, false, null),
-    HIDDEN_BLACK(true, false, false, null),
-    HIDDEN_BOTH(false, true, true, null);
+    HIDDEN_WHITE(true, false, true),
+    HIDDEN_BLACK(true, false, true),
+    HIDDEN_BOTH(false, true, true);
 
-    companion object {
-        fun opposite(color: StoneColor) = if (color == WHITE) BLACK else WHITE
-    }
+    fun realColor(): StoneColor =
+            when (this) {
+                HIDDEN_BOTH -> NONE
+                HIDDEN_WHITE -> WHITE
+                HIDDEN_BLACK -> BLACK
+                else -> this
+            }
 
     // TODO Remove this function, and rename isAStone to isStone
     fun isStone() = isAStone
@@ -40,5 +48,9 @@ enum class StoneColor(val isAStone : Boolean, val isLiberty: Boolean, val playab
         if (this == WHITE) return BLACK
         if (this == BLACK) return WHITE
         return this
+    }
+
+    companion object {
+        fun opposite(color: StoneColor) = if (color == WHITE) BLACK else WHITE
     }
 }
