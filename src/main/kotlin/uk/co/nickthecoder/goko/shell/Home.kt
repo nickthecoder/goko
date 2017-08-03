@@ -84,7 +84,7 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0), PreferencesLis
     fun createTaskButton(label: String, style: String, factory: () -> Task): Button {
         return createButton(label, style) {
             val task = factory()
-            PromptTaskView(task, mainWindow)
+            TaskView(task, mainWindow)
         }
     }
 }

@@ -307,7 +307,7 @@ class Game(size: Int) {
         }
 
         if (node is MoveNode && node.takenStones.isNotEmpty()) {
-            variation.capturedStones(node.takenStones)
+            variation.capturedStones(node.colorToPlay, node.takenStones)
         }
 
         if (autoPlay) {

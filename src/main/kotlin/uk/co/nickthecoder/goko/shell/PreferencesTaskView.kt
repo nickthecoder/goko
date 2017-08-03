@@ -28,7 +28,7 @@ import uk.co.nickthecoder.goko.gui.TopLevelView
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.fields.TaskForm
 
-open class PromptTaskView(val task: Task, mainWindow: MainWindow) : TopLevelView(mainWindow) {
+open class PreferencesTaskView(val task: Task, mainWindow: MainWindow) : TopLevelView(mainWindow) {
 
     override val title = task.taskD.label
 

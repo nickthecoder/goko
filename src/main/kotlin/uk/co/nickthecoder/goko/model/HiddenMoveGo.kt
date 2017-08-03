@@ -133,15 +133,36 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
 
     override fun displayColor(point: Point): StoneColor = board.getStoneAt(point)
 
-    override fun capturedStones(points: Set<Point>) {
+    override fun capturedStones(colorCaptured: StoneColor, points: Set<Point>) {
         points.forEach { point ->
 
-            hiddenBlackMoves.filter { it.isTouching(point) }.forEach {
+
+            val checkAttackers: Set<Point>
+            val checkCaptured: Set<Point>
+
+            if (colorCaptured == StoneColor.WHITE) {
+                checkAttackers = hiddenBlackMoves
+                checkCaptured = hiddenWhiteMoves
+            } else {
+                checkAttackers = hiddenWhiteMoves
+                checkCaptured = hiddenBlackMoves
+            }
+
+            // If any of the stones doing the capturing were hidden, then they must be revealed.
+            checkAttackers.filter { it.isTouching(point) }.forEach {
                 reveal(it)
             }
-            hiddenWhiteMoves.filter { it.isTouching(point) }.forEach {
-                reveal(it)
+
+            // If a hidden stone was captured as part of a larger group, then it should also be revealed.
+            // This isn't perfect, because if TWO groups are captured, and one of the groups was a single
+            // hidden stone, then this didn't need to be revealed
+            if (checkCaptured.size > 1) {
+                checkCaptured.filter { it.isTouching(point) }.forEach {
+                    reveal(it)
+                }
             }
+            // Also, if a single hidden stone was captured in a ko situation, then it needs to be releaved
+            // when the ko is attempted.
         }
     }
 

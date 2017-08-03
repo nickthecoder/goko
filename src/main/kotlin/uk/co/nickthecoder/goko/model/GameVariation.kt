@@ -15,7 +15,7 @@ interface GameVariation {
      */
     fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean = true): String?
 
-    fun capturedStones(points: Set<Point>) {}
+    fun capturedStones(colorCaptured: StoneColor, points: Set<Point>) {}
 
     fun displayColor(point: Point): StoneColor
 }

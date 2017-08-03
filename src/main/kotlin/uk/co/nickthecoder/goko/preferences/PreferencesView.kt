@@ -28,7 +28,7 @@ import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.gui.TopLevelView
 import uk.co.nickthecoder.goko.gui.View
 import uk.co.nickthecoder.goko.gui.ViewTab
-import uk.co.nickthecoder.goko.shell.PromptTaskView
+import uk.co.nickthecoder.goko.shell.PreferencesTaskView
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.gui.MyTabPane
 
@@ -48,7 +48,7 @@ class PreferencesView(mainWindow: MainWindow, val initialPage: Task? = null) : T
 
     override val title = "Preferences"
 
-    private val taskViews = mutableListOf<PromptTaskView>()
+    private val taskViews = mutableListOf<PreferencesTaskView>()
 
     init {
         tabs.side = Side.BOTTOM
@@ -79,7 +79,7 @@ class PreferencesView(mainWindow: MainWindow, val initialPage: Task? = null) : T
         }
 
         for (task in Preferences.preferenceTasksMap.values) {
-            val view = PromptTaskView(task, mainWindow)
+            val view = PreferencesTaskView(task, mainWindow)
             view.build()
             val tab = ViewTab(view)
             tabs.add(tab)
@@ -101,7 +101,7 @@ class PreferencesView(mainWindow: MainWindow, val initialPage: Task? = null) : T
     protected fun onOk() {
         tabs.tabs.forEach() { tab ->
             val view = tab.view
-            if (view is PromptTaskView) {
+            if (view is PreferencesTaskView) {
                 if (!view.taskForm.check()) {
                     tabs.selectedTab = tab
                     return

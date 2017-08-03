@@ -103,11 +103,13 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
                     val point = Point(x, y)
                     val displayColor = game.variation.displayColor(point)
 
-                    add(point, if (displayColor == StoneColor.WHITE) {
-                        scaledWhiteStone
-                    } else {
-                        scaledBlackStone
-                    })
+                    when (displayColor) {
+                        StoneColor.WHITE -> add(point, scaledWhiteStone)
+                        StoneColor.BLACK -> add(point, scaledBlackStone)
+                        else -> {
+                            // Do nothing
+                        }
+                    }
                 }
             }
         }

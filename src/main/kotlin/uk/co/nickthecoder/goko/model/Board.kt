@@ -137,9 +137,11 @@ class Board(val size: Int, val game: Game) {
     /**
      * The hash is used to detect kos. If the stones on the board are the same as a previous position, and
      * the player to move is the same, then we have a repeated board position, which is illegal Ko move.
+     * Note that we use the REAL COLOR of each point, so that the hash of HIDDEN_WHITE is the same as WHITE.
+     * This allows kos in HiddenMoveGo to work correctly.
      */
     override fun hashCode(): Int {
-        return points.hashCode()
+        return points.map { it.map { it.realColor() } }.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
