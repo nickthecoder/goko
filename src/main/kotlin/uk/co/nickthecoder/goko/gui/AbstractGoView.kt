@@ -51,7 +51,7 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     protected val saveB = GoKoActions.SAVE.createButton(shortcuts) { onSave() }
     protected val reviewB = GoKoActions.REVIEW.createButton(shortcuts) { onEdit() }
     protected val resignB = GoKoActions.RESIGN.createButton(shortcuts) { onResign() }
-    protected val hintB = GoKoActions.HINT.createButton(shortcuts) { HintGenerator(game).hint() }
+    protected val hintB = GoKoActions.HINT.createButton(shortcuts) { onHint() }
 
     protected val estimateScoreB = GoKoActions.ESTIMATE_SCORE.createToggleButton(shortcuts) { showVisualisations() }
     protected val hotspotsB = GoKoActions.HOTSPOTS.createToggleButton(shortcuts) { showVisualisations() }
@@ -122,19 +122,27 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
         }
     }
 
+    fun onHint() {
+        if (game.variation.allowHelp) {
+            HintGenerator(game).hint()
+        }
+    }
+
     fun showVisualisations() {
         boardView.visualisation.clear()
-        if (influenceB.isSelected) {
-            VisualiseInfluence(game, StoneColor.BLACK, "black_influence", boardView.visualisation).visualise()
-            VisualiseInfluence(game, StoneColor.WHITE, "white_influence", boardView.visualisation).visualise()
-        }
-        if (hotspotsB.isSelected) {
-            VisualiseHotspots(game, boardView.visualisation).visualise()
-        }
-        if (estimateScoreB.isSelected) {
-            ScoreEstimator(game).score { showScore(it) }
-            VisualiseTerritory(game, StoneColor.WHITE, boardView.visualisation).visualise()
-            VisualiseTerritory(game, StoneColor.BLACK, boardView.visualisation).visualise()
+        if (game.variation.allowHelp) {
+            if (influenceB.isSelected) {
+                VisualiseInfluence(game, StoneColor.BLACK, "black_influence", boardView.visualisation).visualise()
+                VisualiseInfluence(game, StoneColor.WHITE, "white_influence", boardView.visualisation).visualise()
+            }
+            if (hotspotsB.isSelected) {
+                VisualiseHotspots(game, boardView.visualisation).visualise()
+            }
+            if (estimateScoreB.isSelected) {
+                ScoreEstimator(game).score { showScore(it) }
+                VisualiseTerritory(game, StoneColor.WHITE, boardView.visualisation).visualise()
+                VisualiseTerritory(game, StoneColor.BLACK, boardView.visualisation).visualise()
+            }
         }
     }
 

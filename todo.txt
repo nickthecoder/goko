@@ -1,8 +1,5 @@
 
 Bugs                                                                                                                                      
-	HiddenStones are sometimes revealed when they don't have to be.
-		When a group of hidden-only stones are removed, they don't need to be revealed.
-		We'd need to change how taken stones are returned. As a list of lists, rather than one big list.
 	Hidden Move Go doesn't support Kos properly, because the hashing HIDDEN_WHITE and WHITE
 
 Current Task - HiddenMoveGo

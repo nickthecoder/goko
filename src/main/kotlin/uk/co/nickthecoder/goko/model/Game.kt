@@ -165,7 +165,7 @@ class Game(size: Int) {
     }
 
     fun canPlayAt(point: Point): Boolean {
-        if (!board.contains(point) || board.getStoneAt(point) != StoneColor.NONE) {
+        if (!board.contains(point) || board.getStoneAt(point).realColor() != StoneColor.NONE) {
             return false
         }
         val copy = board.copy()

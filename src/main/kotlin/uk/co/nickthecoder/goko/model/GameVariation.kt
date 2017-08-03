@@ -2,6 +2,11 @@ package uk.co.nickthecoder.goko.model
 
 interface GameVariation {
 
+    /**
+     * Can you use the Hints, Score and Hotspot features.
+     */
+    val allowHelp : Boolean
+
     fun start()
 
     /**
@@ -18,4 +23,5 @@ interface GameVariation {
     fun capturedStones(colorCaptured: StoneColor, points: Set<Point>) {}
 
     fun displayColor(point: Point): StoneColor
+
 }

@@ -41,7 +41,11 @@ open class PlayingView(mainWindow: MainWindow, game: Game, val allowUndo: Boolea
             dividers[0].position = 0.7
         }
 
-        toolBar.items.addAll(saveB, reviewB, hintB, estimateScoreB, hotspotsB, resignB, passB)
+        toolBar.items.addAll(saveB, reviewB)
+        if (game.variation.allowHelp) {
+            toolBar.items.addAll(hintB, estimateScoreB, hotspotsB)
+        }
+        toolBar.items.addAll(resignB, passB)
         if (allowUndo) {
             toolBar.items.add(undoB)
         }

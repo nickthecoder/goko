@@ -2,6 +2,8 @@ package uk.co.nickthecoder.goko.model
 
 open class StandardGo(val game: Game) : GameVariation {
 
+    override val allowHelp = true
+
     val board
         get() = game.board
 
@@ -105,6 +107,8 @@ open class StandardGo(val game: Game) : GameVariation {
 
 class OneColorGo(game: Game) : StandardGo(game) {
 
+    override val allowHelp = false
+
     override fun displayColor(point: Point): StoneColor {
         val stone = board.getStoneAt(point)
         if (stone == StoneColor.NONE) {
@@ -117,6 +121,8 @@ class OneColorGo(game: Game) : StandardGo(game) {
 }
 
 class TwoColorOneColorGo(game: Game) : StandardGo(game) {
+
+    override val allowHelp = false
 
     override fun displayColor(point: Point): StoneColor {
 
