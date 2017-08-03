@@ -37,13 +37,17 @@ object Problems {
 
         val topDirectory = Preferences.problemsDirectory!!
 
-        val lister = FileLister(onlyFiles = false, depth = 5)
-        val directories = lister.listFiles(topDirectory)
+        val directoryLister = FileLister(onlyFiles = false, depth = 5)
+        val directories = directoryLister.listFiles(topDirectory)
         directories.forEach { dir ->
 
             var page = 0
             do {
-                val label = dir.path.substring(topDirectory.path.length + 1).replace(File.separatorChar, ' ')
+                var label = if (dir.parentFile != topDirectory && isRedundantDirectory(dir)) {
+                    dir.parentFile.path.substring(topDirectory.path.length + 1).replace(File.separatorChar, ' ')
+                } else {
+                    dir.path.substring(topDirectory.path.length + 1).replace(File.separatorChar, ' ')
+                }
                 val problemSet = ProblemSet(dir, page, label)
                 if (problemSet.problems.isNotEmpty()) {
                     result.add(problemSet)
@@ -52,9 +56,18 @@ object Problems {
 
             } while (problemSet.problems.size == pageSize)
         }
+
         return result
     }
+
+    /**
+     * Does the parent directory contain only this directory?
+     */
+    private fun isRedundantDirectory(dir: File): Boolean {
+        return dir.parentFile.listFiles().size == 1
+    }
 }
+
 
 /**
  * A set of sgf files contained within a single directory.

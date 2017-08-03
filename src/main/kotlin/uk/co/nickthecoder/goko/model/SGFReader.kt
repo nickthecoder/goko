@@ -67,6 +67,7 @@ class SGFReader {
      * Reads an sgf file, returning a list of games, each game is represented as a tree of SGFNodes
      */
     fun readMultipleGames(): List<Game> {
+        println("Reading Multiple Games")
         try {
             val result = mutableListOf<Game>()
 
@@ -92,6 +93,7 @@ class SGFReader {
      * loaded, and the rest are silently ignored.
      */
     fun read(): Game {
+        println("Reading Single Games")
 
         try {
             val sgfRoot = readTree() ?: throw IOException("No game data found")

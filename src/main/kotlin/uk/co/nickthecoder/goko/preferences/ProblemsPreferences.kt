@@ -18,11 +18,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.preferences
 
+import javafx.stage.Stage
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.BooleanParameter
+import uk.co.nickthecoder.paratask.parameters.ButtonParameter
 import uk.co.nickthecoder.paratask.parameters.FileParameter
+import uk.co.nickthecoder.paratask.project.TaskPrompter
 import uk.co.nickthecoder.paratask.util.currentDirectory
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.Alert
+
 
 class ProblemsPreferences : AbstractTask(), CommentsPreferences {
 
@@ -33,12 +39,27 @@ class ProblemsPreferences : AbstractTask(), CommentsPreferences {
     val automaticOpponentP = BooleanParameter("automaticOpponent", value = true, description = "The computer can play the 2nd player's moves")
     override val showNodeAnnotationsP = BooleanParameter(name = "showNodeAnnotations", value = true)
     override val showMoveAnnotationsP = BooleanParameter(name = "showMoveAnnotations", value = true)
+    val downloadP = ButtonParameter("downloadAdditionalProblems", action = { onDownload() }, buttonText = "Download")
 
     init {
-        taskD.addParameters(directoryP, showBranchesP, automaticOpponentP, showNodeAnnotationsP, showMoveAnnotationsP)
+        taskD.addParameters(directoryP, showBranchesP, automaticOpponentP, showNodeAnnotationsP, showMoveAnnotationsP, downloadP)
     }
 
     override fun run() {
         Preferences.save()
+    }
+
+    fun onDownload() {
+        val directory = directoryP.value
+        if (directory == null) {
+            val alert = Alert(AlertType.INFORMATION)
+            alert.title = "Information"
+            alert.headerText = null
+            alert.contentText = "Please enter the directory first."
+            alert.showAndWait()
+
+        } else {
+            TaskPrompter(DownloadProblems(directory)).placeOnStage(Stage())
+        }
     }
 }
