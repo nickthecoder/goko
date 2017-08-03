@@ -67,7 +67,6 @@ class SGFReader {
      * Reads an sgf file, returning a list of games, each game is represented as a tree of SGFNodes
      */
     fun readMultipleGames(): List<Game> {
-        println("Reading Multiple Games")
         try {
             val result = mutableListOf<Game>()
 
@@ -93,8 +92,6 @@ class SGFReader {
      * loaded, and the rest are silently ignored.
      */
     fun read(): Game {
-        println("Reading Single Games")
-
         try {
             val sgfRoot = readTree() ?: throw IOException("No game data found")
 
@@ -116,6 +113,8 @@ class SGFReader {
     }
 
     private fun updateRootNode(game: Game, sgfNode: SGFNode) {
+
+        playerToMoveSet = false
 
         game.metaData.blackName = sgfNode.getOptionalPropertyValue("PB")
         game.metaData.blackRank = sgfNode.getOptionalPropertyValue("BR")
@@ -152,6 +151,7 @@ class SGFReader {
         if (toPlay != null) {
             game.currentNode.colorToPlay = toPlay
             game.playerToMove = game.players[toPlay]!!
+            playerToMoveSet = true
         }
 
         if (currentNode is SetupNode) {
@@ -252,6 +252,8 @@ class SGFReader {
         }
     }
 
+    var playerToMoveSet = false
+
     private fun addChildren(game: Game, sgfParent: SGFNode) {
         val fromNode = game.currentNode
         var passNode: PassNode? = null
@@ -260,6 +262,13 @@ class SGFReader {
             game.rewindTo(fromNode) // Will do nothing for the first child in the list
 
             val gameNode = createGameNode(game, sgfChild)
+
+            // If the "PL" property wasn't specified, then this is how we set playerToMove
+            if (gameNode is MoveNode && fromNode === game.root && !playerToMoveSet) {
+                playerToMoveSet = true
+                game.playerToMove = game.players[gameNode.color]!!
+            }
+
             if (gameNode is MoveNode && fromNode is MoveNode && gameNode.color == fromNode.color) {
                 // The same player has moved again, so add an extra Pass node
                 // But only add ONE pass node, if there are many variations after the pass.
