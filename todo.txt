@@ -5,6 +5,7 @@ Bugs
 		We'd need to change how taken stones are returned. As a list of lists, rather than one big list.
 
 Current Task - HiddenMoveGo
+	Display messages - 
 	Check for stones with no liberties at the start of the game - rare!
 		What if two pon nukis take each other? Take both of them.
 		Place all stones, check for liberties, and remember those to remove in a single list

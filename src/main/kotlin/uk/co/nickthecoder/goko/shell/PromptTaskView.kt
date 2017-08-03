@@ -73,7 +73,8 @@ open class PromptTaskView(val task: Task, mainWindow: MainWindow) : TopLevelView
     }
 
     protected open fun onOk() {
-        taskForm.check()
-        task.run()
+        if (taskForm.check()) {
+            task.run()
+        }
     }
 }

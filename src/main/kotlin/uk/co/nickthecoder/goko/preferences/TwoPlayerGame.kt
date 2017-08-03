@@ -36,8 +36,8 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
 
     val whitePlayerP = StringParameter("whiteName", label = "Whites's Name", required = false, value = "Mister White")
 
-    val hiddenMovesBlackP = IntParameter("hiddenMovesBlack", value = 3)
-    val hiddenMovesWhiteP = IntParameter("hiddenMovesWhite", value = 3)
+    val hiddenMovesBlackP = IntParameter("hiddenMovesBlack", value = 3, range = 1..30)
+    val hiddenMovesWhiteP = IntParameter("hiddenMovesWhite", value = 3, range = 1..30)
 
     init {
         taskD.addParameters(boardSizeP, blackPlayerP, whitePlayerP, handicapP,
@@ -53,7 +53,6 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
 
             handicapP.hidden = isHiddenMoveGo
             fixedHandicapPointsP.hidden = isHiddenMoveGo
-            handicapP.value = 0
         }
     }
 
