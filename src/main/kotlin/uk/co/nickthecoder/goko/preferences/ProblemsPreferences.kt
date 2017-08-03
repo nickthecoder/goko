@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.preferences
 
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
 import javafx.stage.Stage
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
@@ -25,16 +27,13 @@ import uk.co.nickthecoder.paratask.parameters.BooleanParameter
 import uk.co.nickthecoder.paratask.parameters.ButtonParameter
 import uk.co.nickthecoder.paratask.parameters.FileParameter
 import uk.co.nickthecoder.paratask.project.TaskPrompter
-import uk.co.nickthecoder.paratask.util.currentDirectory
-import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.Alert
 
 
 class ProblemsPreferences : AbstractTask(), CommentsPreferences {
 
     override val taskD = TaskDescription("problems")
 
-    val directoryP = FileParameter("directory", expectFile = false, value = currentDirectory, required = false)
+    val directoryP = FileParameter("directory", expectFile = false, value = null, required = false)
     val showBranchesP = BooleanParameter("showBranches", value = true)
     val automaticOpponentP = BooleanParameter("automaticOpponent", value = true, description = "The computer can play the 2nd player's moves")
     override val showNodeAnnotationsP = BooleanParameter(name = "showNodeAnnotations", value = true)

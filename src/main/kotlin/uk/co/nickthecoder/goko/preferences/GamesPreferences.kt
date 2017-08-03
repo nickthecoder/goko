@@ -50,6 +50,24 @@ Add your favourite types of games to the Home page.
     override fun run() {
         Preferences.save()
     }
+
+    /**
+     * If there are no games defined, create a few default ones.
+     */
+    fun ensureGamesExist() {
+        if (gamesP.value.size == 0) {
+            createGame("Man vs Machine", ManVersesMachine())
+            createGame("Challenge", ChallengeMatch())
+            createGame("Two Player", TwoPlayerGame())
+        }
+    }
+
+    private fun createGame(label: String, task: Task) {
+        val compound: CompoundParameter = gamesP.newValue().value
+        (compound.find("label") as StringParameter).value = label
+        (compound.find("type") as TaskParameter).value = task
+    }
+
 }
 
 class GameTypeFactory : TaskFactory {

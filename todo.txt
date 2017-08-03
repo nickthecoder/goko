@@ -1,19 +1,8 @@
 
 Bugs                                                                                                                                      
-	Hidden Move Go doesn't support Kos properly, because the hashing HIDDEN_WHITE and WHITE
 
 Current Task - HiddenMoveGo
 	Display messages - 
-	Check for stones with no liberties at the start of the game - rare!
-		What if two pon nukis take each other? Take both of them.
-		Place all stones, check for liberties, and remember those to remove in a single list
-		Remove the dead stones after all liberties are checked.
-
-	Don't allow undo/redo while playing hidden move go.
-	Prevent "Review" and Score etc
-
-Allow downloading of unzipped files such as :
-	https://github.com/mango314/scrapeGo
 
 Use GnuGo to check Go Problem solutions.
 	Click "Defend", then the group to defend

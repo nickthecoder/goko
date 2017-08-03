@@ -33,6 +33,8 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0), PreferencesLis
     override val viewStyle = "home"
 
     init {
+        Preferences.gamesPreferences.ensureGamesExist()
+
         Preferences.listeners.add(this)
     }
 
@@ -69,9 +71,9 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0), PreferencesLis
                 }
             })
             add(createButton("Joseki Dictionary", "joseki") {
-                val joseki = Preferences.josekiDirectionary
-                if (joseki != null) {
-                    JosekiView(mainWindow, joseki)
+                val josekiFile = Preferences.josekiDirectionary
+                if (josekiFile != null) {
+                    JosekiView(mainWindow, josekiFile)
                 } else {
                     PreferencesView(mainWindow, Preferences.josekiPreferences)
                 }
