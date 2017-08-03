@@ -64,10 +64,15 @@ class TimedLimit(
         overtimePeriods: Int = 0) : TimeLimit {
 
     val descriptionP = StringParameter("description", value = description)
+
     val mainPeriodP = ScaledDoubleParameter("mainPeriod", value = ScaledValue(mainPeriod, mainScale), scales = timeScales)
+
     val byoYomiPeriodP = ScaledDoubleParameter("byoYomiPeriod", value = ScaledValue(byoYomiPeriod, byoYomiScale), scales = timeScales)
+
     val byoYomiMovesP = IntParameter("byoYomiMoves", value = byoYomiMoves)
+
     val overtimePeriodP = ScaledDoubleParameter("overtimePeriod", value = ScaledValue(overtimePeriod, overtimeScale), scales = timeScales)
+
     val overtimePeriodsP = IntParameter("overtimePeriods", value = overtimePeriods)
 
     val compound = CompoundParameter("timePeriod")

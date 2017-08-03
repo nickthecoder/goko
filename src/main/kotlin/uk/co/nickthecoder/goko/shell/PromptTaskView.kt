@@ -32,49 +32,12 @@ open class PromptTaskView(val task: Task, mainWindow: MainWindow) : TopLevelView
 
     override val title = task.taskD.label
 
-    val borderPane = BorderPane()
-
-    override val node: Node = borderPane
-
     val taskForm = TaskForm(task)
 
-    private val buttons = FlowPane()
-
-    val okButton = Button("Ok")
-
-    val cancelButton = Button("Cancel")
+    override val node: Node = taskForm.scrollPane
 
     override fun build() {
-        with(borderPane) {
-            styleClass.add("prompt")
-            center = taskForm.scrollPane
-            bottom = buttons
-        }
 
-        with(cancelButton) {
-            cancelButton.onAction = EventHandler { onCancel() }
-            cancelButton.isCancelButton = true
-        }
-
-        with(okButton) {
-            okButton.onAction = EventHandler { onOk() }
-            okButton.isDefaultButton = true
-        }
-
-
-        with(buttons) {
-            children.addAll(okButton, cancelButton)
-            styleClass.add("buttons")
-        }
     }
 
-    private fun onCancel() {
-        mainWindow.remove(this)
-    }
-
-    protected open fun onOk() {
-        if (taskForm.check()) {
-            task.run()
-        }
-    }
 }
