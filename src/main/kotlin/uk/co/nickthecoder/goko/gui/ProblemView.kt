@@ -18,12 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.gui
 
+import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.scene.control.*
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
+import uk.co.nickthecoder.goko.ProblemAnalyser
 import uk.co.nickthecoder.goko.ProblemOpponent
 import uk.co.nickthecoder.goko.ProblemPlayer
 import uk.co.nickthecoder.goko.model.*
@@ -49,6 +51,9 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
     val secondPlayer = ProblemOpponent(game, firstPlayer.color.opposite())
 
     val shortcuts = ShortcutHelper("ProblemView", node)
+
+    lateinit var analyser: ProblemAnalyser
+
 
     init {
         game.addPlayer(firstPlayer)
@@ -77,11 +82,19 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         val preferencesB = GoKoActions.PREFERENCES.createButton { onPreferences() }
         val restartB = GoKoActions.PROBLEM_RESTART.createButton { onRestart() }
         val giveUpB = GoKoActions.PROBLEM_GIVE_UP.createButton(shortcuts) { onGiveUp() }
+        // val hintB = GoKoActions.PROBLEM_HINT.createButton(shortcuts) { onHint() }
 
-        toolBar.items.addAll(preferencesB, restartB, giveUpB, reviewB, passB)
+        toolBar.items.addAll(preferencesB, restartB, giveUpB, reviewB, passB, hintB)
 
         // TODO Is this really needed?
         game.apply(game.root)
+
+        Platform.runLater {
+            analyser = ProblemAnalyser(game, { point ->
+                println("Hint point $point")
+                game.addMark(CircleMark(point))
+            })
+        }
     }
 
     override fun tidyUp() {
@@ -197,5 +210,9 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
 
     override fun gameMessage(message: String) {
         commentsView.message(message)
+    }
+
+    override fun onHint() {
+        analyser?.hint()
     }
 }

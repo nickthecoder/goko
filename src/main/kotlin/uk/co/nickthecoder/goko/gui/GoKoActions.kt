@@ -72,6 +72,7 @@ object GoKoActions {
     val PROBLEM_RESTART = GoKoAction("problem-reload", KeyCode.F5, control = true, tooltip = "Restart Problem")
     val PROBLEM_GIVE_UP = GoKoAction("problem-give-up", null, label = "Give Up", tooltip = "Give Up and show the solution")
     val PROBLEM_NEXT = GoKoAction("problem-next", KeyCode.RIGHT, alt = true, tooltip = "Next problem")
+    val PROBLEM_HINT = GoKoAction("problem-hint", null, tooltip = "Ask GnuGo what you should do. Cheat!")
 
 
     fun add(action: GoKoAction) {

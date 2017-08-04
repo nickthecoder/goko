@@ -105,6 +105,16 @@ class GnuGo(val game: Game, val level: Int) : GameListener {
         generatedMove = true
     }
 
+    fun attack(point: Point, client: GnuGoClient) {
+        val handler = AttackDefendHandler(client)
+        command("attack $point", handler)
+    }
+
+    fun defend(point: Point, client: GnuGoClient) {
+        val handler = AttackDefendHandler(client)
+        command("defend $point", handler)
+    }
+
     fun addStone(color: StoneColor, point: Point) {
         command("play ${color.toString().toLowerCase()} $point", NullReplyHandler())
     }
@@ -175,6 +185,11 @@ class GnuGo(val game: Game, val level: Int) : GameListener {
         // code, and therefore, we do not want to resend the final_status commands.
         val handler = FinalScoreHandler(client, this)
         command("final_score", handler)
+    }
+
+    fun isSurrounded(point: Point, client: GnuGoClient) {
+        val handler = IsSurroundedHandler(point, client)
+        command("is_surrounded $point", handler)
     }
 
     @Synchronized
@@ -411,6 +426,31 @@ private class InfluenceHandler(client: GnuGoClient, val gnuGo: GnuGo) : ReplyHan
         y++
         if (y == gnuGo.game.board.size) {
             client?.influenceResults(results)
+        }
+    }
+}
+
+private class IsSurroundedHandler(val point: Point, client: GnuGoClient) : ReplyHandler(client) {
+
+    override fun parseReply(reply: String) {
+        client?.surroundedResults(point, reply.toInt())
+    }
+}
+
+private class AttackDefendHandler(client: GnuGoClient) : ReplyHandler(client) {
+
+    override fun parseReply(reply: String) {
+        val values = reply.trim().split(" ")
+        if (values.size > 1) {
+            println("Attack/Defend ${values[1]}")
+            if (values[1] == "PASS") {
+                client?.attackOrDefend(null)
+            } else {
+                client?.attackOrDefend(Point.fromString(values[1]))
+            }
+        } else {
+            println("Attack/Defend null")
+            client?.attackOrDefend(null)
         }
     }
 }

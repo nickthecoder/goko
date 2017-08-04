@@ -29,4 +29,6 @@ interface GnuGoClient {
     fun estimateScoreResults(score: String) {}
     fun pointStatus(point: Point, status: String) {}
     fun influenceResults(results: List<List<Double>>) {}
+    fun surroundedResults(point: Point, value: Int) {}
+    fun attackOrDefend(point: Point?) {}
 }

@@ -123,7 +123,7 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
         }
     }
 
-    fun onHint() {
+    open fun onHint() {
         if (game.variation.allowHelp) {
             HintGenerator(game).hint()
         }
