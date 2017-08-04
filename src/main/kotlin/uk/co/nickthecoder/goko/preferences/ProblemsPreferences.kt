@@ -23,10 +23,10 @@ import javafx.scene.control.Alert.AlertType
 import javafx.stage.Stage
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
+import uk.co.nickthecoder.paratask.gui.TaskPrompter
 import uk.co.nickthecoder.paratask.parameters.BooleanParameter
 import uk.co.nickthecoder.paratask.parameters.ButtonParameter
 import uk.co.nickthecoder.paratask.parameters.FileParameter
-import uk.co.nickthecoder.paratask.project.TaskPrompter
 
 
 class ProblemsPreferences : AbstractTask(), CommentsPreferences {

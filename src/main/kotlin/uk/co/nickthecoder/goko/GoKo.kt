@@ -25,7 +25,7 @@ import javafx.scene.media.AudioClip
 import javafx.stage.Stage
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.preferences.Preferences
-import uk.co.nickthecoder.paratask.ParaTaskApp
+import uk.co.nickthecoder.paratask.ParaTask
 import uk.co.nickthecoder.paratask.util.AutoExit
 import java.io.InputStream
 
@@ -49,7 +49,7 @@ class GoKo : Application() {
 
         fun style(scene: Scene) {
             val goko = GoKo::class.java.getResource("goko.css")
-            val paratask = ParaTaskApp::class.java.getResource("paratask.css")
+            val paratask = ParaTask::class.java.getResource("paratask.css")
             scene.stylesheets.add(goko.toExternalForm())
             scene.stylesheets.add(paratask.toExternalForm())
         }

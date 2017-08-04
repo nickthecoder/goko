@@ -30,7 +30,7 @@ import uk.co.nickthecoder.goko.preferences.PreferencesListener
 import uk.co.nickthecoder.goko.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.gui.CompoundButtons
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
-import uk.co.nickthecoder.paratask.project.TaskPrompter
+import uk.co.nickthecoder.paratask.gui.TaskPrompter
 
 class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWindow, game), PreferencesListener {
 

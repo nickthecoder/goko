@@ -46,3 +46,8 @@ Now download and compile goko :
 Run
 ---
 
+    cd goko/build/install/goko
+    bin/goko
+    
+    (or bin/goko/bat for Windows)
+

@@ -25,7 +25,7 @@ import javafx.stage.Stage
 import uk.co.nickthecoder.goko.*
 import uk.co.nickthecoder.goko.model.*
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
-import uk.co.nickthecoder.paratask.project.TaskPrompter
+import uk.co.nickthecoder.paratask.gui.TaskPrompter
 
 /**
  * Base class for views which have a toolbar
