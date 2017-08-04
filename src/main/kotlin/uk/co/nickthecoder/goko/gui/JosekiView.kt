@@ -92,4 +92,7 @@ class JosekiView(mainWindow: MainWindow, josekiDatabase: File)
         update()
     }
 
+    override fun gameMessage(message: String) {
+        commentsView.message(message)
+    }
 }

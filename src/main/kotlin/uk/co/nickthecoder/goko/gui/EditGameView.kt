@@ -221,10 +221,6 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         }
     }
 
-    override fun showScore(score: String) {
-        gameInfoView.messageLabel.text = score
-    }
-
     fun buildBranchesMenu() {
         with(branchesButton) {
             items.clear()
@@ -280,5 +276,9 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     fun onDeleteBranch() {
         val prompter = TaskPrompter(DeleteBranchTask(game))
         prompter.placeOnStage(Stage())
+    }
+
+    override fun gameMessage(message: String) {
+        gameInfoView.message(message)
     }
 }

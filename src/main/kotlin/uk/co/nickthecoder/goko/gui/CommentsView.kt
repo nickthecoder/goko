@@ -35,19 +35,26 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
 
     override val node = whole
 
-    val nameC = TextField()
+    private val nameC = TextField()
 
-    val commentC = TextArea()
+    private val commentC = TextArea()
 
-    val passedLabel = Label("Passed")
+    private val passedLabel = Label("Passed")
 
-    val moveAnnotationsPane = FlowPane()
+    private val moveAnnotationsPane = FlowPane()
 
-    val nodeAnnotationsPane = FlowPane()
+    private val nodeAnnotationsPane = FlowPane()
 
-    val moveAnnotationButtons = mutableMapOf<MoveAnnotation, ToggleButton>()
+    private val moveAnnotationButtons = mutableMapOf<MoveAnnotation, ToggleButton>()
 
-    val nodeAnnotationButtons = mutableMapOf<NodeAnnotation, Button>()
+    private val nodeAnnotationButtons = mutableMapOf<NodeAnnotation, Button>()
+
+    /**
+     * Note, this class does NOT listen for gameMessage events directly, the PlayingView/EditGameView etc does,
+     * and may forward the message here. This is because EditGameView has two parts, both of which are capable of
+     * displaying messages, and only ONE of them should.
+     */
+    private val messageLabel = Label()
 
     override fun build() {
 
@@ -109,7 +116,10 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
             styleClass.add("passed")
         }
 
-        whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, passedLabel, nodeAnnotationsPane, moveAnnotationsPane)
+        messageLabel.styleClass.add("message")
+        messageLabel.isWrapText = true
+
+        whole.children.addAll(Label("Node"), nameC, Label("Comment"), commentC, passedLabel, nodeAnnotationsPane, moveAnnotationsPane, messageLabel)
 
         update()
         game.listeners.add(this)
@@ -220,5 +230,9 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
 
     override fun preferencesChanged() {
         update()
+    }
+
+    fun message(message: String) {
+        messageLabel.text = message
     }
 }

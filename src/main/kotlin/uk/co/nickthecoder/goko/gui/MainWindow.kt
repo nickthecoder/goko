@@ -38,6 +38,7 @@ class MainWindow(val stage: Stage) {
     init {
         stage.title = "GoKo"
         val home = Home(this)
+        home.build()
         addView(home)
 
         whole.center = tabs
@@ -72,7 +73,6 @@ class MainWindow(val stage: Stage) {
     }
 
     fun addView(view: TopLevelView, index: Int = -1, selectTab: Boolean = true) {
-        view.build()
         val tab = ViewTab(view)
         if (index < 0) {
             tabs.add(tab)

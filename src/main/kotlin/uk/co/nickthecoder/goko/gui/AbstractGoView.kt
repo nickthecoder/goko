@@ -139,14 +139,12 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
                 VisualiseHotspots(game, boardView.visualisation).visualise()
             }
             if (estimateScoreB.isSelected) {
-                ScoreEstimator(game).score { showScore(it) }
+                ScoreEstimator(game).score { gameMessage("Score ≈ $it") }
                 VisualiseTerritory(game, StoneColor.WHITE, boardView.visualisation).visualise()
                 VisualiseTerritory(game, StoneColor.BLACK, boardView.visualisation).visualise()
             }
         }
     }
-
-    open fun showScore(score: String) {}
 
     private fun update() {
         showVisualisations()

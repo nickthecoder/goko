@@ -91,7 +91,9 @@ abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) 
             style?.let { styleClass.add(it) }
             wrapTextProperty().value = true
             addEventHandler(ActionEvent.ACTION) {
-                mainWindow.addView(viewFactory())
+                val view = viewFactory()
+                view.build()
+                mainWindow.addView(view)
             }
             prefHeight = buttonSize
             prefWidth = buttonSize

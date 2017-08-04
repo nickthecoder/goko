@@ -50,6 +50,8 @@ enum class StoneColor(val isAStone: Boolean, val isLiberty: Boolean, val isClick
         return this
     }
 
+    fun humanString() : String = toString().toLowerCase().capitalize()
+
     companion object {
         fun opposite(color: StoneColor) = if (color == WHITE) BLACK else WHITE
     }

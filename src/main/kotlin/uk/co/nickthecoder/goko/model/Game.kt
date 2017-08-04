@@ -158,9 +158,15 @@ class Game(size: Int) {
 
     var autoPlay: Boolean = true
 
-    internal fun nodeChanged(node: GameNode) {
+    fun nodeChanged(node: GameNode) {
         listeners.forEach {
             it.nodeChanged(node)
+        }
+    }
+
+    fun message(message: String) {
+        listeners.forEach {
+            it.gameMessage(message)
         }
     }
 

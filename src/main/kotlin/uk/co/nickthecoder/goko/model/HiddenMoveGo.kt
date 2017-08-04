@@ -29,6 +29,7 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
         game.playerToMove = game.players[StoneColor.BLACK]!!
         game.playerToMove.yourTurn()
         game.listeners.add(this)
+        placeHiddenMovesMessage(StoneColor.BLACK)
     }
 
     override fun canPlayAt(point: Point?): Boolean {
@@ -53,6 +54,7 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
                     val color = board.getStoneAt(point)
                     if (color == StoneColor.HIDDEN_BLACK || color == StoneColor.HIDDEN_WHITE) {
                         reveal(color.realColor(), point)
+                        game.message("That point is a hidden move. Try again.")
                         return false
                     }
 
@@ -62,6 +64,7 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
                         reveal(StoneColor.NONE, point)
                     }
 
+                    game.message("")
                     return result
                 }
             }
@@ -71,7 +74,7 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
     /**
      * Make a move at point, or null for a pass.
      */
-    override fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean): String? {
+    override fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean) {
 
         if (state == State.NORMAL) {
 
@@ -84,7 +87,8 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
         } else {
 
             if (point == null) {
-                return endOfOneColorSetup()
+                endOfOneColorSetup()
+                return
             } else {
                 val list = if (color == StoneColor.BLACK) hiddenBlackMoves else hiddenWhiteMoves
 
@@ -95,26 +99,49 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
                     list.remove(point)
                     game.removeMark(point)
                 }
+                setupMessage(color)
             }
 
         }
-        return null
 
     }
 
-    private fun endOfOneColorSetup(): String? {
+    private fun setupMessage(color: StoneColor) {
+        val colorString = color.toString().toLowerCase().capitalize()
+        val diff = if (color == StoneColor.BLACK) {
+            hiddenMoveCountBlack - hiddenBlackMoves.size
+        } else {
+            hiddenMoveCountWhite - hiddenWhiteMoves.size
+        }
+        if (diff > 0) {
+            game.message("$colorString to make $diff more hidden moves, and then pass.")
+        } else if (diff < 0) {
+            game.message("$colorString to remove ${-diff} hidden moves, and then pass.")
+        } else {
+            game.message("$colorString may now pass or rearrange the hidden moves.")
+        }
+    }
+
+    private fun placeHiddenMovesMessage(color: StoneColor) {
+        game.message("${color.humanString()} to make $hiddenMoveCountBlack hidden moves, and then pass.")
+    }
+
+    private fun endOfOneColorSetup() {
 
         if (state == State.HIDDEN_BLACK) {
             if (hiddenBlackMoves.size != hiddenMoveCountBlack) {
-                return "You must play $hiddenMoveCountBlack before passing"
+                setupMessage(StoneColor.BLACK)
+                return
             }
             state = State.HIDDEN_WHITE
             game.playerToMove = game.players[StoneColor.WHITE]!!
+            placeHiddenMovesMessage(StoneColor.WHITE)
             // This is a little bit of a bodge. It allows views to change mouse color.
 
         } else {
             if (hiddenWhiteMoves.size != hiddenMoveCountWhite) {
-                return "You must play $hiddenMoveCountWhite before passing"
+                setupMessage(StoneColor.WHITE)
+                return
             }
             state = State.NORMAL
             game.playerToMove = game.players[StoneColor.BLACK]!!
@@ -129,7 +156,6 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
         game.nodeChanged(game.root)
         game.playerToMove.yourTurn()
 
-        return null
     }
 
     private fun endSetup() {
@@ -176,6 +202,7 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
         }
 
         game.root.name = "Hidden Moves"
+        game.message("Let the game begin!")
     }
 
 

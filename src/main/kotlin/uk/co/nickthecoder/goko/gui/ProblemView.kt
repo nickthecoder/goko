@@ -187,4 +187,8 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
             return button
         }
     }
+
+    override fun gameMessage(message: String) {
+        commentsView.message(message)
+    }
 }

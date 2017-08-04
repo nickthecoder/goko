@@ -216,7 +216,7 @@
     -fx-padding: 12px 0 0 0;
 }
 
-.game-result {
+.message {
     -fx-padding: 30px 0 0 0;
     -fx-font-size: 120%;
 }

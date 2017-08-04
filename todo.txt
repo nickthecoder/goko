@@ -8,6 +8,14 @@ Use GnuGo to check Go Problem solutions.
 	Click "Defend", then the group to defend
 	of "Attack" and then the group to attack
 
+Option to split compounded go problems into one game per file format.
+
+Automatic go problem solver using GnuGo.
+	Find which color is to play first. Choose a stone of that color closest to its center of gravity.
+	Ask GnuGo if the dragon is surrounded.
+		Yes. That player is told to DEFEND that dragon, the opponent is told to ATTACK it
+		No. Find the center (ish) stone of the other color, and tell it to ATTACK it. Opponent is told to defend it.
+
 From EditGameView, continue a game against GnuGo.
 
 Add images to the GoKo wiki page.

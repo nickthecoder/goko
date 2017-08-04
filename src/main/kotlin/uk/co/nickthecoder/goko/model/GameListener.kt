@@ -26,9 +26,9 @@ import uk.co.nickthecoder.goko.Player
  */
 interface GameListener {
 
-    fun madeMove( gameNode : GameNode ) {}
+    fun madeMove(gameNode: GameNode) {}
 
-    fun undoneMove( gameNode : GameNode ) {}
+    fun undoneMove(gameNode: GameNode) {}
 
     fun addedMark(mark: Mark) {}
 
@@ -50,4 +50,5 @@ interface GameListener {
      */
     fun nodeChanged(node: GameNode) {}
 
+    fun gameMessage(message: String) {}
 }

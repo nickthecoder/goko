@@ -58,8 +58,8 @@ open class PlayingView(mainWindow: MainWindow, game: Game, val allowUndo: Boolea
         gameInfoView.tidyUp()
     }
 
-    override fun showScore(score: String) {
-        gameInfoView.messageLabel.text = score
+    override fun gameMessage(message: String) {
+        gameInfoView.message(message)
     }
 
 }

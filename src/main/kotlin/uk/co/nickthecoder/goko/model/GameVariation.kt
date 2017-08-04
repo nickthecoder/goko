@@ -18,7 +18,7 @@ interface GameVariation {
      * Make a move at point, or null for a pass.
      * Optional message is returned
      */
-    fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean = true): String?
+    fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean = true)
 
     fun capturedStones(colorCaptured: StoneColor, points: Set<Point>) {}
 

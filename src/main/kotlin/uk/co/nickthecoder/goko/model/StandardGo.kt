@@ -41,7 +41,7 @@ open class StandardGo(val game: Game) : GameVariation {
     /**
      * Make a move at point, or null for a pass.
      */
-    override fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean): String? {
+    override fun makeMove(point: Point?, color: StoneColor, onMainLine: Boolean) {
 
         if (freeHandicaps > 0) {
             if (game.currentNode != game.root) {
@@ -63,7 +63,7 @@ open class StandardGo(val game: Game) : GameVariation {
                     it.nodeChanged(game.root)
                 }
             }
-            return null
+            return
         }
 
         if (point == null) {
@@ -71,7 +71,7 @@ open class StandardGo(val game: Game) : GameVariation {
         } else {
             game.move(point, color, onMainLine)
         }
-        return null
+
     }
 
     fun placeFixedHandicap() {

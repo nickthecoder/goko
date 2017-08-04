@@ -64,6 +64,7 @@ abstract class AbstractGamePreferences : AbstractTask() {
         initialiseGame(game)
 
         game.metaData.enteredBy = "GoKo"
+        view.build()
         game.start()
         return view
     }

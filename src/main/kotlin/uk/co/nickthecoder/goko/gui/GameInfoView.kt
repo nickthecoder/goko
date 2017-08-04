@@ -33,32 +33,35 @@ import java.util.*
  */
 class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListener {
 
-    val vBox = VBox()
+    private val vBox = VBox()
 
-    var countdown: Countdown? = null
+    private var countdown: Countdown? = null
 
     override val node = vBox
 
-    val bPlayer = Label()
-    val wPlayer = Label()
+    private val bPlayer = Label()
+    private val wPlayer = Label()
 
-    val bTime = Label()
-    val wTime = Label()
+    private val bTime = Label()
+    private val wTime = Label()
 
-    val blackCapturesLabel = Label()
-    val whiteCapturesLabel = Label()
-    val handicapLabel = Label()
-    val komiLabel = Label()
-    val gameResultLabel = Label()
-    val messageLabel = Label()
+    private val blackCapturesLabel = Label()
+    private val whiteCapturesLabel = Label()
+    private val handicapLabel = Label()
+    private val komiLabel = Label()
+
+    /**
+     * Note, this class does NOT listen for gameMessage events directly, the PlayingView/EditGameView etc does,
+     * and may forward the message here. This is because EditGameView has two parts, both of which are capable of
+     * displaying messages, and only ONE of them should.
+     */
+    private val messageLabel = Label()
 
     init {
         game.listeners.add(this)
     }
 
     override fun build() {
-
-        gameResultLabel.isWrapText = true
 
         with(vBox) {
             styleClass.add("game-info")
@@ -69,8 +72,7 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         bPlayer.styleClass.add("heading")
         wPlayer.styleClass.add("heading")
 
-        gameResultLabel.styleClass.add("game-result")
-
+        messageLabel.styleClass.add("message")
         messageLabel.isWrapText = true
 
         vBox.children.addAll(bPlayer, handicapLabel, blackCapturesLabel)
@@ -108,7 +110,6 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
                 countdown?.start()
             }
         }
-        gameResultLabel.text = ""
         messageLabel.text = ""
         updateCaptures()
     }
@@ -144,10 +145,7 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
     }
 
     override fun gameEnded(winner: Player?) {
-        if (gameResultLabel.parent == null) {
-            vBox.children.add(gameResultLabel)
-        }
-        gameResultLabel.text = "Game Result : ${game.metaData.result}"
+        message("Game Result : ${game.metaData.result}")
         stopCountdown()
     }
 
@@ -270,5 +268,8 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         }
 
     }
-}
 
+    fun message(message: String) {
+        messageLabel.text = message
+    }
+}
