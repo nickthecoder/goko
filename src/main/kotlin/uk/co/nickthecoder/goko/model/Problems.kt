@@ -43,7 +43,7 @@ object Problems {
 
             var page = 0
             do {
-                var label = if (dir.parentFile != topDirectory && isRedundantDirectory(dir)) {
+                val label = if (dir.parentFile != topDirectory && isRedundantDirectory(dir)) {
                     dir.parentFile.path.substring(topDirectory.path.length + 1).replace(File.separatorChar, ' ')
                 } else {
                     dir.path.substring(topDirectory.path.length + 1).replace(File.separatorChar, ' ')
@@ -88,24 +88,31 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
 
     init {
         val lister = FileLister(extensions = listOf("sgf"))
-        val list = lister.listFiles(directory)
+        var list = lister.listFiles(directory)
 
-        val count: Int
+        var count: Int = 0
 
         if (list.size == 1) {
             // Lets assume that the sgf file contains multiple games
             val reader = SGFReader(list[0])
             val games = reader.readMultipleGames()
             count = games.size
-            var previousProblem: ProblemWithinCompoundFile? = null
-            for (i in (page * Problems.pageSize)..(-1 + Math.min((page + 1) * Problems.pageSize, games.size))) {
-                val problem = ProblemWithinCompoundFile(this, list[0], i)
-                problems[problem.label] = problem
-                previousProblem?.nextProblem = problem
-                previousProblem = problem
-            }
+            if (count > 1 && Preferences.problemsPreferences.splitP.value == true) {
+                splitProblems(list[0], games)
+                list = lister.listFiles(directory)
 
-        } else {
+            } else {
+                var previousProblem: ProblemWithinCompoundFile? = null
+                for (i in (page * Problems.pageSize)..(-1 + Math.min((page + 1) * Problems.pageSize, games.size))) {
+                    val problem = ProblemWithinCompoundFile(this, list[0], i)
+                    problems[problem.label] = problem
+                    previousProblem?.nextProblem = problem
+                    previousProblem = problem
+                }
+            }
+        }
+
+        if (list.size != 1) {
             // Read only one game from each sgf file
             count = list.size
             for (i in (page * Problems.pageSize)..(-1 + Math.min((page + 1) * Problems.pageSize, list.size))) {
@@ -121,6 +128,19 @@ class ProblemSet(directory: File, page: Int = 0, label: String) {
         }
         loadResults()
     }
+
+    fun splitProblems(file: File, games: List<Game>) {
+        val name = file.nameWithoutExtension
+        var i = 1
+        games.forEach { game ->
+            val newFile = File(file.parentFile, "$name-${i.toString().padStart(4, '0')}.sgf")
+            val writer = SGFWriter(newFile)
+            writer.write(game)
+            i++
+        }
+        file.renameTo(File(file.parentFile, file.name + ".bk"))
+    }
+
 
     fun resultsFile(): File = File(Preferences.problemResultsDirectory, "$label.json")
 

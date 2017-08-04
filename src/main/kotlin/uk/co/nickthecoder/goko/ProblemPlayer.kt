@@ -24,12 +24,20 @@ import uk.co.nickthecoder.goko.model.StoneColor
 
 class ProblemPlayer(game: Game, color: StoneColor) : LocalPlayer(game, color) {
 
+    val offPisteComment = """Hmm, that move is not not part of the solution.
+
+Maybe the Go Problem doesn't contain solutions.
+
+Maybe you've found an alternate solution,
+
+Or maybe you just got it wrong ;-)
+"""
     override fun makeMove(point: Point, onMainLine: Boolean) {
         val node = game.currentNode
         val count = node.children.size
         super.makeMove(point, onMainLine)
         if (node.children.size != count) {
-            game.currentNode.comment = "Hmm, that move's not not part of the solution!"
+            game.currentNode.comment = offPisteComment
             game.nodeChanged(game.currentNode)
         }
     }
@@ -39,7 +47,7 @@ class ProblemPlayer(game: Game, color: StoneColor) : LocalPlayer(game, color) {
         val count = node.children.size
         super.pass(onMainLine)
         if (node.children.size != count) {
-            game.currentNode.comment = "Hmm, You passed? That's not part of the solution!"
+            game.currentNode.comment = offPisteComment
             game.nodeChanged(game.currentNode)
         }
     }

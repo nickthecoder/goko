@@ -74,7 +74,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
         commentsView.build()
         problemResults.build()
 
-        val preferencesB = GoKoActions.PREFERENCES.createButton { mainWindow.addView(PreferencesView(mainWindow, Preferences.problemsPreferences)) }
+        val preferencesB = GoKoActions.PREFERENCES.createButton { onPreferences() }
         val restartB = GoKoActions.PROBLEM_RESTART.createButton { onRestart() }
         val giveUpB = GoKoActions.PROBLEM_GIVE_UP.createButton(shortcuts) { onGiveUp() }
 
@@ -109,6 +109,7 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
 
     private fun showProblem(problem: Problem, cheat: Boolean = false) {
         val view = ProblemView(mainWindow, problem, cheat)
+        view.build()
         mainWindow.changeView(view)
     }
 
@@ -140,6 +141,12 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
     override fun undoneMove(gameNode: GameNode) {
         super.undoneMove(gameNode)
         update()
+    }
+
+    fun onPreferences() {
+        val view = PreferencesView(mainWindow, Preferences.problemsPreferences)
+        view.build()
+        mainWindow.addView(view)
     }
 
     inner class ProblemResults : VBox() {

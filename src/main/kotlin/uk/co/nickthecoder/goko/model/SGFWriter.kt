@@ -81,7 +81,7 @@ class SGFWriter {
 
         writeGameMetaData()
 
-        writeNode(game.root)
+        writeNode(game.root, first = true)
 
         writer.write("\n)\n")
     }
@@ -115,9 +115,11 @@ class SGFWriter {
         writer.write("\n")
     }
 
-    private fun writeNode(node: GameNode) {
+    private fun writeNode(node: GameNode, first: Boolean = false) {
 
-        writer.write(";")
+        if (!first) {
+            writer.write(";")
+        }
         if (node is MoveNode) {
             writeMoveNode(node)
         } else if (node is PassNode) {

@@ -36,12 +36,19 @@ class ProblemsPreferences : AbstractTask(), CommentsPreferences {
     val directoryP = FileParameter("directory", expectFile = false, value = null, required = false)
     val showBranchesP = BooleanParameter("showBranches", value = true)
     val automaticOpponentP = BooleanParameter("automaticOpponent", value = true, description = "The computer can play the 2nd player's moves")
+
     override val showNodeAnnotationsP = BooleanParameter(name = "showNodeAnnotations", value = true)
     override val showMoveAnnotationsP = BooleanParameter(name = "showMoveAnnotations", value = true)
+
+    val splitP = BooleanParameter("splitIntoMultipleFiles", value = false,
+            description = """Split sgf files containing many of problems into lots of files containing a single go problem.
+This makes is quicker to load, and you can edit the problems much easier. It does take up more disk space though.
+""")
+
     val downloadP = ButtonParameter("downloadAdditionalProblems", action = { onDownload() }, buttonText = "Download")
 
     init {
-        taskD.addParameters(directoryP, showBranchesP, automaticOpponentP, showNodeAnnotationsP, showMoveAnnotationsP, downloadP)
+        taskD.addParameters(directoryP, showBranchesP, automaticOpponentP, showNodeAnnotationsP, showMoveAnnotationsP, splitP, downloadP)
     }
 
     override fun run() {

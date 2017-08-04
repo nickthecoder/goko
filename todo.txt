@@ -1,14 +1,11 @@
 
 Bugs                                                                                                                                      
 
-Current Task - HiddenMoveGo
-	Display messages - 
-
 Use GnuGo to check Go Problem solutions.
 	Click "Defend", then the group to defend
 	of "Attack" and then the group to attack
 
-Option to split compounded go problems into one game per file format.
+Option for HiddenMoveGo to let players reposition their stones if there is a conflict.
 
 Automatic go problem solver using GnuGo.
 	Find which color is to play first. Choose a stone of that color closest to its center of gravity.
