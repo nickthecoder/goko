@@ -36,14 +36,19 @@ class DownloadProblems(val problemsDirectory: File) : AbstractTask() {
         }
 
         addChoice("", "")
-        addChoice("Testing", "http://nickthecoder.co.uk/public/test.zip")
-        addChoice("Fail", "http://nickthecoder.co.uk/public/test2.zip")
         addChoice("Go Game Guru", "https://gogameguru.com/i/go-problems/download/weekly-go-problems.zip")
         addChoice("Qi Jing Zhong Miao", "http://dl.u-go.net/problems/qjzm-a.zip")
         addChoice("Xuan Xuan Qi Jing", "http://dl.u-go.net/problems/xxqj.zip")
         addChoice("Guan Zi Pu - Set 1", "http://dl.u-go.net/problems/gzp1.zip")
         addChoice("Guan Zi Pu - Set 2", "http://dl.u-go.net/problems/gzp2.zip")
         addChoice("Guan Zi Pu - Set 3", "http://dl.u-go.net/problems/gzp3.zip")
+
+        addChoice("Cho Chikun Elementary", "https://github.com/mango314/scrapeGo/raw/master/cho-1-elementary.sgf", false)
+        addChoice("Cho Chikun Intermediate", "https://github.com/mango314/scrapeGo/raw/master/cho-2-intermediate.sgf", false)
+        addChoice("Cho Chikun Advanced", "https://github.com/mango314/scrapeGo/raw/master/cho-3-advanced.sgf", false)
+        addChoice("Gokyo Shumyo", "https://github.com/mango314/scrapeGo/raw/master/gokyoshumyo.sgf", false)
+        addChoice("Hatsuyoron", "https://github.com/mango314/scrapeGo/blob/master/hatsuyoron.sgf", false)
+
     }
 
     override fun customCheck() {

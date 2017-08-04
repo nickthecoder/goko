@@ -10,8 +10,6 @@ Use GnuGo to check Go Problem solutions.
 
 From EditGameView, continue a game against GnuGo.
 
-Add some standard games when games preferences are empty.
-
 Add images to the GoKo wiki page.
 Update the README to point to the wiki page, rather than repeat the information.
 

@@ -80,6 +80,25 @@ class SGFReader {
                 game.rewindTo(game.root)
                 result.add(game)
             }
+            if (result.size == 1 && result[0].root.children.filter { it is SetupNode }.count() > 1) {
+                // There appears to be multiple games mashed together into one.
+                // AFAIK, this does not follow the spec, but there are Go problems that are formatted like this
+                // that I'd like to make use of, so here's a bodge to fix things.
+                val compound = result[0]
+                result.clear()
+
+                val count = compound.root.children.size
+                for (i in 0..count - 1) {
+                    val node = compound.root.children[i]
+                    if (node is SetupNode) {
+                        val game = Game(compound.board.size)
+                        game.root = node
+                        game.root.parent = null
+                        result.add(game)
+                    }
+                }
+
+            }
             return result
 
         } finally {
@@ -278,15 +297,15 @@ class SGFReader {
                 }
                 game.apply(passNode)
             }
-            if (gameNode is SetupNode && game.currentNode is SetupNode) {
-                // There are two setup nodes in a row, which seems pointless, so lets merge them into one node.
-                updateNode(game, sgfChild)
-                game.moveBack()
-                game.moveForward()
-            } else {
-                game.apply(game.addNode(gameNode, false))
-                updateNode(game, sgfChild)
-            }
+            //if (gameNode is SetupNode && game.currentNode is SetupNode) {
+            //    // There are two setup nodes in a row, which seems pointless, so lets merge them into one node.
+            //    updateNode(game, sgfChild)
+            //    game.moveBack()
+            //    game.moveForward()
+            //} else {
+            game.apply(game.addNode(gameNode, false))
+            updateNode(game, sgfChild)
+            //}
             addChildren(game, sgfChild)
         }
     }
