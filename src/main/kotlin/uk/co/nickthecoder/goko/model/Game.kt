@@ -396,7 +396,7 @@ class Game(size: Int) {
         dump(0, root)
     }
 
-    fun copy(): Game {
+    fun copy(sync: Boolean = false): Game {
         val baos = ByteArrayOutputStream()
         val writer = SGFWriter(baos)
 
@@ -409,6 +409,20 @@ class Game(size: Int) {
         result.file = this.file
 
         result.apply(result.root)
+
+        if (sync) {
+            val hist = mutableListOf<Int>()
+            var node: GameNode? = currentNode
+            while (node !== root && node != null) {
+                hist.add(0, node.parent!!.children.indexOf(node))
+                node = node.parent
+            }
+            hist.forEach { index ->
+                result.apply(result.currentNode.children[index])
+            }
+        }
+
         return result
+
     }
 }

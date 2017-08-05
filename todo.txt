@@ -1,13 +1,6 @@
 
-Bugs                                                                                                                                      
-
-Use GnuGo to check Go Problem solutions.
-	Click "Defend", then the group to defend
-	of "Attack" and then the group to attack
-
-Option for HiddenMoveGo to let players reposition their stones if there is a conflict.
-
-From EditGameView, continue a game against GnuGo.
+Bugs                 
+	Branches pull down doesnt updatge when moving back through game.                                                                                                                     
 
 Add images to the GoKo wiki page.
 Update the README to point to the wiki page, rather than repeat the information.
@@ -21,6 +14,8 @@ TimeLimit should be TWO classes, one for the time limit and another for the time
 	Countdown stuff only in the later.
 	Don't countdown at the end of main time if there is byomi or overtime.
 	Additional warning if this countdown will lose you the game.
+
+Option for HiddenMoveGo to let players reposition their stones if there is a conflict.
 
 Another version of Hidden Move Go. Call it Hidden Extras Moves.
 	Instead of the board actually having the hidden stones on the board, the hidden moves are just EXTRA moves,

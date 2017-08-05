@@ -66,6 +66,7 @@ object GoKoActions {
 
     val EDIT_GAME_INFO = GoKoAction("game-info", keyCode = null, label = "Game Info")
     val DELETE_BRANCH = GoKoAction("delete-branch", keyCode = null, label = "Delete Branch")
+    val GNU_GO_TO_PLAY = GoKoAction("gnu-go-to-play", keyCode = null, label = "GnuGo to Play")
 
     // ProblemView
 

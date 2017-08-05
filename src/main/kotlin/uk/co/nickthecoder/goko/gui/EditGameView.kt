@@ -23,7 +23,9 @@ import javafx.geometry.Orientation
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
+import uk.co.nickthecoder.goko.GnuGoPlayer
 import uk.co.nickthecoder.goko.GoKo
+import uk.co.nickthecoder.goko.LocalPlayer
 import uk.co.nickthecoder.goko.model.*
 import uk.co.nickthecoder.goko.preferences.Preferences
 import uk.co.nickthecoder.goko.preferences.PreferencesListener
@@ -132,10 +134,12 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         val editGameInfoB = GoKoActions.EDIT_GAME_INFO.createButton(shortcuts) { onEditGameInfo() }
         val deleteBranchB = GoKoActions.DELETE_BRANCH.createButton(shortcuts) { onDeleteBranch() }
+        val gnuGoB = GoKoActions.GNU_GO_TO_PLAY.createButton(shortcuts) { onGnuGoToPlay() }
+
 
         boardView.showBranches = Preferences.editGamePreferences.showBranchesP.value!!
 
-        toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, navigation, mainLineB, branchesButton, deleteBranchB)
+        toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, navigation, mainLineB, branchesButton, deleteBranchB, gnuGoB)
 
         val modesToggleGroup = ToggleGroup()
         with(modesToolBar) {
@@ -276,6 +280,19 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     fun onDeleteBranch() {
         val prompter = TaskPrompter(DeleteBranchTask(game))
         prompter.placeOnStage(Stage())
+    }
+
+    fun onGnuGoToPlay() {
+        val newGame = game.copy(sync = true)
+        val view = PlayingView(mainWindow, newGame)
+        val gnuGo = GnuGoPlayer(newGame, newGame.playerToMove.color)
+        val human = LocalPlayer(newGame, newGame.playerToMove.color.opposite())
+        newGame.addPlayer(gnuGo)
+        newGame.addPlayer(human)
+        view.build()
+        mainWindow.addView(view)
+        gnuGo.start()
+        gnuGo.yourTurn()
     }
 
     override fun gameMessage(message: String) {
