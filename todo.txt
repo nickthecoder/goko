@@ -7,21 +7,10 @@ Use GnuGo to check Go Problem solutions.
 
 Option for HiddenMoveGo to let players reposition their stones if there is a conflict.
 
-Automatic go problem solver using GnuGo.
-	Find which color is to play first. Choose a stone of that color closest to its center of gravity.
-	Ask GnuGo if the dragon is surrounded.
-		Yes. That player is told to DEFEND that dragon, the opponent is told to ATTACK it
-		No. Find the center (ish) stone of the other color, and tell it to ATTACK it. Opponent is told to defend it.
-
 From EditGameView, continue a game against GnuGo.
 
 Add images to the GoKo wiki page.
 Update the README to point to the wiki page, rather than repeat the information.
-
-Task to download Kogo joseki db and weekly problems
-	A button on the preferences page.
-	Copy the directory parameter value, and this time, make it required.
-	Maybe renaming them so that 100 is after 99.
 
 LocalPlayer.yourTurn should call the view to let it know that it can accept input.
 	Remove Player.canClickToPlay
@@ -33,10 +22,12 @@ TimeLimit should be TWO classes, one for the time limit and another for the time
 	Don't countdown at the end of main time if there is byomi or overtime.
 	Additional warning if this countdown will lose you the game.
 
-Hidden Move Go
-	Parameters for # of black & white stones
-	Parameter for showing your own hidden stones (As a stone with/without a mark, a mark only or not at all).
-	Parameter for revealed stones (marked or not marked).
+Another version of Hidden Move Go. Call it Hidden Extras Moves.
+	Instead of the board actually having the hidden stones on the board, the hidden moves are just EXTRA moves,
+	that a player can make. They are NOT on the board until revealed.
+	If a player clicks on a hidden move point, then the point is revealed.
+		So to use a hidden move to capture, you first click the hidden move point, then click the capture point.
+		i.e. you have an EXTRA turn.
 
 New Geometry Variation
 	StoneColor.isPlayable and isEmpty are NOT the same, when neutral points are introduced.
