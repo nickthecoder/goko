@@ -24,6 +24,9 @@ object GoKoActions {
 
     private val nameToActionMap = mutableMapOf<String, GoKoAction>()
 
+    // General
+    val ESCAPE = GoKoAction("general.escape", KeyCode.ESCAPE)
+
     // MainWindow
     val CLOSE_TAB = GoKoAction("tab.close", KeyCode.W, control = true, tooltip = "Close Tab")
 

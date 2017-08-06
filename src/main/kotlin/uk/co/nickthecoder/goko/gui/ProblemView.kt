@@ -213,6 +213,6 @@ class ProblemView(mainWindow: MainWindow, val problem: Problem, val cheat: Boole
     }
 
     override fun onHint() {
-        analyser?.hint()
+        analyser.hint()
     }
 }

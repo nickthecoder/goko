@@ -45,7 +45,7 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     val boardView = BoardView(game)
 
-    private val shortcuts = ShortcutHelper("PlayingView", whole)
+    private val shortcuts = ShortcutHelper("PlayingView", whole, filter = false)
 
     protected val passB = GoKoActions.PASS.createButton(shortcuts) { onPass() }
     protected val saveB = GoKoActions.SAVE.createButton(shortcuts) { onSave() }
@@ -72,7 +72,8 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     protected val undoB = GoKoActions.UNDO.createButton(shortcuts) { onUndo() }
 
     init {
-        GoKoActions.CHECK_GNU_GO.createButton(shortcuts) { game.createGnuGo().checkBoard() }
+        shortcuts.add(GoKoActions.CHECK_GNU_GO) { game.createGnuGo().checkBoard() }
+        shortcuts.add(GoKoActions.ESCAPE) { onEscape() }
     }
 
     override fun build() {
@@ -121,6 +122,13 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
         if (!game.playerToMove.canClickToPlay()) {
             game.moveBack()
         }
+    }
+
+    /**
+     * Remove focus from text fields, so that the arrow keys will work as normal (navigate the game tree).
+     */
+    open fun onEscape() {
+        node.requestFocus()
     }
 
     open fun onHint() {

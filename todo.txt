@@ -3,6 +3,11 @@ Bugs
 	Branches pull down doesnt update when moving back through game.
 	Challenge match didn't update its stats when I resigned (after a timed-out final status, due to a 3second timeout).
 
+	Cannot use arrow keys etc in comments field. Check if "handler" or "filter" is used for shortcuts.
+
+Add Dimmed marks
+	(reader, writer and editor)
+
 LocalPlayer.yourTurn should call the view to let it know that it can accept input.
 	Remove Player.canClickToPlay
 	LocalPlayer will need a ref to the view.
