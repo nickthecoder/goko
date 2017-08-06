@@ -50,11 +50,14 @@ class QuestionMark(point: Point) : SymbolMark(point, "question")
 
 class InfluenceMark(point: Point) : SymbolMark(point, "influence")
 
+/**
+ * Color is either BLACK or WHITE (not NONE)
+ */
 class TerritoryMark(point: Point, val color: StoneColor) : SymbolMark(point, "territory") {
 
     override fun createMarkView(): SymbolMarkView {
         val mv = super.createMarkView()
-        mv.colorWhite(color == StoneColor.WHITE)
+        mv.color(color)
         return mv
     }
 }

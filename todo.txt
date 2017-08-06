@@ -1,9 +1,7 @@
 
 Bugs                 
-	Branches pull down doesnt updatge when moving back through game.                                                                                                                     
-
-Add images to the GoKo wiki page.
-Update the README to point to the wiki page, rather than repeat the information.
+	Branches pull down doesnt update when moving back through game.
+	Challenge match didn't update its stats when I resigned (after a timed-out final status, due to a 3second timeout).
 
 LocalPlayer.yourTurn should call the view to let it know that it can accept input.
 	Remove Player.canClickToPlay
@@ -14,6 +12,11 @@ TimeLimit should be TWO classes, one for the time limit and another for the time
 	Countdown stuff only in the later.
 	Don't countdown at the end of main time if there is byomi or overtime.
 	Additional warning if this countdown will lose you the game.
+	Remove "Overtime Period", and neaten up the UI.
+
+Allow Hidden Move Go against GnuGo, but GnoGo has full info of the game (so it's one sided hidden).
+	GnuGo is asked to place free handicap stones(regardless of what color it really is)
+		Or maybe the stones are chosen for it.
 
 Option for HiddenMoveGo to let players reposition their stones if there is a conflict.
 

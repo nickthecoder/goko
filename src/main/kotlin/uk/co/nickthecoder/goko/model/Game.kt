@@ -158,9 +158,9 @@ class Game(size: Int) {
 
     var autoPlay: Boolean = true
 
-    fun nodeChanged(node: GameNode) {
+    fun nodeDataChanged() {
         listeners.forEach {
-            it.nodeChanged(node)
+            it.nodeDataChanged()
         }
     }
 
@@ -221,9 +221,7 @@ class Game(size: Int) {
         if (currentNode == root) {
             root.children.forEach { it.parent = null }
             root.children.clear()
-            listeners.forEach {
-                it.nodeChanged(root)
-            }
+            nodeDataChanged()
         } else {
             val node = currentNode
             currentNode.parent?.children?.remove(node)

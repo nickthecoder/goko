@@ -11,8 +11,11 @@ import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
 import uk.co.nickthecoder.paratask.parameters.ResourceParameter
 import uk.co.nickthecoder.paratask.parameters.StringParameter
 import uk.co.nickthecoder.paratask.util.child
+import uk.co.nickthecoder.paratask.util.process.Exec
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.net.URL
 
 class DownloadProblems(val problemsDirectory: File) : AbstractTask() {
 
@@ -64,18 +67,38 @@ class DownloadProblems(val problemsDirectory: File) : AbstractTask() {
         choicesP.addChoice(name, DownloadInfo(name, urlString, isZip), name)
     }
 
+    /**
+     * For some reason the Go Gam Guru collection returned a 403 when I try to download it directly.
+     * But wget works fine, this this tries the direct approach first, and then tries using wget.
+     * wget will surely fail on Windows, so I guess people will have to download it manually.
+     */
+    private fun openUrl(url: URL): InputStream {
+        try {
+            return url.openStream()
+        } catch (e: Exception) {
+            val exec = Exec("wget", "-q", "-O", "-", url.toString())
+            println(exec)
+            exec.outSink = null
+            exec.start()
+            println("Returning ${exec.process!!.inputStream}")
+            return exec.process!!.inputStream
+        }
+    }
+
     override fun run() {
         val directory = File(problemsDirectory, nameP.value)
         val url = urlP.value!!.url
 
         try {
-            val stream = url.openStream()
+            //val stream = url.openStream()
+            val stream = openUrl(url)
             with(stream) {
 
                 if (isZipFileP.value == true) {
+                    println("Unzipping file")
                     val unzipper = Unzipper()
                     unzipper.unzip(stream, directory)
-                    stream.close()
+                    println("Done")
 
                 } else {
                     val buffer = ByteArray(1024)

@@ -153,7 +153,7 @@ class HiddenMoveGo(val game: Game, val hiddenMoveCountBlack: Int, val hiddenMove
             endSetup()
         }
 
-        game.nodeChanged(game.root)
+        game.nodeDataChanged()
         game.playerToMove.yourTurn()
 
     }

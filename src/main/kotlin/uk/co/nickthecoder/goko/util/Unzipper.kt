@@ -25,10 +25,11 @@ class Unzipper {
         while (ze != null) {
 
             val newFile = File(outputDirectory.path + File.separator + ze.name)
+            println("File $newFile")
 
             File(newFile.parent).mkdirs()
 
-            if ( !ze.isDirectory ) {
+            if (!ze.isDirectory) {
                 val fos = FileOutputStream(newFile)
                 var len = zis.read(buffer)
                 while (len > 0) {
@@ -41,8 +42,10 @@ class Unzipper {
             ze = zis.nextEntry
         }
 
+        println( "Closing")
         zis.closeEntry()
         zis.close()
+        println( "Unzip complete")
     }
 
 }

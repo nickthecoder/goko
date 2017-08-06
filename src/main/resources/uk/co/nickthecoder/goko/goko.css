@@ -86,14 +86,22 @@
 /***********************************************************************************
     Marks
     See : https://www.w3schools.com/charsets/ref_utf_geometric.asp
+    Note. The styles .white .black and .none are the colors of the stone on which
+    the mark is placed. So a style of .white will draw the mark in black!
+    While this may be confusing at first, it does allow style .none to include a
+    background color the same as the wood color.
 *************************************************************************************/
 
 .marks > .mark {
     -fx-font-size: 100px;
-    -fx-padding: 0 0 0.25em 0;
+    -fx-padding: 0 2 0.25em 2;
 }
-.marks > .white {
+.marks > .black {
     -fx-text-fill: #fff;
+}
+.marks > .none {
+    -fx-background-radius: 3;
+    -fx-background-color: #F5CC7A;
 }
 .marks > .red {
     -fx-text-fill: #f00;
@@ -106,15 +114,18 @@
 .marks > .place-stone {
     -fx-symbol: "●";
 }
-.marks > .place-stone.white {
+.marks > .place-stone.black {
     -fx-text-fill : #eee;
 }
 .marks > .place-mark {
     -fx-symbol: "◌";
+    -fx-background-color: none; /* Never use the wood color background */
 }
 .marks > .remove-mark,
 .marks > .remove-stone {
     -fx-symbol: "⛔";
+    -fx-text-fill: #e11;
+    -fx-background-color: none; /* Never use the wood color background */
 }
 .marks > .latest {
     -fx-symbol: "✩";
@@ -126,7 +137,7 @@
     -fx-symbol: "◇";
 }
 
-.marks > .latest.white {
+.marks > .latest.black {
     -fx-text-fill: #ccc;
 }
 .marks > .square {

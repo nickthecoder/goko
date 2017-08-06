@@ -54,14 +54,16 @@ class MarksView(val board: Board) {
         node.children.clear()
     }
 
+    /**
+     * color is the color the mark will be (either BLACK or WHITE). If color = null, then the color
+     * will be determined by the color of the stone on the board.
+     */
     fun add(markView: MarkView, color: StoneColor? = null) {
         if (color == null) {
             val stone = board.getStoneAt(markView.point)
-            if (stone != StoneColor.NONE) {
-                markView.colorWhite(stone == StoneColor.BLACK)
-            }
+            markView.onStoneColor(stone)
         } else {
-            markView.colorWhite(color == StoneColor.WHITE)
+            markView.color(color)
         }
         markViews.add(markView)
         markView.marksView = this
@@ -88,5 +90,9 @@ class MarksView(val board: Board) {
         markViews.remove(markView)
         markView.marksView = null
         node.children.remove(markView)
+    }
+
+    fun getMarkViewAt(point: Point): MarkView? {
+        return markViews.filter { it.point == point }.firstOrNull()
     }
 }

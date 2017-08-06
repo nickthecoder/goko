@@ -52,17 +52,14 @@ open class StandardGo(val game: Game) : GameVariation {
             }
             freeHandicaps--
             game.root.addStone(board, point, color)
-            game.nodeChanged(game.currentNode)
 
             if (freeHandicaps == 0) {
                 game.root.colorToPlay = StoneColor.WHITE
 
                 game.playerToMove = game.players[game.root.colorToPlay]!!
                 game.playerToMove.yourTurn()
-                game.listeners.forEach {
-                    it.nodeChanged(game.root)
-                }
             }
+            game.nodeDataChanged()
             return
         }
 

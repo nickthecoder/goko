@@ -38,7 +38,7 @@ Or maybe you just got it wrong ;-)
         super.makeMove(point, onMainLine)
         if (node.children.size != count) {
             game.currentNode.comment = offPisteComment
-            game.nodeChanged(game.currentNode)
+            game.nodeDataChanged()
         }
     }
 
@@ -48,7 +48,7 @@ Or maybe you just got it wrong ;-)
         super.pass(onMainLine)
         if (node.children.size != count) {
             game.currentNode.comment = offPisteComment
-            game.nodeChanged(game.currentNode)
+            game.nodeDataChanged()
         }
     }
 

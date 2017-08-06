@@ -186,7 +186,6 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             game.apply(node)
         }
         node.addStone(board, point, color)
-        game.nodeChanged(game.currentNode)
         GoKo.stoneSound()
     }
 
@@ -199,7 +198,6 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
                 game.apply(node)
             }
             node.removeStone(board, point)
-            game.nodeChanged(game.currentNode)
         }
     }
 
@@ -256,10 +254,8 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     }
 
-    override fun nodeChanged(node: GameNode) {
-        if (node === game.currentNode) {
-            buildBranchesMenu()
-        }
+    override fun nodeDataChanged() {
+        buildBranchesMenu()
     }
 
     override fun madeMove(gameNode: GameNode) {

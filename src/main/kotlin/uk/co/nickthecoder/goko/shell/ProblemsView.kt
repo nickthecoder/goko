@@ -37,7 +37,8 @@ class ProblemsView(mainWindow: MainWindow) : GridView(mainWindow, 130.0) {
     }
 
     fun createButton(problemSet: ProblemSet): Button {
-        val button = createButton(problemSet.label, style = null) { ProblemSetView(mainWindow, problemSet) }
+        val label = problemSet.label.replace(Regex("-"), " ")
+        val button = createButton(label, style = null) { ProblemSetView(mainWindow, problemSet) }
         return button
     }
 

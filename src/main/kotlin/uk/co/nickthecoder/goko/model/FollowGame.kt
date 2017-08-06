@@ -45,7 +45,6 @@ class FollowGame(val original: Game) : GameListener {
         val newNode = original.currentNode.copy()
         n.children.add(0, newNode)
         newNode.parent = n
-        copy.nodeChanged(n)
     }
 
     fun mainLineNodeIndex(node: GameNode): Int? {

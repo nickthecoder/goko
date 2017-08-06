@@ -21,6 +21,7 @@ package uk.co.nickthecoder.goko.gui
 import javafx.scene.control.Label
 import uk.co.nickthecoder.goko.model.LabelMark
 import uk.co.nickthecoder.goko.model.Point
+import uk.co.nickthecoder.goko.model.StoneColor
 
 /**
  * A single mark on the board (or on top of stones). A child of MarksView.
@@ -49,7 +50,7 @@ open class MarkView : Label {
     }
 
     init {
-        styleClass.add("mark")
+        styleClass.addAll("mark")
     }
 
     fun style(style: String) {
@@ -58,9 +59,20 @@ open class MarkView : Label {
         styleClass.add(style)
     }
 
-    fun colorWhite(white: Boolean) {
-        styleClass.removeAll("black", "white")
-        styleClass.add(if (white) "white" else "black")
+    /**
+     * The color of the stone on which the mark is placed. Can be WHITE, BLACK or NONE.
+     * Note that the names of the styles is the color of the POINT, not the color of the MARK.
+     */
+    fun onStoneColor(color: StoneColor) {
+        styleClass.removeAll("black", "white", "none")
+        styleClass.add(color.toString().toLowerCase())
+    }
+
+    /**
+     * The color the mark will be. Either WHITE or BLACK
+     */
+    fun color(color: StoneColor) {
+        onStoneColor(color.opposite())
     }
 
 }

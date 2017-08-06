@@ -92,13 +92,13 @@ class BoardView(val game: Game) : View {
 
     fun playing() {
         mouseMark.style("place-stone")
-        mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
+        mouseMark.color(game.playerToMove.color)
         mouseMode = MouseMode.PLAYING
     }
 
     fun placingStone(color: StoneColor) {
         mouseMark.style("place-stone")
-        mouseMark.colorWhite(color == StoneColor.WHITE)
+        mouseMark.color(color)
         mouseMode = MouseMode.ADDING_STONES
     }
 
@@ -144,7 +144,7 @@ class BoardView(val game: Game) : View {
             }
 
             if (mouseMode == MouseMode.MARKING || mouseMode == MouseMode.REMOVING_MARKS || mouseMode == MouseMode.REMOVING_STONES) {
-                mouseMark.colorWhite(board.getStoneAt(point) == StoneColor.BLACK)
+                mouseMark.onStoneColor(board.getStoneAt(point))
             }
         }
     }
@@ -187,7 +187,7 @@ class BoardView(val game: Game) : View {
                 if (!currentNode.hasMarkAt(currentNode.point)) {
                     val stoneColor = game.variation.displayColor(currentNode.point)
                     latestMark.point = currentNode.point
-                    latestMark.colorWhite(stoneColor == StoneColor.BLACK)
+                    latestMark.onStoneColor(stoneColor)
                 }
             }
         }
@@ -360,14 +360,12 @@ class BoardView(val game: Game) : View {
             updateMoveNumbers()
             updateBranches()
             if (mouseMode == MouseMode.PLAYING) {
-                mouseMark.colorWhite(game.playerToMove.color == StoneColor.WHITE)
+                mouseMark.color(game.playerToMove.color)
             }
         }
 
-        override fun nodeChanged(node: GameNode) {
-            if (node === game.currentNode) {
-                update()
-            }
+        override fun nodeDataChanged() {
+            update()
         }
 
         override fun madeMove(gameNode: GameNode) {
@@ -382,6 +380,10 @@ class BoardView(val game: Game) : View {
             marks.add(mark.createMarkView())
             updateBranches()
             updateMoveNumbers()
+        }
+
+        override fun stoneChanged(point: Point) {
+            marks.getMarkViewAt(point)?.let { it.onStoneColor(board.getStoneAt(point)) }
         }
 
         override fun removedMark(mark: Mark) {

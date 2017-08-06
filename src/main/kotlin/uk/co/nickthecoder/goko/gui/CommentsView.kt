@@ -222,10 +222,8 @@ class CommentsView(val game: Game, val readOnly: Boolean, val preferences: Comme
         update()
     }
 
-    override fun nodeChanged(node: GameNode) {
-        if (node === game.currentNode) {
-            update()
-        }
+    override fun nodeDataChanged() {
+        update()
     }
 
     override fun preferencesChanged() {
