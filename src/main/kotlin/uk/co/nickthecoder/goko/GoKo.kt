@@ -26,12 +26,15 @@ import javafx.stage.Stage
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.preferences.Preferences
 import uk.co.nickthecoder.paratask.ParaTask
+import uk.co.nickthecoder.paratask.parameters.FileParameter
 import uk.co.nickthecoder.paratask.util.AutoExit
 import java.io.InputStream
 
 class GoKo : Application() {
 
     override fun start(stage: Stage) {
+        FileParameter.showDragIcon = false
+        FileParameter.showOpenButton = true
         AutoExit.disable()
         MainWindow(stage).show()
     }
