@@ -73,8 +73,8 @@ object Preferences {
     init {
         // NOTE. Time limits must come before any preferences that use time limits (such as quickGamePreferences).
         addPreferenceTask(basicPreferences)
-        addPreferenceTask(timeLimitPreferences)
-        addPreferenceTask(gamesPreferences)
+        addPreferenceTask(timeLimitPreferences) // TODO Broken!
+        addPreferenceTask(gamesPreferences) // TODO Broken!
         addPreferenceTask(problemsPreferences)
         addPreferenceTask(josekiPreferences)
         addPreferenceTask(editGamePreferences)

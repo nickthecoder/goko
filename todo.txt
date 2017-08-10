@@ -3,10 +3,21 @@ Bugs
 	Branches pull down doesnt update when moving back through game.
 	Challenge match didn't update its stats when I resigned (after a timed-out final status, due to a 3second timeout).
 
-	Cannot use arrow keys etc in comments field. Check if "handler" or "filter" is used for shortcuts.
-
 Add Dimmed marks
 	(reader, writer and editor)
+
+Ctrl+O Runs the "Open" task in a new tab.
+Do away with OpenGameTask, and use an Open File dialog instead. Code in MainWindow.
+
+Estimate Score Graph
+	Draws a graph of all moves in the main line of the estimated score.
+	Click to go to that node.
+	As it will take a while, use a copy of the game with its own GnuGo instance.
+
+New modes
+	GnuGo Attack, Defend
+		Click a dragon for a hint to attack or defend it.
+		Make the "Hint" button a pulldown button
 
 LocalPlayer.yourTurn should call the view to let it know that it can accept input.
 	Remove Player.canClickToPlay
@@ -17,7 +28,7 @@ TimeLimit should be TWO classes, one for the time limit and another for the time
 	Countdown stuff only in the later.
 	Don't countdown at the end of main time if there is byomi or overtime.
 	Additional warning if this countdown will lose you the game.
-	Remove "Overtime Period", and neaten up the UI.
+	Remove "Overtime Period", and only show overtime periods if Byo Yomi is for 1 move.
 
 Allow Hidden Move Go against GnuGo, but GnoGo has full info of the game (so it's one sided hidden).
 	GnuGo is asked to place free handicap stones(regardless of what color it really is)

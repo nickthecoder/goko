@@ -41,6 +41,7 @@ class OpenFileTask(val mainWindow: MainWindow) : AbstractTask() {
         val game = reader.read()
 
         val view = EditGameView(mainWindow, game)
+        view.build()
         mainWindow.changeView(view)
         game.rewindTo(game.root)
         // TODO Is this really needed?

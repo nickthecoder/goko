@@ -73,13 +73,14 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         centerBorder.center = boardView.node
         centerBorder.left = modesToolBar
 
-        val preferencesB = GoKoActions.PREFERENCES.createButton(shortcuts) { mainWindow.addView(PreferencesView(mainWindow, Preferences.editGamePreferences)) }
+        val preferencesB = GoKoActions.PREFERENCES.createButton(shortcuts) { onPreferences() }
 
         val navigation = CompoundButtons()
         navigation.children.addAll(restartB, rewindB, backB, forwardB, fastForwardB, endB)
 
         val mainLineB = GoKoActions.GO_MAIN_LINE.createButton(shortcuts) { history.mainLine() }
 
+        boardView.clickBoardView.onClickedPoint = { point -> clickToMove(point) }
         val moveModeB = GoKoActions.MODE_MOVE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> clickToMove(point) }
             boardView.playing()
@@ -139,7 +140,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         boardView.showBranches = Preferences.editGamePreferences.showBranchesP.value!!
 
-        toolBar.items.addAll(saveB, preferencesB, estimateScoreB, passB, editGameInfoB, navigation, mainLineB, branchesButton, deleteBranchB, gnuGoB)
+        toolBar.items.addAll(saveB, preferencesB, editGameInfoB, estimateScoreB, hotspotsB, hintB, passB, navigation, mainLineB, branchesButton, deleteBranchB, gnuGoB)
 
         val modesToggleGroup = ToggleGroup()
         with(modesToolBar) {
@@ -172,8 +173,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         val player = game.playerToMove
 
         if (player.canClickToPlay() && game.canPlayAt(point)) {
-            player.makeMove(point)
-            GoKo.audioClip("tap.mp3")?.play()
+            player.makeMove(point, onMainLine = false)
             GoKo.stoneSound()
         }
     }
@@ -266,6 +266,12 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     override fun preferencesChanged() {
         boardView.showMoveNumbers = Preferences.editGameShowMoveNumber!!
         boardView.showBranches = Preferences.editGamePreferences.showBranchesP.value!!
+    }
+
+    fun onPreferences() {
+        val view = PreferencesView(mainWindow, Preferences.editGamePreferences)
+        view.build()
+        mainWindow.addView(view)
     }
 
     fun onEditGameInfo() {

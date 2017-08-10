@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-version = '0.1'NP
+version = '0.1'
 group = 'uk.co.nickthecoder'
 
 apply plugin: 'kotlin'

@@ -48,7 +48,7 @@ class MainWindow(val stage: Stage) {
 
         shortcuts.add(GoKoActions.CLOSE_TAB) {
             if (tabs.selectedTab?.canClose == true) {
-                tabs.selectedTab?.remove()
+                tabs.selectedTab?.close()
             }
         }
     }

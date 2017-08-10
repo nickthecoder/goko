@@ -196,7 +196,12 @@ class BoardView(val game: Game) : View {
         for (i in 1..showMoveNumbers) {
             if (node is MoveNode) {
                 if (!currentNode.hasMarkAt(node.point)) {
-                    val mv = MarkView(LabelMark(node.point, node.moveNumber.toString()))
+                    val moveNumber = if (node.moveNumber >= 100) {
+                        node.moveNumber.toString().substring(1)
+                    } else {
+                        node.moveNumber.toString()
+                    }
+                    val mv = MarkView(LabelMark(node.point, moveNumber))
                     moveNumbers.add(mv)
                 }
             }
