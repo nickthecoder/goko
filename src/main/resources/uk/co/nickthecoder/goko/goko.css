@@ -94,14 +94,10 @@
 
 .marks > .mark {
     -fx-font-size: 100px;
-    -fx-padding: 0 2 0.25em 2;
+    -fx-padding: 0 0.25em 0.25em 0.25em;
 }
 .marks > .black {
     -fx-text-fill: #fff;
-}
-.marks > .none {
-    -fx-background-radius: 3;
-    -fx-background-color: #F5CC7A;
 }
 .marks > .red {
     -fx-text-fill: #f00;
@@ -124,6 +120,7 @@
 .marks > .remove-mark,
 .marks > .remove-stone {
     -fx-symbol: "⛔";
+    -fx-font-size: 80px;
     -fx-text-fill: #e11;
     -fx-background-color: none; /* Never use the wood color background */
 }
@@ -173,6 +170,16 @@
 .marks > .question {
     -fx-symbol: "?";
 }
+.marks > .none {
+    -fx-background-color: #F5CC7A;
+    -fx-background-insets: 30px 20px 30px 20px;
+}
+.marks > .label-mark.none,
+.marks > .remove-mark.none,
+.marks > .remove-stone.none {
+    -fx-background-insets: 0px;
+}
+
 
 /***********************************************************************************
     Problem Views
