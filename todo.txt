@@ -1,12 +1,9 @@
 
 Bugs                 
-	Branches pull down doesnt update when moving back through game.
 	Challenge match didn't update its stats when I resigned (after a timed-out final status, due to a 3second timeout).
 
 Add Dimmed marks
 	(reader, writer and editor)
-
-Ctrl+O Runs the "Open" task in a new tab.
 
 Estimate Score Graph
 	Draws a graph of all moves in the main line of the estimated score.

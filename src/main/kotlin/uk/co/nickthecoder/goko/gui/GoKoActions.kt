@@ -38,14 +38,12 @@ object GoKoActions {
 
     // Various views
     val PASS = GoKoAction("pass", KeyCode.P, alt = true, label = "Pass")
-    val EDIT = GoKoAction("edit", null, label = "Edit", tooltip = "Edit Game")
     val REVIEW = GoKoAction("review", KeyCode.R, control = true, label = "Review", tooltip = "Review Game")
     val SAVE = GoKoAction("save", KeyCode.S, control = true, label = "Save", tooltip = "Save Game")
     val RESIGN = GoKoAction("resign", null, label = "Resign", tooltip = "Resign Game")
-    val HINT = GoKoAction("hint", null, label = "Hint")
+    val HINT = GoKoAction("hint", KeyCode.H, control = true, label = "Hint", tooltip = "Show where GnuGo would move")
     val ESTIMATE_SCORE = GoKoAction("estimateScore", KeyCode.E, control = true, label = "Score", tooltip = "Estimate Score")
-    val HOTSPOTS = GoKoAction("hotspots", KeyCode.H, control = true, label = "Hotspots", tooltip = "Territory changes depending on whose turn it is")
-    val INFLUENCE = GoKoAction("visualiseInfluence", KeyCode.I, control = true, label = "Influence")
+    val HOTSPOTS = GoKoAction("hotspots", KeyCode.T, control = true, label = "Hotspots", tooltip = "Territory changes depending on whose turn it is")
     val UNDO = GoKoAction("undo", KeyCode.Z, control = true, tooltip = "Undo")
     val CHECK_GNU_GO = GoKoAction("checkGnuGo", KeyCode.G, control = true, shift = true, tooltip = "Check GnuGo's board is the same as GoKo's")
 
@@ -80,8 +78,6 @@ object GoKoActions {
     val PROBLEM_RESTART = GoKoAction("problem-reload", KeyCode.F5, control = true, tooltip = "Restart Problem")
     val PROBLEM_GIVE_UP = GoKoAction("problem-give-up", null, label = "Give Up", tooltip = "Give Up and show the solution")
     val PROBLEM_NEXT = GoKoAction("problem-next", KeyCode.RIGHT, alt = true, tooltip = "Next problem")
-    val PROBLEM_HINT = GoKoAction("problem-hint", null, tooltip = "Ask GnuGo what you should do. Cheat!")
-
 
     fun add(action: GoKoAction) {
         GoKoActions.nameToActionMap.put(action.name, action)

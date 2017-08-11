@@ -84,53 +84,63 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         boardView.clickBoardView.onClickedPoint = { point -> clickToMove(point) }
         val moveModeB = GoKoActions.MODE_MOVE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> clickToMove(point) }
+            node.requestFocus()
             boardView.playing()
         }
         moveModeB.isSelected = true
 
         val blackModeB = GoKoActions.MODE_BLACK.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> addSetupStone(point, StoneColor.BLACK) }
+            node.requestFocus()
             boardView.placingStone(StoneColor.BLACK)
         }
 
         val whiteModeB = GoKoActions.MODE_WHITE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> addSetupStone(point, StoneColor.WHITE) }
+            node.requestFocus()
             boardView.placingStone(StoneColor.WHITE)
         }
 
         val removeStoneModeB = GoKoActions.MODE_REMOVE_STONE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> removeStone(point) }
+            node.requestFocus()
             boardView.removingStone()
         }
 
 
         val squareModeB = GoKoActions.MODE_SQUARE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.addMark(SquareMark(point)) }
+            node.requestFocus()
             boardView.placingMark()
         }
 
         val circleModeB = GoKoActions.MODE_CIRCLE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.addMark(CircleMark(point)) }
+            node.requestFocus()
             boardView.placingMark()
         }
 
         val triangleModeB = GoKoActions.MODE_TRIANGLE.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.addMark(TriangleMark(point)) }
+            node.requestFocus()
             boardView.placingMark()
         }
 
         val numberModeB = GoKoActions.MODE_NUMBERS.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> addNumber(point) }
+            node.requestFocus()
             boardView.placingMark()
         }
 
         val letterModeB = GoKoActions.MODE_LETTERS.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> addLetter(point) }
+            node.requestFocus()
             boardView.placingMark()
         }
 
         val removeMarkModeB = GoKoActions.MODE_REMOVE_MARK.createToggleButton(shortcuts) {
             boardView.clickBoardView.onClickedPoint = { point -> game.removeMark(point) }
+            node.requestFocus()
             boardView.removingMark()
         }
 
@@ -166,10 +176,10 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         // Listen for number key presses, and go down that branch.
         whole.addEventHandler(KeyEvent.KEY_PRESSED) { event ->
-            val number = event.code.ordinal - KeyCode.DIGIT1.ordinal
-            if (number >= 0 && number < 9) {
-                if (game.currentNode.children.size >= number + 1) {
-                    game.apply(game.currentNode.children[number])
+            val number = event.code.ordinal - KeyCode.DIGIT1.ordinal + 1
+            if (number in 1..9) {
+                if (game.currentNode.children.size >= number) {
+                    game.apply(game.currentNode.children[number - 1])
                 }
             }
         }

@@ -55,11 +55,10 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
 
     protected val estimateScoreB = GoKoActions.ESTIMATE_SCORE.createToggleButton(shortcuts) { showVisualisations() }
     protected val hotspotsB = GoKoActions.HOTSPOTS.createToggleButton(shortcuts) { showVisualisations() }
-    protected val influenceB = GoKoActions.INFLUENCE.createToggleButton(shortcuts) { showVisualisations() }
     protected val visualiseGroup = ToggleGroup()
 
     init {
-        visualiseGroup.toggles.addAll(influenceB, estimateScoreB, hotspotsB)
+        visualiseGroup.toggles.addAll(estimateScoreB, hotspotsB)
     }
 
     protected val restartB = GoKoActions.GO_FIRST.createButton(shortcuts) { game.rewindTo(game.root) }
@@ -140,10 +139,6 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
     fun showVisualisations() {
         boardView.visualisation.clear()
         if (game.variation.allowHelp) {
-            if (influenceB.isSelected) {
-                VisualiseInfluence(game, StoneColor.BLACK, "black_influence", boardView.visualisation).visualise()
-                VisualiseInfluence(game, StoneColor.WHITE, "white_influence", boardView.visualisation).visualise()
-            }
             if (hotspotsB.isSelected) {
                 VisualiseHotspots(game, boardView.visualisation).visualise()
             }
@@ -153,6 +148,8 @@ abstract class AbstractGoView(mainWindow: MainWindow, val game: Game) : TopLevel
                 VisualiseTerritory(game, StoneColor.BLACK, boardView.visualisation).visualise()
             }
         }
+        // Take focus away from buttons, because the arrow keys don't do what you expect when they have the focus.
+        node.requestFocus()
     }
 
     private fun update() {
