@@ -29,12 +29,14 @@ object GoKoActions {
 
     // MainWindow
     val CLOSE_TAB = GoKoAction("tab.close", KeyCode.W, control = true, tooltip = "Close Tab")
+    val OPEN_GAME_FILE = GoKoAction("file.open", KeyCode.O, control = true, tooltip = "Open Game File")
+    val PREFERENCES = GoKoAction("preferences", KeyCode.P, control = true, tooltip = "Preferences")
+    val JOSEKI_DICTIONARY = GoKoAction("joseki.database", KeyCode.J, control = true, tooltip = "Open Joseki Database")
 
     // ProblemSetView
     val PROBLEMS_RESET = GoKoAction("reset", null, null, label = "Reset", tooltip = "Reset Problem Results")
 
     // Various views
-    val PREFERENCES = GoKoAction("preferences", KeyCode.P, control = true, tooltip = "Preferences")
     val PASS = GoKoAction("pass", KeyCode.P, alt = true, label = "Pass")
     val EDIT = GoKoAction("edit", null, label = "Edit", tooltip = "Edit Game")
     val REVIEW = GoKoAction("review", KeyCode.R, control = true, label = "Review", tooltip = "Review Game")

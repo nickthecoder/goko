@@ -7,7 +7,6 @@ Add Dimmed marks
 	(reader, writer and editor)
 
 Ctrl+O Runs the "Open" task in a new tab.
-Do away with OpenGameTask, and use an Open File dialog instead. Code in MainWindow.
 
 Estimate Score Graph
 	Draws a graph of all moves in the main line of the estimated score.

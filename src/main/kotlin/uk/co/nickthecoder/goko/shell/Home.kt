@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.shell
 
-import uk.co.nickthecoder.goko.gui.JosekiView
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.preferences.AbstractGamePreferences
 import uk.co.nickthecoder.goko.preferences.Preferences
@@ -71,13 +70,8 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0), PreferencesLis
                     PreferencesView(mainWindow, Preferences.problemsPreferences)
                 }
             })
-            add(createViewButton("Joseki Dictionary", "joseki") {
-                val josekiFile = Preferences.josekiDirectionary
-                if (josekiFile != null) {
-                    JosekiView(mainWindow, josekiFile)
-                } else {
-                    PreferencesView(mainWindow, Preferences.josekiPreferences)
-                }
+            add(createActionButton("Joseki Dictionary", "joseki") {
+                mainWindow.openJosekiDictionary()
             })
             add(createActionButton("Open SGF File", "open-file") { mainWindow.onOpenFile() })
             add(createViewButton("Preferences", "preferences") { PreferencesView(mainWindow) })

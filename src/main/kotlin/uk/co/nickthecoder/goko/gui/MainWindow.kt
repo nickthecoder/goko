@@ -25,11 +25,11 @@ import javafx.stage.Stage
 import uk.co.nickthecoder.goko.GoKo
 import uk.co.nickthecoder.goko.model.SGFReader
 import uk.co.nickthecoder.goko.preferences.Preferences
+import uk.co.nickthecoder.goko.preferences.PreferencesView
 import uk.co.nickthecoder.goko.shell.Home
 import uk.co.nickthecoder.paratask.gui.MyTab
-import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 import uk.co.nickthecoder.paratask.gui.MyTabPane
-import java.io.File
+import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 
 class MainWindow(val stage: Stage) {
 
@@ -37,7 +37,7 @@ class MainWindow(val stage: Stage) {
 
     val whole = BorderPane()
 
-    val shortcuts = ShortcutHelper("MainWindow", whole)
+    val shortcuts = ShortcutHelper("MainWindow", whole, filter = false)
 
     init {
         stage.title = "GoKo"
@@ -55,6 +55,9 @@ class MainWindow(val stage: Stage) {
                 tabs.selectedTab?.close()
             }
         }
+        shortcuts.add(GoKoActions.OPEN_GAME_FILE) { onOpenFile() }
+        shortcuts.add(GoKoActions.PREFERENCES) { onPreferences() }
+        shortcuts.add(GoKoActions.JOSEKI_DICTIONARY) { openJosekiDictionary() }
     }
 
     fun indexOf(view: TopLevelView): Int {
@@ -144,4 +147,21 @@ class MainWindow(val stage: Stage) {
         }
     }
 
+    fun onPreferences() {
+        val view = PreferencesView(this)
+        view.build()
+        addView(view)
+    }
+
+    fun openJosekiDictionary() {
+
+        val josekiFile = Preferences.josekiDirectionary
+        val view = if (josekiFile != null) {
+            JosekiView(this, josekiFile)
+        } else {
+            PreferencesView(this, Preferences.josekiPreferences)
+        }
+        view.build()
+        addView(view)
+    }
 }
