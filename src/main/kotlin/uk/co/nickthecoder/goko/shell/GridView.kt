@@ -28,6 +28,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import uk.co.nickthecoder.goko.gui.MainWindow
 import uk.co.nickthecoder.goko.gui.TopLevelView
+import uk.co.nickthecoder.paratask.Task
 
 abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) : TopLevelView(mainWindow) {
 
@@ -85,20 +86,33 @@ abstract class GridView(mainWindow: MainWindow, val buttonSize: Double = 150.0) 
         }
     }
 
-    fun createButton(label: String, style: String?, viewFactory: () -> TopLevelView): Button {
+    fun createActionButton(label: String, style: String?, action: () -> Unit): Button {
         val button = Button(label)
         with(button) {
             style?.let { styleClass.add(it) }
             wrapTextProperty().value = true
             addEventHandler(ActionEvent.ACTION) {
-                val view = viewFactory()
-                view.build()
-                mainWindow.addView(view)
+                action()
             }
             prefHeight = buttonSize
             prefWidth = buttonSize
         }
         return button
+    }
+
+    fun createViewButton(label: String, style: String?, viewFactory: () -> TopLevelView): Button {
+        return createActionButton(label, style) {
+            val view = viewFactory()
+            view.build()
+            mainWindow.addView(view)
+        }
+    }
+
+    fun createTaskButton(label: String, style: String, factory: () -> Task): Button {
+        return createViewButton(label, style) {
+            val task = factory()
+            TaskView(task, mainWindow)
+        }
     }
 
 }

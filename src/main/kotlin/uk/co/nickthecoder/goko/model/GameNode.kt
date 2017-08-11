@@ -84,6 +84,17 @@ abstract class GameNode(var colorToPlay: StoneColor) {
         return null
     }
 
+    fun isMainLine(): Boolean {
+        var node = this
+        while (node.parent != null) {
+            if (node.parent!!.children[0] !== node) {
+                return false
+            }
+            node = node.parent!!
+        }
+        return true
+    }
+
     open fun sameAs(node: GameNode) = false
 
     abstract fun copy(): GameNode
@@ -117,7 +128,7 @@ class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
             }
         }
         addedStones.put(point, color)
-        if ( board.game.currentNode == this) {
+        if (board.game.currentNode == this) {
             board.setStoneAt(point, color)
         }
     }
@@ -129,7 +140,7 @@ class SetupNode(colorToPlay: StoneColor) : GameNode(colorToPlay) {
                 removedStones.put(point, oldColor)
             }
         }
-        if ( board.game.currentNode == this) {
+        if (board.game.currentNode == this) {
             board.removeStoneAt(point)
         }
     }

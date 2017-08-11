@@ -20,12 +20,16 @@ package uk.co.nickthecoder.goko.gui
 
 import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
+import javafx.stage.FileChooser
 import javafx.stage.Stage
 import uk.co.nickthecoder.goko.GoKo
+import uk.co.nickthecoder.goko.model.SGFReader
+import uk.co.nickthecoder.goko.preferences.Preferences
 import uk.co.nickthecoder.goko.shell.Home
 import uk.co.nickthecoder.paratask.gui.MyTab
 import uk.co.nickthecoder.paratask.gui.ShortcutHelper
 import uk.co.nickthecoder.paratask.gui.MyTabPane
+import java.io.File
 
 class MainWindow(val stage: Stage) {
 
@@ -117,4 +121,27 @@ class MainWindow(val stage: Stage) {
     fun hide() {
         stage.hide()
     }
+
+    fun onOpenFile() {
+
+        val fileChooser = FileChooser()
+        fileChooser.title = "Open SGF File"
+        fileChooser.extensionFilters.add(FileChooser.ExtensionFilter("Smart Game Format", "*.sgf"))
+        fileChooser.initialDirectory = Preferences.gamesDirectory
+
+        val file = fileChooser.showOpenDialog(Stage())
+        file?.let {
+            val reader = SGFReader(file)
+            val game = reader.read()
+
+            val view = EditGameView(this, game)
+            view.build()
+            addView(view)
+            game.rewindTo(game.root)
+            // TODO Is this really needed?
+            game.apply(game.root)
+
+        }
+    }
+
 }

@@ -32,13 +32,13 @@ class ProblemsView(mainWindow: MainWindow) : GridView(mainWindow, 130.0) {
     override fun createButtons() {
         super.createButtons()
         Problems.problemSets().forEach {
-            buttons.add(createButton(it))
+            buttons.add(createProblemSetButton(it))
         }
     }
 
-    fun createButton(problemSet: ProblemSet): Button {
+    fun createProblemSetButton(problemSet: ProblemSet): Button {
         val label = problemSet.label.replace(Regex("-"), " ")
-        val button = createButton(label, style = null) { ProblemSetView(mainWindow, problemSet) }
+        val button = createViewButton(label, style = null) { ProblemSetView(mainWindow, problemSet) }
         return button
     }
 

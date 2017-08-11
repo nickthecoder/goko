@@ -14,6 +14,8 @@ Estimate Score Graph
 	Click to go to that node.
 	As it will take a while, use a copy of the game with its own GnuGo instance.
 
+Bug MainLine took me to the start of the game.
+
 New modes
 	GnuGo Attack, Defend
 		Click a dragon for a hint to attack or defend it.

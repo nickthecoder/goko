@@ -21,6 +21,9 @@ package uk.co.nickthecoder.goko.gui
 import javafx.event.ActionEvent
 import javafx.geometry.Orientation
 import javafx.scene.control.*
+import javafx.scene.image.ImageView
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import uk.co.nickthecoder.goko.GnuGoPlayer
@@ -77,8 +80,6 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         val navigation = CompoundButtons()
         navigation.children.addAll(restartB, rewindB, backB, forwardB, fastForwardB, endB)
-
-        val mainLineB = GoKoActions.GO_MAIN_LINE.createButton(shortcuts) { history.mainLine() }
 
         boardView.clickBoardView.onClickedPoint = { point -> clickToMove(point) }
         val moveModeB = GoKoActions.MODE_MOVE.createToggleButton(shortcuts) {
@@ -137,10 +138,14 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         val deleteBranchB = GoKoActions.DELETE_BRANCH.createButton(shortcuts) { onDeleteBranch() }
         val gnuGoB = GoKoActions.GNU_GO_TO_PLAY.createButton(shortcuts) { onGnuGoToPlay() }
 
+        val rewindToMainLineB = GoKoActions.REWIND_TO_MAIN_LINE.createButton(shortcuts) { game.rewindToMainLine() }
+        val rewindToBranchPointB = GoKoActions.REWIND_TO_BRANCH_POINT.createButton(shortcuts) { game.rewindToBranchPoint() }
+        val forwardToBranchPointB = GoKoActions.FORWARD_TO_BRANCH_POINT.createButton(shortcuts) { history.forwardToBranchPoint() }
 
         boardView.showBranches = Preferences.editGamePreferences.showBranchesP.value!!
 
-        toolBar.items.addAll(saveB, preferencesB, editGameInfoB, estimateScoreB, hotspotsB, hintB, passB, navigation, mainLineB, branchesButton, deleteBranchB, gnuGoB)
+        toolBar.items.addAll(saveB, preferencesB, editGameInfoB, estimateScoreB, hotspotsB, hintB, passB, navigation)
+        toolBar.items.addAll(rewindToMainLineB, rewindToBranchPointB, forwardToBranchPointB, branchesButton, deleteBranchB, gnuGoB)
 
         val modesToggleGroup = ToggleGroup()
         with(modesToolBar) {
@@ -158,6 +163,16 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         preferencesChanged()
         buildBranchesMenu()
         Preferences.listeners.add(this)
+
+        // Listen for number key presses, and go down that branch.
+        whole.addEventHandler(KeyEvent.KEY_PRESSED) { event ->
+            val number = event.code.ordinal - KeyCode.DIGIT1.ordinal
+            if (number >= 0 && number < 9) {
+                if (game.currentNode.children.size >= number + 1) {
+                    game.apply(game.currentNode.children[number])
+                }
+            }
+        }
     }
 
     override fun tidyUp() {
@@ -226,7 +241,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
     fun buildBranchesMenu() {
         with(branchesButton) {
             items.clear()
-            text = "Branches"
+            graphic = ImageView(GoKo.imageResource("buttons/branches.png"))
 
             game.currentNode.children.forEach { child ->
                 val text = when (child) {

@@ -47,27 +47,27 @@ class History(val game: Game) : GameListener {
         }
     }
 
-    /**
-     * Rewind until we are on the main line (i.e. first child nodes only), and then clear the future nodes, so that
-     * forward() will continue along the main line.
-     */
-    fun mainLine() {
-        for (node in history) {
-            val parent = node.parent
-            if (parent != null && parent.children[0] != node) {
-                game.rewindTo(parent)
-                val i = history.indexOf(game.currentNode)
-                if (i >= 0) {
-                    while (history.size > i) {
-                        history.removeAt(history.size - 1)
-                    }
+    fun forwardToBranchPoint() {
+        val startingPoint = game.currentNode
+        forward(1)
+        var i = history.indexOf(game.currentNode)
+        while (game.currentNode.children.size == 1) {
+            if (i >= 0 && i < history.size - 1) {
+                val node = history[i + 1]
+                if (node.parent == null) {
+                    // It has been deleted from the game tree.
+                    game.moveForward()
                 } else {
-                    println("Hmm, something went wrong in History.mainLine")
-                    println("Main history = $history")
+                    game.apply(node)
                 }
-                println("Main history = $history")
-                return
+            } else {
+                game.moveForward()
             }
+            i++
+        }
+        // We didn't find a branch point, so go back to where we started.
+        if (game.currentNode.children.size == 0) {
+            game.rewindTo(startingPoint)
         }
     }
 

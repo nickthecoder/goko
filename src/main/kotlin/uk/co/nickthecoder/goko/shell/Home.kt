@@ -18,11 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.shell
 
-import javafx.scene.control.Button
 import uk.co.nickthecoder.goko.gui.JosekiView
 import uk.co.nickthecoder.goko.gui.MainWindow
-import uk.co.nickthecoder.goko.preferences.*
-import uk.co.nickthecoder.paratask.Task
+import uk.co.nickthecoder.goko.preferences.AbstractGamePreferences
+import uk.co.nickthecoder.goko.preferences.Preferences
+import uk.co.nickthecoder.goko.preferences.PreferencesListener
+import uk.co.nickthecoder.goko.preferences.PreferencesView
 import uk.co.nickthecoder.paratask.parameters.StringParameter
 import uk.co.nickthecoder.paratask.parameters.TaskParameter
 
@@ -62,7 +63,7 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0), PreferencesLis
 
         with(buttons) {
 
-            add(createButton("Problems", "problems") {
+            add(createViewButton("Problems", "problems") {
                 val problemsDir = Preferences.problemsDirectory
                 if (problemsDir != null) {
                     ProblemsView(mainWindow)
@@ -70,7 +71,7 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0), PreferencesLis
                     PreferencesView(mainWindow, Preferences.problemsPreferences)
                 }
             })
-            add(createButton("Joseki Dictionary", "joseki") {
+            add(createViewButton("Joseki Dictionary", "joseki") {
                 val josekiFile = Preferences.josekiDirectionary
                 if (josekiFile != null) {
                     JosekiView(mainWindow, josekiFile)
@@ -78,15 +79,9 @@ class Home(mainWindow: MainWindow) : GridView(mainWindow, 210.0), PreferencesLis
                     PreferencesView(mainWindow, Preferences.josekiPreferences)
                 }
             })
-            add(createTaskButton("Open SGF File", "open-file") { OpenFileTask(mainWindow) })
-            add(createButton("Preferences", "preferences") { PreferencesView(mainWindow) })
+            add(createActionButton("Open SGF File", "open-file") { mainWindow.onOpenFile() })
+            add(createViewButton("Preferences", "preferences") { PreferencesView(mainWindow) })
         }
     }
 
-    fun createTaskButton(label: String, style: String, factory: () -> Task): Button {
-        return createButton(label, style) {
-            val task = factory()
-            TaskView(task, mainWindow)
-        }
-    }
 }

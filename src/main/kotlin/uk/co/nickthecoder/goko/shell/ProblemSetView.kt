@@ -51,13 +51,13 @@ class ProblemSetView(mainWindow: MainWindow, val problemSet: ProblemSet) : GridV
         super.createButtons()
         var i = 1
         problemSet.problems.values.forEach { problem ->
-            buttons.add(createButton(i.toString(), problem))
+            buttons.add(createProblemButton(i.toString(), problem))
             i++
         }
     }
 
-    fun createButton(label: String, problem: Problem): Button {
-        return createButton(label, style = problem.result.style()) { createView(problem) }
+    fun createProblemButton(label: String, problem: Problem): Button {
+        return createViewButton(label, style = problem.result.style()) { createView(problem) }
     }
 
     fun createView(problem: Problem): TopLevelView = ProblemView(mainWindow, problem)

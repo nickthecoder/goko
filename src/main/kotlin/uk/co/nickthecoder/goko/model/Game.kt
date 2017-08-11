@@ -382,6 +382,27 @@ class Game(size: Int) {
         }
     }
 
+    fun rewindToBranchPoint() {
+        var node = currentNode.parent
+        while (node != null) {
+            if (node.children.size != 1) {
+                rewindTo(node)
+                return
+            }
+            node = node.parent
+        }
+    }
+
+    fun rewindToMainLine() {
+        var node = currentNode.parent
+        while (node != null) {
+            if (node.children.size != 1) {
+                rewindTo(node)
+            }
+            node = node.parent
+        }
+    }
+
     fun dumpTree() {
 
         fun dump(indent: Int, node: GameNode) {
