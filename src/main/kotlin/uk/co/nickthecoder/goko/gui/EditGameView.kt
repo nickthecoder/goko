@@ -269,12 +269,13 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
     }
 
-    override fun nodeDataChanged() {
+    override fun madeMove(gameNode: GameNode) {
+        super.madeMove(gameNode)
         buildBranchesMenu()
     }
 
-    override fun madeMove(gameNode: GameNode) {
-        super.madeMove(gameNode)
+    override fun undoneMove(gameNode: GameNode) {
+        super.undoneMove(gameNode)
         buildBranchesMenu()
     }
 
