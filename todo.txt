@@ -5,17 +5,10 @@ Bugs
 Add Dimmed marks
 	(reader, writer and editor)
 
-Estimate Score Graph
-	Draws a graph of all moves in the main line of the estimated score.
-	Click to go to that node.
-	As it will take a while, use a copy of the game with its own GnuGo instance.
-
-Bug MainLine took me to the start of the game.
-
 New modes
 	GnuGo Attack, Defend
 		Click a dragon for a hint to attack or defend it.
-		Make the "Hint" button a pulldown button
+		Make the "Hint" button a pulldown button?
 
 LocalPlayer.yourTurn should call the view to let it know that it can accept input.
 	Remove Player.canClickToPlay
@@ -52,8 +45,6 @@ New Geometry Variation
 
 Note. When other game variations are implemented, they must have a "Supports GnuGo" boolean.
 	Don't show the "score" button in this case.
-
-Implement greyed out stones (part of SGF)
 
 Allow for dispute resolution at the end of the game.
 	Do final count, and prompt each "clickable" player if they agree.
