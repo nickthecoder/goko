@@ -65,6 +65,7 @@ object GoKoActions {
     val MODE_NUMBERS = GoKoAction("mode-numbers", KeyCode.F8, label = "1", control = null, tooltip = "Mode : Add number marks")
     val MODE_LETTERS = GoKoAction("mode-letters", KeyCode.F9, label = "A", control = null, tooltip = "Mode : Add letter marks")
     val MODE_REMOVE_MARK = GoKoAction("mode-remove-mark", KeyCode.F10, control = null, tooltip = "Mode : Remove marks")
+    val MODE_DIM = GoKoAction("mode-dim", KeyCode.F11, control = null, tooltip = "Mode : Make stones transparent")
 
     val EDIT_GAME_INFO = GoKoAction("game-info", keyCode = null, label = "Game Info")
     val DELETE_BRANCH = GoKoAction("delete-branch", keyCode = null, label = "Delete Branch")

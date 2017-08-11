@@ -42,6 +42,7 @@ abstract class GameNode(var colorToPlay: StoneColor) {
 
     var boardHash: Int = 0
 
+
     fun addMark(mark: Mark) {
         removeMark(mark.point)
         mutableMarks.add(mark)

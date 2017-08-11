@@ -52,7 +52,7 @@ class FinalScore(val game: Game) : GnuGoClient {
     override fun pointStatus(point: Point, status: String) {
         // undecided", "alive", "dead", "white_territory", "black_territory
         if (status == "dead") {
-            marks.add(DeadMark(point))
+            marks.add(DimmedMark(point, temporary = true))
         } else if (status == "white_territory") {
             marks.add(TerritoryMark(point, StoneColor.WHITE))
         } else if (status == "black_territory") {

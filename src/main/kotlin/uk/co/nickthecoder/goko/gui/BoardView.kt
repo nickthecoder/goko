@@ -359,7 +359,7 @@ class BoardView(val game: Game) : View {
 
         private fun update() {
             marks.clear()
-            for (mark in board.game.currentNode.marks) {
+            board.game.currentNode.marks.filter { it !is DimmedMark }.forEach { mark ->
                 marks.add(mark.createMarkView())
             }
             updateMoveNumbers()
@@ -382,18 +382,23 @@ class BoardView(val game: Game) : View {
         }
 
         override fun addedMark(mark: Mark) {
-            marks.add(mark.createMarkView())
-            updateBranches()
-            updateMoveNumbers()
+            if (mark !is DimmedMark) {
+                marks.add(mark.createMarkView())
+                updateBranches()
+                updateMoveNumbers()
+            }
+        }
+
+        override fun removedMark(mark: Mark) {
+            if (mark !is DimmedMark) {
+                marks.remove(mark.point)
+            }
         }
 
         override fun stoneChanged(point: Point) {
             marks.getMarkViewAt(point)?.let { it.onStoneColor(board.getStoneAt(point)) }
         }
 
-        override fun removedMark(mark: Mark) {
-            marks.remove(mark.point)
-        }
 
     }
 }

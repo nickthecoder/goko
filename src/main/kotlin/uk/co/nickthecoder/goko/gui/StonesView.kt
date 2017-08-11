@@ -25,9 +25,7 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 import uk.co.nickthecoder.goko.GoKo
-import uk.co.nickthecoder.goko.model.GameListener
-import uk.co.nickthecoder.goko.model.Point
-import uk.co.nickthecoder.goko.model.StoneColor
+import uk.co.nickthecoder.goko.model.*
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
@@ -64,6 +62,10 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
         val imageView = ImageView(image)
         array[point.x][point.y] = imageView
 
+        if (game.getMarkAt(point) is DimmedMark) {
+            imageView.styleClass.add("dimmed")
+        }
+
         children.add(imageView)
 
         val scale = boardView.scale
@@ -82,6 +84,24 @@ class StonesView(val boardView: BoardView) : Pane(), GameListener {
             removeAt(point)
         } else {
             add(point, if (color == StoneColor.BLACK) scaledBlackStone else scaledWhiteStone)
+        }
+    }
+
+    override fun addedMark(mark: Mark) {
+        if (mark is DimmedMark) {
+            val iv = array[mark.point.x][mark.point.y]
+            if (iv != null) {
+                iv.styleClass.add("dimmed")
+            }
+        }
+    }
+
+    override fun removedMark(mark: Mark) {
+        if (mark is DimmedMark) {
+            val iv = array[mark.point.x][mark.point.y]
+            if (iv != null) {
+                iv.styleClass.remove("dimmed")
+            }
         }
     }
 

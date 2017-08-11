@@ -144,6 +144,12 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
             boardView.removingMark()
         }
 
+        val dimModeB = GoKoActions.MODE_DIM.createToggleButton(shortcuts) {
+            boardView.clickBoardView.onClickedPoint = { point -> toggleDimStone(point) }
+            node.requestFocus()
+            boardView.placingMark()
+        }
+
         val editGameInfoB = GoKoActions.EDIT_GAME_INFO.createButton(shortcuts) { onEditGameInfo() }
         val deleteBranchB = GoKoActions.DELETE_BRANCH.createButton(shortcuts) { onDeleteBranch() }
         val gnuGoB = GoKoActions.GNU_GO_TO_PLAY.createButton(shortcuts) { onGnuGoToPlay() }
@@ -159,7 +165,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
 
         val modesToggleGroup = ToggleGroup()
         with(modesToolBar) {
-            items.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB)
+            items.addAll(moveModeB, blackModeB, whiteModeB, removeStoneModeB, squareModeB, circleModeB, triangleModeB, numberModeB, letterModeB, removeMarkModeB, dimModeB)
             styleClass.add("modes")
             orientation = Orientation.VERTICAL
             items.forEach {
@@ -245,6 +251,13 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
                 game.addMark(LabelMark(point, text))
                 return
             }
+        }
+    }
+
+    fun toggleDimStone(point: Point) {
+        val oldMark = game.removeMark(point)
+        if (oldMark !is DimmedMark) {
+            game.addMark(DimmedMark(point))
         }
     }
 

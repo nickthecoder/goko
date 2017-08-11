@@ -25,6 +25,16 @@ abstract class Mark(val point: Point, val style: String) {
     abstract fun createMarkView(): MarkView
 }
 
+/**
+ * Dims the stone at this point.
+ * If temporary == true, then this mark will NOT be
+ */
+class DimmedMark(point: Point, val temporary: Boolean = false) : Mark(point, "dimmed") {
+    override fun createMarkView(): MarkView {
+        throw IllegalStateException("DimmedMarks do not have MarkViews")
+    }
+}
+
 abstract class SymbolMark(point: Point, style: String) : Mark(point, style) {
 
     override fun createMarkView() = SymbolMarkView(this)

@@ -208,13 +208,14 @@ class Game(size: Int) {
         }
     }
 
-    fun removeMark(point: Point) {
+    fun removeMark(point: Point): Mark? {
         val mark = currentNode.removeMark(point)
         if (mark != null) {
             for (listener in listeners) {
                 listener.removedMark(mark)
             }
         }
+        return mark
     }
 
     fun deleteBranch() {
