@@ -90,27 +90,27 @@ class SGFWriter {
         writeProperty("PL", game.root.colorToPlay)
         writeProperty("SZ", game.board.size)
         writeProperty("CA", "utf-8")
-        writeOptionalProperty("PB", game.metaData.blackName)
-        writeOptionalProperty("BR", game.metaData.blackRank)
-        writeOptionalProperty("PW", game.metaData.whiteName)
-        writeOptionalProperty("WR", game.metaData.whiteRank)
+        writeOptionalTextProperty("PB", game.metaData.blackName)
+        writeOptionalTextProperty("BR", game.metaData.blackRank)
+        writeOptionalTextProperty("PW", game.metaData.whiteName)
+        writeOptionalTextProperty("WR", game.metaData.whiteRank)
 
-        writeOptionalProperty("RE", game.metaData.result)
+        writeOptionalTextProperty("RE", game.metaData.result)
         writeOptionalProperty("KM", game.metaData.komi, saveZeros = false)
         writeOptionalProperty("TM", game.metaData.mainTime.scaledValue)
-        writeOptionalProperty("OT", game.metaData.overtime)
+        writeOptionalTextProperty("OT", game.metaData.overtime)
 
         writeOptionalProperty("DT", game.metaData.datePlayed)
-        writeOptionalProperty("EV", game.metaData.event)
-        writeOptionalProperty("GN", game.metaData.gameName)
-        writeOptionalProperty("PC", game.metaData.place)
-        writeOptionalProperty("RU", game.metaData.rules)
-        writeOptionalProperty("GC", game.metaData.gameComments)
+        writeOptionalTextProperty("EV", game.metaData.event)
+        writeOptionalTextProperty("GN", game.metaData.gameName)
+        writeOptionalTextProperty("PC", game.metaData.place)
+        writeOptionalTextProperty("RU", game.metaData.rules)
+        writeOptionalTextProperty("GC", game.metaData.gameComments)
 
-        writeOptionalProperty("CP", game.metaData.copyright)
-        writeOptionalProperty("AN", game.metaData.annotator)
-        writeOptionalProperty("US", game.metaData.enteredBy)
-        writeOptionalProperty("SO", game.metaData.source)
+        writeOptionalTextProperty("CP", game.metaData.copyright)
+        writeOptionalTextProperty("AN", game.metaData.annotator)
+        writeOptionalTextProperty("US", game.metaData.enteredBy)
+        writeOptionalTextProperty("SO", game.metaData.source)
 
         writer.write("\n")
     }
@@ -175,7 +175,7 @@ class SGFWriter {
             writer.write(property)
             marks.forEach { mark ->
                 val pt = fromPoint(mark.point)
-                writer.write("[$pt:${mark.text}]")
+                writer.write("[$pt:${escape(mark.text)}]")
             }
         }
     }
@@ -189,10 +189,10 @@ class SGFWriter {
         writeLabelledPoints("LB", node.marks.filter { it is LabelMark }.map { it as LabelMark })
 
         if (node.name.isNotBlank()) {
-            writeProperty("N", node.name)
+            writeTextProperty("N", node.name)
         }
         if (node.comment.isNotBlank()) {
-            writeProperty("C", node.comment)
+            writeTextProperty("C", node.comment)
         }
 
         val annotationProperty = when (node.nodeAnnotation) {
@@ -224,6 +224,24 @@ class SGFWriter {
         val y = 'a' + (game.board.size - 1 - point.y)
 
         return "$x$y"
+    }
+
+    /**
+     * Escapes "\", ":" and "]".
+     * Note that ":" is only needed for "composed" data types.
+     */
+    private fun escape(text: String): String {
+        var escaped = text.replace(Regex("\\\\"), "\\\\\\\\") // Replace "\" with "\\"
+        escaped = escaped.replace(Regex("\\:"), "\\\\:") // Replace ":" with "\:"
+        escaped = escaped.replace(Regex("\\]"), "\\\\]") // Replace "]" with "\]"
+        return escaped
+    }
+
+    /**
+     * Escapes the text, and writes it.
+     */
+    private fun writeTextProperty(name: String, text: String) {
+        writeProperty(name, escape(text))
     }
 
     private fun writeProperty(name: String) {
@@ -272,6 +290,12 @@ class SGFWriter {
         if (value != null) {
             val format = SimpleDateFormat("yyyy-MM-dd")
             writeProperty(name, format.format(value))
+        }
+    }
+
+    private fun writeOptionalTextProperty(name: String, value: String?) {
+        if (value != null) {
+            writeTextProperty(name, value)
         }
     }
 }

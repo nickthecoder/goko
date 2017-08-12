@@ -225,7 +225,6 @@ class SGFReader {
         val labels = sgfNode.getPropertyValues("LB")
         labels?.forEach { str ->
             val point = toPoint(game.board, str.substring(0, 2))
-            println("Found label $str point=$point")
             if (point != null) {
                 val mark = LabelMark(point, str.substring(3))
                 currentNode.addMark(mark)
@@ -459,7 +458,11 @@ class SGFReader {
         while (true) {
             val c = readChar() ?: throw IOException("End of file while reading property value")
             if (escaped) {
-                str += c
+                if ( c == '\n' ) {
+                    // Do nothing. Weird, but the spec says that this is a "soft" newline, and should be replaced by "" <blank>
+                } else {
+                    str += c
+                }
                 escaped = false
             } else {
                 if (c == '\\') {
