@@ -1,9 +1,9 @@
 
 Bugs                 
 	Challenge match didn't update its stats when I resigned (after a timed-out final status, due to a 3second timeout).
+	Comment with "]" truncates it
 
-Add Dimmed marks
-	(reader, writer and editor)
+Load/Save Dimmed marks in sgf files.
 
 New modes
 	GnuGo Attack, Defend

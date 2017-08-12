@@ -225,41 +225,47 @@ class SGFReader {
         val labels = sgfNode.getPropertyValues("LB")
         labels?.forEach { str ->
             val point = toPoint(game.board, str.substring(0, 2))
+            println("Found label $str point=$point")
             if (point != null) {
                 val mark = LabelMark(point, str.substring(3))
                 currentNode.addMark(mark)
             }
         }
-        val circles = sgfNode.getPropertyValues("CR")
-        circles?.forEach { str ->
-            val point = toPoint(game.board, str.substring(0, 2))
-            if (point != null) {
-                val mark = CircleMark(point)
-                currentNode.addMark(mark)
-            }
-        }
-        val crosses = sgfNode.getPropertyValues("MA")
-        crosses?.forEach { str ->
-            val point = toPoint(game.board, str.substring(0, 2))
-            if (point != null) {
-                val mark = CrossMark(point)
-                currentNode.addMark(mark)
-            }
-        }
-        val squares = sgfNode.getPropertyValues("SQ")
-        squares?.forEach { str ->
-            val point = toPoint(game.board, str.substring(0, 2))
-            if (point != null) {
-                val mark = CircleMark(point)
-                currentNode.addMark(mark)
-            }
-        }
-        val triangles = sgfNode.getPropertyValues("TR")
-        triangles?.forEach { str ->
-            val point = toPoint(game.board, str.substring(0, 2))
-            if (point != null) {
-                val mark = TriangleMark(point)
-                currentNode.addMark(mark)
+        marks(game, sgfNode, "CR") { CircleMark(it) }
+        marks(game, sgfNode, "MA") { CrossMark(it) }
+        marks(game, sgfNode, "SQ") { SquareMark(it) }
+        marks(game, sgfNode, "TR") { TriangleMark(it) }
+        marks(game, sgfNode, "DD") { DimmedMark(it) }
+    }
+
+    private fun marks(game: Game, sgfNode: SGFNode, code: String, factory: (Point) -> Mark) {
+        val marks = sgfNode.getPropertyValues(code)
+        marks?.forEach { str ->
+            val colon = str.indexOf(':')
+
+            if (colon > 0 && str.length == 5) {
+                // COMPRESSED points in a rectangle such as : DD[aa:bi][ca:ce]
+                val from = toPoint(game.board, str.substring(0, 2))
+                val to = toPoint(game.board, str.substring(3))
+                if (from != null && to != null) {
+                    val fromX = Math.min(from.x, to.x)
+                    val toX = Math.max(from.x, to.x)
+                    val fromY = Math.min(from.y, to.y)
+                    val toY = Math.max(from.y, to.y)
+                    for (x in fromX..toX) {
+                        for (y in fromY..toY) {
+                            val mark = factory(Point(x, y))
+                            game.currentNode.addMark(mark)
+                        }
+                    }
+                }
+            } else {
+                // Simple points such as : DD[aa][ca]
+                val point = toPoint(game.board, str.substring(0, 2))
+                if (point != null) {
+                    val mark = factory(point)
+                    game.currentNode.addMark(mark)
+                }
             }
         }
     }

@@ -175,7 +175,7 @@ class SGFWriter {
             writer.write(property)
             marks.forEach { mark ->
                 val pt = fromPoint(mark.point)
-                writer.write("$[$pt:${mark.text}]")
+                writer.write("[$pt:${mark.text}]")
             }
         }
     }
@@ -185,6 +185,7 @@ class SGFWriter {
         writePoints("SQ", node.marks.filter { it is SquareMark }.map { it.point })
         writePoints("TR", node.marks.filter { it is TriangleMark }.map { it.point })
         writePoints("MA", node.marks.filter { it is CrossMark }.map { it.point })
+        writePoints("DD", node.marks.filter { it is DimmedMark }.map { it.point })
         writeLabelledPoints("LB", node.marks.filter { it is LabelMark }.map { it as LabelMark })
 
         if (node.name.isNotBlank()) {
