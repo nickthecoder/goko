@@ -22,7 +22,7 @@ import uk.co.nickthecoder.goko.model.*
 import uk.co.nickthecoder.goko.preferences.Preferences
 import uk.co.nickthecoder.paratask.util.process.BufferedSink
 import uk.co.nickthecoder.paratask.util.process.Exec
-import uk.co.nickthecoder.paratask.util.runLater
+import uk.co.nickthecoder.paratask.util.runAfterDelay
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.io.Writer
@@ -392,7 +392,7 @@ private class FinalScoreHandler(client: GnuGoClient, val gnuGo: GnuGo) : ReplyHa
         super.running(command, commandNumber)
         completedOk = false
         println("About to delay ${Preferences.advancedPreferences.finalScoreTimeoutP.value.scaledValue.toLong()}s")
-        runLater(Preferences.advancedPreferences.finalScoreTimeoutP.value.scaledValue.toLong() * 1000) {
+        runAfterDelay(Preferences.advancedPreferences.finalScoreTimeoutP.value.scaledValue.toLong() * 1000) {
             println("After delay : ${completedOk}")
             if (!completedOk) {
                 gnuGo.respawn(commandNumber)

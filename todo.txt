@@ -5,6 +5,8 @@ Bugs
 
 Load/Save Dimmed marks in sgf files.
 
+"MainLine" Button should clear history, (so we ARE on the main line)
+
 New modes
 	GnuGo Attack, Defend
 		Click a dragon for a hint to attack or defend it.

@@ -20,7 +20,7 @@ package uk.co.nickthecoder.goko
 
 import uk.co.nickthecoder.goko.model.*
 import uk.co.nickthecoder.goko.preferences.Preferences
-import uk.co.nickthecoder.paratask.util.runLater
+import uk.co.nickthecoder.paratask.util.runAfterDelay
 
 /**
  * Automatically play the opponents moves when solving Go problems
@@ -39,7 +39,7 @@ class ProblemOpponent(val game: Game, override val color: StoneColor) : Player {
             val nextNode = currentNode.children.firstOrNull()
 
             nextNode?.let {
-                runLater(500) {
+                runAfterDelay(500) {
                     game.apply(it)
                     GoKo.stoneSound()
                 }
