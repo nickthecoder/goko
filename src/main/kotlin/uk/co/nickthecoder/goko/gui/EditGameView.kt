@@ -154,7 +154,7 @@ class EditGameView(mainWindow: MainWindow, game: Game) : AbstractGoView(mainWind
         val deleteBranchB = GoKoActions.DELETE_BRANCH.createButton(shortcuts) { onDeleteBranch() }
         val gnuGoB = GoKoActions.GNU_GO_TO_PLAY.createButton(shortcuts) { onGnuGoToPlay() }
 
-        val rewindToMainLineB = GoKoActions.REWIND_TO_MAIN_LINE.createButton(shortcuts) { game.rewindToMainLine() }
+        val rewindToMainLineB = GoKoActions.REWIND_TO_MAIN_LINE.createButton(shortcuts) { history.rewindToMainLine() }
         val rewindToBranchPointB = GoKoActions.REWIND_TO_BRANCH_POINT.createButton(shortcuts) { game.rewindToBranchPoint() }
         val forwardToBranchPointB = GoKoActions.FORWARD_TO_BRANCH_POINT.createButton(shortcuts) { history.forwardToBranchPoint() }
 

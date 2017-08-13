@@ -71,6 +71,11 @@ class History(val game: Game) : GameListener {
         }
     }
 
+    fun rewindToMainLine() {
+        game.rewindToMainLine()
+        history.clear()
+    }
+
     override fun madeMove(gameNode: GameNode) {
 
         val c = history.indexOf(gameNode)
