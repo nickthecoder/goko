@@ -22,6 +22,8 @@ import javafx.application.Platform
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.*
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDouble
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDoubleParameter
 import java.util.*
 
 class GameMetaData(val game: Game) : AbstractTask() {
@@ -39,7 +41,7 @@ class GameMetaData(val game: Game) : AbstractTask() {
     private val resultP = StringParameter(name = "result", required = false)
     private val handicapP = IntParameter(name = "handicap", required = false)
     private val komiP = DoubleParameter(name = "komi", required = false)
-    private val mainTimeP = ScaledDoubleParameter(name = "mainTime", scales = timeScales, value = ScaledValue(0.0, 60.0))
+    private val mainTimeP = ScaledDoubleParameter(name = "mainTime", value = ScaledDouble(0.0, 60.0, timeScales))
     private val overtimeP = StringParameter(name = "overtime", required = false)
 
     private val gameInfo = GroupParameter("gameInfo")
@@ -107,7 +109,7 @@ class GameMetaData(val game: Game) : AbstractTask() {
             mainTime = tl.mainPeriodP.value
             overtime = tl.byoYomi("") + tl.overtime(" ")
         } else {
-            mainTime = ScaledValue(0.0, 60.0)
+            mainTime = ScaledDouble(0.0, 60.0, timeScales)
             overtime = ""
         }
     }

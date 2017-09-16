@@ -40,7 +40,7 @@ open class ChallengeMatch : AbstractGamePreferences(), GameListener {
 Each time you play, the the handicap will change based on your previous results.
 """)
 
-    val computerLevelP = IntParameter("computerLevel", range = 1..20, value = 10)
+    val computerLevelP = IntParameter("computerLevel", minValue = 1, maxValue = 20, value = 10)
 
     val computerPlaysP = ChoiceParameter("computerPlays", value = StoneColor.BLACK)
             .choice("BLACK", StoneColor.BLACK, "Black")

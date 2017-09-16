@@ -22,14 +22,14 @@ import uk.co.nickthecoder.goko.model.timeScales
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
 import uk.co.nickthecoder.paratask.parameters.BooleanParameter
-import uk.co.nickthecoder.paratask.parameters.ScaledDoubleParameter
-import uk.co.nickthecoder.paratask.parameters.ScaledValue
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDouble
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDoubleParameter
 
 class AdvancedPreferences : AbstractTask() {
 
     override val taskD = TaskDescription("advanced")
 
-    val finalScoreTimeoutP = ScaledDoubleParameter("finalScoreTimeout", value = ScaledValue(30.0, 60.0), scales = timeScales)
+    val finalScoreTimeoutP = ScaledDoubleParameter("finalScoreTimeout", value = ScaledDouble(30.0, 60.0, timeScales))
     val checkGnuGoSyncP = BooleanParameter("checkGnuGoSync", value = false)
 
     init {

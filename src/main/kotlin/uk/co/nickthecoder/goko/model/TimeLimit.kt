@@ -18,7 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.model
 
-import uk.co.nickthecoder.paratask.parameters.*
+import uk.co.nickthecoder.paratask.parameters.CompoundParameter
+import uk.co.nickthecoder.paratask.parameters.IntParameter
+import uk.co.nickthecoder.paratask.parameters.StringParameter
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDouble
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDoubleParameter
 
 interface TimeLimit {
 
@@ -47,64 +51,41 @@ class NoTimeLimit : TimeLimit {
     }
 }
 
-val timeScales = mapOf("hours" to 60.0 * 60, "minutes" to 60.0, "seconds" to 1.0)
-
 /**
  * All time periods are in stored in seconds.
  */
+val timeScales = mapOf(60.0 * 60.0 to "hours", 60.0 to "minutes", 1.0 to "seconds")
+
 class TimedLimit(
         description: String,
-        mainPeriod: Double,
-        mainScale: Double,
-        byoYomiPeriod: Double,
-        byoYomiScale: Double,
+        mainPeriod: ScaledDouble,
+        byoYomiPeriod: ScaledDouble,
         byoYomiMoves: Int = 1,
-        overtimePeriod: Double = 0.0,
-        overtimeScale: Double = 1.0,
+        overtimePeriod: ScaledDouble = ScaledDouble(0.0, 1.0, timeScales),
         overtimePeriods: Int = 0) : TimeLimit {
+
 
     val descriptionP = StringParameter("description", value = description)
 
-    val mainPeriodP = ScaledDoubleParameter("mainPeriod", value = ScaledValue(mainPeriod, mainScale), scales = timeScales)
+    val mainPeriodP = ScaledDoubleParameter("mainPeriod", value = mainPeriod)
+    var mainPeriod by mainPeriodP
 
-    val byoYomiPeriodP = ScaledDoubleParameter("byoYomiPeriod", value = ScaledValue(byoYomiPeriod, byoYomiScale), scales = timeScales)
+    val byoYomiPeriodP = ScaledDoubleParameter("byoYomiPeriod", value = byoYomiPeriod)
+    var byoYomiPeriod by byoYomiPeriodP
 
     val byoYomiMovesP = IntParameter("byoYomiMoves", value = byoYomiMoves)
-
-    val overtimePeriodP = ScaledDoubleParameter("overtimePeriod", value = ScaledValue(overtimePeriod, overtimeScale), scales = timeScales)
-
-    val overtimePeriodsP = IntParameter("overtimePeriods", value = overtimePeriods)
-
-    val compound = CompoundParameter("timePeriod")
-
-    var description by descriptionP
-
-    var mainPeriod: Double
-        get() = mainPeriodP.value.scaledValue
-        set(v) {
-            mainPeriodP.value.scaledValue = v
-        }
-
-    var byoYomiPeriod: Double
-        get() = byoYomiPeriodP.value.scaledValue
-        set(v) {
-            byoYomiPeriodP.value.scaledValue = v
-        }
-
     var byoYomiMoves by byoYomiMovesP
 
+    val overtimePeriodP = ScaledDoubleParameter("overtimePeriod", value = overtimePeriod)
+    var overtimePeriod by overtimePeriodP
 
-    var overtimePeriod: Double
-        get() = overtimePeriodP.value.scaledValue
-        set(v) {
-            overtimePeriodP.value.scaledValue = v
-        }
-
+    val overtimePeriodsP = IntParameter("overtimePeriods", value = overtimePeriods)
     var overtimePeriods by overtimePeriodsP
 
-    init {
-        compound.addParameters(descriptionP, mainPeriodP, byoYomiPeriodP, byoYomiMovesP, overtimePeriodP, overtimePeriodsP)
-    }
+    val compound = CompoundParameter("timePeriod")
+            .addParameters(descriptionP, mainPeriodP, byoYomiPeriodP, byoYomiMovesP, overtimePeriodP, overtimePeriodsP) as CompoundParameter
+
+    var description by descriptionP
 
     override fun key() = "$mainPeriod+$byoYomiPeriod/$byoYomiMoves+$overtimePeriod*$overtimePeriods"
 
@@ -113,26 +94,26 @@ class TimedLimit(
     }
 
     override fun status(): String {
-        if (mainPeriod > 0) {
+        if (mainPeriod!!.value > 0) {
             return main() + overtime()
         }
-        if (byoYomiMoves!! > 0 && byoYomiPeriod > 0) {
+        if (byoYomiMoves!! > 0 && byoYomiPeriod!!.value > 0) {
             return byoYomi() + overtime()
         }
-        if (overtimePeriods!! > 0 && overtimePeriod > 0) {
+        if (overtimePeriods!! > 0 && overtimePeriod!!.value > 0) {
             return overtime()
         }
         return "Time limit exceeded"
     }
 
-    fun main() = "Main Time : ${humanTimePeriod(mainPeriod)}"
+    fun main() = "Main Time : ${humanTimePeriod(mainPeriod!!.value)}"
 
     fun byoYomi(prefix: String = "\n"): String {
-        if (byoYomiPeriod > 0) {
+        if (byoYomiPeriod!!.value > 0) {
             if (byoYomiMoves!! > 1) {
-                return "${prefix}Byo-Yomi : $byoYomiMoves moves in ${humanTimePeriod(byoYomiPeriod)}"
+                return "${prefix}Byo-Yomi : $byoYomiMoves moves in ${humanTimePeriod(byoYomiPeriod!!.value)}"
             } else {
-                return "${prefix}Byo-Yomi : ${humanTimePeriod(byoYomiPeriod)}"
+                return "${prefix}Byo-Yomi : ${humanTimePeriod(byoYomiPeriod!!.value)}"
             }
         } else {
             return ""
@@ -148,10 +129,10 @@ class TimedLimit(
 
     override fun copy() = TimedLimit(
             description,
-            mainPeriodP.value.value, mainPeriodP.value.scale,
-            byoYomiPeriodP.value.value, byoYomiPeriodP.value.scale,
+            mainPeriod!!,
+            byoYomiPeriod!!,
             byoYomiMoves!!,
-            overtimePeriodP.value.value, overtimePeriodP.value.scale,
+            overtimePeriod!!,
             overtimePeriods!!)
 
 }

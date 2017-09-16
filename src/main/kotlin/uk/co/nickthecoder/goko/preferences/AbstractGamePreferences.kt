@@ -38,7 +38,7 @@ abstract class AbstractGamePreferences : AbstractTask() {
             .choice("9", 9, "Small (9x9)")
 
 
-    val handicapP = IntParameter("handicap", value = 0, range = 0..9)
+    val handicapP = IntParameter("handicap", value = 0, minValue = 0, maxValue = 9)
 
     val fixedHandicapPointsP = BooleanParameter("fixedHandicapPoints", value = true)
 

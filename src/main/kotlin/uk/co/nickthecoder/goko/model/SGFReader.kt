@@ -142,7 +142,7 @@ class SGFReader {
 
         game.metaData.result = sgfNode.getOptionalPropertyValue("RE")
         game.metaData.komi = sgfNode.getDoublePropertyValue("KM")
-        game.metaData.mainTime.scaledValue = sgfNode.getDoublePropertyValue("TM") ?: 0.0
+        game.metaData.mainTime!!.value = sgfNode.getDoublePropertyValue("TM") ?: 0.0
         game.metaData.overtime = sgfNode.getOptionalPropertyValue("OT")
 
         game.metaData.datePlayed = sgfNode.getDatePropertyValue("DT")
@@ -458,7 +458,7 @@ class SGFReader {
         while (true) {
             val c = readChar() ?: throw IOException("End of file while reading property value")
             if (escaped) {
-                if ( c == '\n' ) {
+                if (c == '\n') {
                     // Do nothing. Weird, but the spec says that this is a "soft" newline, and should be replaced by "" <blank>
                 } else {
                     str += c

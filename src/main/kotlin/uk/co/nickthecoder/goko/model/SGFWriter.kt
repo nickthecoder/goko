@@ -97,7 +97,7 @@ class SGFWriter {
 
         writeOptionalTextProperty("RE", game.metaData.result)
         writeOptionalProperty("KM", game.metaData.komi, saveZeros = false)
-        writeOptionalProperty("TM", game.metaData.mainTime.scaledValue)
+        writeOptionalProperty("TM", game.metaData.mainTime!!.value) // TODO Check this!
         writeOptionalTextProperty("OT", game.metaData.overtime)
 
         writeOptionalProperty("DT", game.metaData.datePlayed)

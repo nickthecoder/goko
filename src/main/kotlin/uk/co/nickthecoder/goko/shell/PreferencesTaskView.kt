@@ -37,7 +37,7 @@ open class PreferencesTaskView(val task: Task, mainWindow: MainWindow) : TopLeve
     override val node: Node = taskForm.scrollPane
 
     override fun build() {
-
+        taskForm.build()
     }
-
+                    
 }

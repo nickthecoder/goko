@@ -189,15 +189,15 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
         fun beginPeriod() {
             startTimeMillis = Date().time
 
-            if (timedLimit.mainPeriod > 0) {
+            if (timedLimit.mainPeriod!!.value > 0) {
                 period = 0
-                startPeriodSeconds = timedLimit.mainPeriod
-            } else if (timedLimit.byoYomiPeriod > 0) {
+                startPeriodSeconds = timedLimit.mainPeriod!!.value
+            } else if (timedLimit.byoYomiPeriod!!.value > 0) {
                 period = 1
-                startPeriodSeconds = timedLimit.byoYomiPeriod
-            } else if (timedLimit.overtimePeriod > 0) {
+                startPeriodSeconds = timedLimit.byoYomiPeriod!!.value
+            } else if (timedLimit.overtimePeriod!!.value > 0) {
                 period = 2
-                startPeriodSeconds = timedLimit.overtimePeriod
+                startPeriodSeconds = timedLimit.overtimePeriod!!.value
             } else {
                 period = -1
             }
@@ -216,11 +216,11 @@ class GameInfoView(val game: Game, val showTimeLimit: Boolean) : View, GameListe
                 }
 
                 if (period == 0) {
-                    timedLimit.mainPeriod = timeLeft
+                    timedLimit.mainPeriod!!.value = timeLeft
                 } else if (period == 1) {
-                    timedLimit.byoYomiPeriod = timeLeft
+                    timedLimit.byoYomiPeriod!!.value = timeLeft
                 } else {
-                    timedLimit.overtimePeriod = timeLeft
+                    timedLimit.overtimePeriod!!.value = timeLeft
                 }
 
                 if (timeLeft <= 0.0) {

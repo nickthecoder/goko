@@ -39,7 +39,7 @@ open class ManVersesMachine : AbstractGamePreferences() {
             .choice("BLACK", StoneColor.BLACK, "Black")
             .choice("WHITE", StoneColor.WHITE, " White")
 
-    val computerLevelP = IntParameter("computerLevel", range = 1..20, value = 10)
+    val computerLevelP = IntParameter("computerLevel", minValue = 1, maxValue = 20, value = 10)
 
     init {
         taskD.addParameters(boardSizeP, computerPlaysP, computerLevelP, handicapP,

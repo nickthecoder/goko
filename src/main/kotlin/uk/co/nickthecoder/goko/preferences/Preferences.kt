@@ -23,8 +23,10 @@ import com.eclipsesource.json.JsonArray
 import com.eclipsesource.json.JsonObject
 import com.eclipsesource.json.PrettyPrint
 import uk.co.nickthecoder.goko.model.TimedLimit
+import uk.co.nickthecoder.goko.model.timeScales
 import uk.co.nickthecoder.paratask.Task
 import uk.co.nickthecoder.paratask.parameters.TaskParameter
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDouble
 import uk.co.nickthecoder.paratask.util.JsonHelper
 import uk.co.nickthecoder.paratask.util.child
 import uk.co.nickthecoder.paratask.util.homeDirectory
@@ -73,8 +75,8 @@ object Preferences {
     init {
         // NOTE. Time limits must come before any preferences that use time limits (such as quickGamePreferences).
         addPreferenceTask(basicPreferences)
-        addPreferenceTask(timeLimitPreferences) // TODO Broken!
-        addPreferenceTask(gamesPreferences) // TODO Broken!
+        addPreferenceTask(timeLimitPreferences)
+        addPreferenceTask(gamesPreferences)
         addPreferenceTask(problemsPreferences)
         addPreferenceTask(josekiPreferences)
         addPreferenceTask(editGamePreferences)
@@ -163,9 +165,9 @@ object Preferences {
 
     private fun updateTimeLimits() {
 
-        timeLimitPreferences.addTimeLimit(TimedLimit("30 minutes, plus 10 minutes byo-yomi per 25 moves", 30.0, 60.0, byoYomiPeriod = 10.0, byoYomiScale = 60.0, byoYomiMoves = 25))
-        timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, 3 overtimes", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0, overtimePeriod = 30.0, overtimePeriods = 3))
-        timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, no overtime", 10.0, 60.0, byoYomiPeriod = 30.0, byoYomiScale = 1.0))
+        timeLimitPreferences.addTimeLimit(TimedLimit("30 minutes, plus 10 minutes byo-yomi per 25 moves", ScaledDouble(30.0, 60.0, timeScales), byoYomiPeriod = ScaledDouble(10.0, 60.0, timeScales), byoYomiMoves = 25))
+        timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, 3 overtimes", ScaledDouble(10.0, 60.0, timeScales), byoYomiPeriod = ScaledDouble(30.0, 1.0, timeScales), overtimePeriod = ScaledDouble(30.0, 1.0, timeScales), overtimePeriods = 3))
+        timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, no overtime", ScaledDouble(10.0, 60.0, timeScales), byoYomiPeriod = ScaledDouble(30.0, 1.0, timeScales)))
 
         gamesPreferences.gamesP.value.forEach { compound ->
             val taskParameter = compound.find("type") as TaskParameter

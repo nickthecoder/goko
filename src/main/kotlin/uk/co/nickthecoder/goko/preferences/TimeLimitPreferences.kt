@@ -21,9 +21,15 @@ package uk.co.nickthecoder.goko.preferences
 import uk.co.nickthecoder.goko.model.NoTimeLimit
 import uk.co.nickthecoder.goko.model.TimeLimit
 import uk.co.nickthecoder.goko.model.TimedLimit
+import uk.co.nickthecoder.goko.model.timeScales
 import uk.co.nickthecoder.paratask.AbstractTask
 import uk.co.nickthecoder.paratask.TaskDescription
-import uk.co.nickthecoder.paratask.parameters.*
+import uk.co.nickthecoder.paratask.parameters.ChoiceParameter
+import uk.co.nickthecoder.paratask.parameters.IntParameter
+import uk.co.nickthecoder.paratask.parameters.MultipleParameter
+import uk.co.nickthecoder.paratask.parameters.StringParameter
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDouble
+import uk.co.nickthecoder.paratask.parameters.compound.ScaledDoubleParameter
 
 /**
  */
@@ -32,7 +38,7 @@ class TimeLimitPreferences : AbstractTask() {
     override val taskD = TaskDescription("timeLimits")
 
     val timeLimitsP = MultipleParameter("timeLimits", minItems = 1) {
-        val timeLimit = TimedLimit("", 30.0, 60.0, 10.0, 60.0, 25, 30.0, 1.0, 3)
+        val timeLimit = TimedLimit("", ScaledDouble(30.0, 60.0, timeScales), ScaledDouble(10.0, 60.0, timeScales), 25, ScaledDouble(30.0, 1.0, timeScales), 3)
         timeLimit.compound
     }
 
@@ -62,10 +68,10 @@ class TimeLimitPreferences : AbstractTask() {
             //println("OvertimePeriod ${overtimePeriodP.value.scaledValue} with ${timeLimit.overtimePeriodP.value.scaledValue}")
             //println("Overtimes ${overtimePeriodsP.value} with ${timeLimit.overtimePeriodsP.value}")
             //println()
-            if (mainPeriodP.value.scaledValue == timeLimit.mainPeriodP.value.scaledValue
-                    && byoYomiPeriodP.value.scaledValue == timeLimit.byoYomiPeriodP.value.scaledValue
+            if (mainPeriodP.value == timeLimit.mainPeriodP.value
+                    && byoYomiPeriodP.value == timeLimit.byoYomiPeriodP.value
                     && byoYomiMovesP.value == timeLimit.byoYomiMovesP.value
-                    && overtimePeriodP.value.scaledValue == timeLimit.overtimePeriodP.value.scaledValue
+                    && overtimePeriodP.value == timeLimit.overtimePeriodP.value
                     && overtimePeriodsP.value == timeLimit.overtimePeriodsP.value
                     ) {
                 return true
@@ -100,10 +106,10 @@ class TimeLimitPreferences : AbstractTask() {
 
             val timeLimit = TimedLimit(
                     descriptionP.value,
-                    mainPeriodP.value.value, mainPeriodP.value.scale,
-                    byoYomiPeriodP.value.value, byoYomiPeriodP.value.scale,
+                    mainPeriodP.value!!,
+                    byoYomiPeriodP.value!!,
                     byoYomiMovesP.value!!,
-                    overtimePeriodP.value.value, overtimePeriodP.value.scale,
+                    overtimePeriodP.value!!,
                     overtimePeriodsP.value!!)
 
             choiceP.addChoice(timeLimit.key(), timeLimit, descriptionP.value)

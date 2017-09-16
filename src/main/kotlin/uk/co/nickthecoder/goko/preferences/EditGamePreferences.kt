@@ -31,7 +31,7 @@ class EditGamePreferences : AbstractTask(), CommentsPreferences {
 
     override val taskD = TaskDescription("editGame")
 
-    val showMoveNumbersP = IntParameter(name = "showMoveNumbers", range = 0..99, value = 0)
+    val showMoveNumbersP = IntParameter(name = "showMoveNumbers", minValue = 0, maxValue = 99, value = 0)
     override val showNodeAnnotationsP = BooleanParameter(name = "showNodeAnnotations", value = true)
     override val showMoveAnnotationsP = BooleanParameter(name = "showMoveAnnotations", value = true)
     val showBranchesP = ChoiceParameter("showBranches", value = ShowBranches.DO_NOT_SHOW).enumChoices()
