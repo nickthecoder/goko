@@ -3,6 +3,8 @@ Bugs
 	Challenge match didn't update its stats when I resigned (after a timed-out final status, due to a 3second timeout).
 	Comment with "]" truncates it
 
+Add Leela opponent.
+
 New modes
 	GnuGo Attack, Defend
 		Click a dragon for a hint to attack or defend it.

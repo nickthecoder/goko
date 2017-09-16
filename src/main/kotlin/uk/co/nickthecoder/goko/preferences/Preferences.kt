@@ -73,7 +73,11 @@ object Preferences {
     }
 
     init {
-        // NOTE. Time limits must come before any preferences that use time limits (such as quickGamePreferences).
+        if (!preferencesFile.exists()) {
+            addDefaultTimeLimits()
+        }
+
+        // NOTE. timeLimitPreferences must come before any preferences that use time limits (such as gamesPreferences).
         addPreferenceTask(basicPreferences)
         addPreferenceTask(timeLimitPreferences)
         addPreferenceTask(gamesPreferences)
@@ -163,11 +167,16 @@ object Preferences {
         updateTimeLimits()
     }
 
-    private fun updateTimeLimits() {
-
+    private fun addDefaultTimeLimits() {
         timeLimitPreferences.addTimeLimit(TimedLimit("30 minutes, plus 10 minutes byo-yomi per 25 moves", ScaledDouble(30.0, 60.0, timeScales), byoYomiPeriod = ScaledDouble(10.0, 60.0, timeScales), byoYomiMoves = 25))
         timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, 3 overtimes", ScaledDouble(10.0, 60.0, timeScales), byoYomiPeriod = ScaledDouble(30.0, 1.0, timeScales), overtimePeriod = ScaledDouble(30.0, 1.0, timeScales), overtimePeriods = 3))
         timeLimitPreferences.addTimeLimit(TimedLimit("10 minutes, plus 30 seconds byo-yomi, no overtime", ScaledDouble(10.0, 60.0, timeScales), byoYomiPeriod = ScaledDouble(30.0, 1.0, timeScales)))
+    }
+
+    private fun updateTimeLimits() {
+        if (timeLimitPreferences.timeLimitsP.value.size == 0) {
+            addDefaultTimeLimits()
+        }
 
         gamesPreferences.gamesP.value.forEach { compound ->
             val taskParameter = compound.find("type") as TaskParameter

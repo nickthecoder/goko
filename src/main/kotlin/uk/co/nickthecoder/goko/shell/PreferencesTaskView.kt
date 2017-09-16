@@ -39,5 +39,5 @@ open class PreferencesTaskView(val task: Task, mainWindow: MainWindow) : TopLeve
     override fun build() {
         taskForm.build()
     }
-                    
+
 }
