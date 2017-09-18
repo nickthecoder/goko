@@ -38,9 +38,8 @@ class TimeLimitPreferences : AbstractTask() {
     override val taskD = TaskDescription("timeLimits")
 
     val timeLimitsP = MultipleParameter("timeLimits", label = "") {
-        val timeLimit = TimedLimit("", ScaledDouble(30.0, 60.0, timeScales), ScaledDouble(10.0, 60.0, timeScales), 25, ScaledDouble(30.0, 1.0, timeScales), 3)
-        timeLimit.compound
-    }
+        TimedLimit("", ScaledDouble(30.0, 60.0, timeScales), ScaledDouble(10.0, 60.0, timeScales), 25, ScaledDouble(30.0, 1.0, timeScales), 3)
+    }.asListDetail { it.descriptionText }
 
     init {
         taskD.addParameters(timeLimitsP)
@@ -50,7 +49,7 @@ class TimeLimitPreferences : AbstractTask() {
         if (contains(timeLimit)) {
             return
         }
-        timeLimitsP.addValue(timeLimit.compound)
+        timeLimitsP.addValue(timeLimit)
     }
 
     private fun contains(timeLimit: TimedLimit): Boolean {
@@ -106,10 +105,10 @@ class TimeLimitPreferences : AbstractTask() {
 
             val timeLimit = TimedLimit(
                     descriptionP.value,
-                    mainPeriodP.value!!,
-                    byoYomiPeriodP.value!!,
+                    mainPeriodP.value,
+                    byoYomiPeriodP.value,
                     byoYomiMovesP.value!!,
-                    overtimePeriodP.value!!,
+                    overtimePeriodP.value,
                     overtimePeriodsP.value!!)
 
             choiceP.addChoice(timeLimit.key(), timeLimit, descriptionP.value)

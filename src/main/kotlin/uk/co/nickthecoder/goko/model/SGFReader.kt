@@ -142,7 +142,7 @@ class SGFReader {
 
         game.metaData.result = sgfNode.getOptionalPropertyValue("RE")
         game.metaData.komi = sgfNode.getDoublePropertyValue("KM")
-        game.metaData.mainTime!!.value = sgfNode.getDoublePropertyValue("TM") ?: 0.0
+        game.metaData.mainTime.value = sgfNode.getDoublePropertyValue("TM") ?: 0.0
         game.metaData.overtime = sgfNode.getOptionalPropertyValue("OT")
 
         game.metaData.datePlayed = sgfNode.getDatePropertyValue("DT")

@@ -57,7 +57,7 @@ open class ManVersesMachine : AbstractGamePreferences() {
 
     override fun initialiseGame(game: Game) {
         val human = LocalPlayer(game, StoneColor.opposite(computerPlaysP.value!!), Preferences.yourName, Preferences.yourRank)
-        human.timeRemaining = game.metaData.timeLimit.copy()
+        human.timeRemaining = game.metaData.timeLimit.copyTimeLimit()
 
         val gnuGo = GnuGoPlayer(game, computerPlaysP.value!!)
         gnuGo.start()

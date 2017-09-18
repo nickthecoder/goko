@@ -18,9 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package uk.co.nickthecoder.goko.model
 
-import uk.co.nickthecoder.paratask.parameters.CompoundParameter
 import uk.co.nickthecoder.paratask.parameters.IntParameter
+import uk.co.nickthecoder.paratask.parameters.MultipleGroupParameter
 import uk.co.nickthecoder.paratask.parameters.StringParameter
+import uk.co.nickthecoder.paratask.parameters.addParameters
 import uk.co.nickthecoder.paratask.parameters.compound.ScaledDouble
 import uk.co.nickthecoder.paratask.parameters.compound.ScaledDoubleParameter
 
@@ -29,7 +30,7 @@ interface TimeLimit {
     fun key(): String
     fun status(): String
     fun details(): String
-    fun copy(): TimeLimit
+    fun copyTimeLimit(): TimeLimit
 }
 
 class NoTimeLimit : TimeLimit {
@@ -44,7 +45,7 @@ class NoTimeLimit : TimeLimit {
         return "No Time Limit"
     }
 
-    override fun copy() = this
+    override fun copyTimeLimit() = this
 
     companion object {
         val instance = NoTimeLimit()
@@ -62,10 +63,11 @@ class TimedLimit(
         byoYomiPeriod: ScaledDouble,
         byoYomiMoves: Int = 1,
         overtimePeriod: ScaledDouble = ScaledDouble(0.0, 1.0, timeScales),
-        overtimePeriods: Int = 0) : TimeLimit {
+        overtimePeriods: Int = 0) : TimeLimit, MultipleGroupParameter("timeLimit") {
 
 
     val descriptionP = StringParameter("description", value = description)
+    var descriptionText by descriptionP
 
     val mainPeriodP = ScaledDoubleParameter("mainPeriod", value = mainPeriod)
     var mainPeriod by mainPeriodP
@@ -82,10 +84,10 @@ class TimedLimit(
     val overtimePeriodsP = IntParameter("overtimePeriods", value = overtimePeriods)
     var overtimePeriods by overtimePeriodsP
 
-    val compound = CompoundParameter("timePeriod")
-            .addParameters(descriptionP, mainPeriodP, byoYomiPeriodP, byoYomiMovesP, overtimePeriodP, overtimePeriodsP) as CompoundParameter
 
-    var description by descriptionP
+    init {
+        addParameters(descriptionP, mainPeriodP, byoYomiPeriodP, byoYomiMovesP, overtimePeriodP, overtimePeriodsP)
+    }
 
     override fun key() = "$mainPeriod+$byoYomiPeriod/$byoYomiMoves+$overtimePeriod*$overtimePeriods"
 
@@ -94,26 +96,26 @@ class TimedLimit(
     }
 
     override fun status(): String {
-        if (mainPeriod!!.value > 0) {
+        if (mainPeriod.value > 0) {
             return main() + overtime()
         }
-        if (byoYomiMoves!! > 0 && byoYomiPeriod!!.value > 0) {
+        if (byoYomiMoves!! > 0 && byoYomiPeriod.value > 0) {
             return byoYomi() + overtime()
         }
-        if (overtimePeriods!! > 0 && overtimePeriod!!.value > 0) {
+        if (overtimePeriods!! > 0 && overtimePeriod.value > 0) {
             return overtime()
         }
         return "Time limit exceeded"
     }
 
-    fun main() = "Main Time : ${humanTimePeriod(mainPeriod!!.value)}"
+    fun main() = "Main Time : ${humanTimePeriod(mainPeriod.value)}"
 
     fun byoYomi(prefix: String = "\n"): String {
-        if (byoYomiPeriod!!.value > 0) {
+        if (byoYomiPeriod.value > 0) {
             if (byoYomiMoves!! > 1) {
-                return "${prefix}Byo-Yomi : $byoYomiMoves moves in ${humanTimePeriod(byoYomiPeriod!!.value)}"
+                return "${prefix}Byo-Yomi : $byoYomiMoves moves in ${humanTimePeriod(byoYomiPeriod.value)}"
             } else {
-                return "${prefix}Byo-Yomi : ${humanTimePeriod(byoYomiPeriod!!.value)}"
+                return "${prefix}Byo-Yomi : ${humanTimePeriod(byoYomiPeriod.value)}"
             }
         } else {
             return ""
@@ -127,14 +129,15 @@ class TimedLimit(
         return ""
     }
 
-    override fun copy() = TimedLimit(
-            description,
-            mainPeriod!!,
-            byoYomiPeriod!!,
+    override fun copyTimeLimit() = TimedLimit(
+            descriptionText,
+            mainPeriod,
+            byoYomiPeriod,
             byoYomiMoves!!,
-            overtimePeriod!!,
+            overtimePeriod,
             overtimePeriods!!)
 
+    override fun copy(): TimedLimit = copyTimeLimit()
 }
 
 fun humanTimePeriod(period: Double): String = humanTimePeriod(period.toInt())

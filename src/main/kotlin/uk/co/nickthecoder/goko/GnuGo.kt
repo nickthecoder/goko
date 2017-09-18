@@ -391,8 +391,8 @@ private class FinalScoreHandler(client: GnuGoClient, val gnuGo: GnuGo) : ReplyHa
     override fun running(command: String, commandNumber: Int) {
         super.running(command, commandNumber)
         completedOk = false
-        println("About to delay ${Preferences.advancedPreferences.finalScoreTimeoutP.value!!.value}s")
-        runAfterDelay(Preferences.advancedPreferences.finalScoreTimeoutP.value!!.value.toLong() * 1000) {
+        println("About to delay ${Preferences.advancedPreferences.finalScoreTimeoutP.value.value}s")
+        runAfterDelay(Preferences.advancedPreferences.finalScoreTimeoutP.value.value.toLong() * 1000) {
             println("After delay : ${completedOk}")
             if (!completedOk) {
                 gnuGo.respawn(commandNumber)

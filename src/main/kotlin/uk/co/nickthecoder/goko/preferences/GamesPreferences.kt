@@ -34,14 +34,8 @@ Add your favourite types of games to the Home page.
 """)
 
     val gamesP = MultipleParameter("games", label = "") {
-        val compound = CompoundParameter("game")
-
-        val labelP = StringParameter("label", value = "")
-        val taskP = TaskParameter("type", programmable = false, taskFactory = GameTypeFactory())
-        compound.addParameters(labelP, taskP)
-
-        compound
-    }
+        GameParameters()
+    }.asListDetail { it.labelP.value }
 
     init {
         taskD.addParameters(gamesP)
@@ -55,7 +49,7 @@ Add your favourite types of games to the Home page.
      * If there are no games defined, create a few default ones.
      */
     fun ensureGamesExist() {
-        if (gamesP.value.size == 0) {
+        if (gamesP.value.isEmpty()) {
             createGame("Man vs Machine", ManVersesMachine())
             createGame("Challenge", ChallengeMatch())
             createGame("Two Player", TwoPlayerGame())
@@ -63,7 +57,7 @@ Add your favourite types of games to the Home page.
     }
 
     private fun createGame(label: String, task: Task) {
-        val compound: CompoundParameter = gamesP.newValue().value
+        val compound: MultipleGroupParameter = gamesP.newValue().value
         (compound.find("label") as StringParameter).value = label
         (compound.find("type") as TaskParameter).value = task
     }
@@ -78,4 +72,14 @@ class GameTypeFactory : TaskFactory {
 
     override val taskGroups = listOf<TaskGroup>()
 
+}
+
+class GameParameters : MultipleGroupParameter("game") {
+
+    val labelP = StringParameter("label", value = "")
+    val taskP = TaskParameter("type", programmable = false, taskFactory = GameTypeFactory())
+
+    init {
+        addParameters(labelP, taskP)
+    }
 }

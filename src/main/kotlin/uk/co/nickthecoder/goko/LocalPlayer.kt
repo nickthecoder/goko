@@ -25,7 +25,7 @@ import uk.co.nickthecoder.goko.model.StoneColor
 open class LocalPlayer(val game: Game, override val color: StoneColor, name: String = "Human", override val rank: String = "")
     : Player {
 
-    override var timeRemaining = game.metaData.timeLimit.copy()
+    override var timeRemaining = game.metaData.timeLimit.copyTimeLimit()
 
     override var label = name
 

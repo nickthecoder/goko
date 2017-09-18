@@ -65,8 +65,8 @@ open class TwoPlayerGame : AbstractGamePreferences(), GameListener {
         val blackPlayer = LocalPlayer(game, StoneColor.BLACK, blackPlayerP.value)
         val whitePlayer = LocalPlayer(game, StoneColor.WHITE, whitePlayerP.value)
 
-        blackPlayer.timeRemaining = game.metaData.timeLimit.copy()
-        whitePlayer.timeRemaining = game.metaData.timeLimit.copy()
+        blackPlayer.timeRemaining = game.metaData.timeLimit.copyTimeLimit()
+        whitePlayer.timeRemaining = game.metaData.timeLimit.copyTimeLimit()
 
         game.addPlayer(blackPlayer)
         game.addPlayer(whitePlayer)
