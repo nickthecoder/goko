@@ -64,7 +64,7 @@ Add your favourite types of games to the Home page.
 
 }
 
-class GameTypeFactory : TaskFactory {
+class GameTypeFactory : TaskParameterFactory {
 
     override val topLevelTasks = listOf<Task>(ManVersesMachine(), TwoPlayerGame(), ChallengeMatch())
 
