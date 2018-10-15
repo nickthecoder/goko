@@ -47,13 +47,13 @@ class TaskView(task: Task, mainWindow: MainWindow) : PreferencesTaskView(task, m
         }
 
         with(cancelButton) {
-            cancelButton.onAction = EventHandler { onCancel() }
-            cancelButton.isCancelButton = true
+            onAction = EventHandler { onCancel() }
+            isCancelButton = true
         }
 
         with(okButton) {
-            okButton.onAction = EventHandler { onOk() }
-            okButton.isDefaultButton = true
+            onAction = EventHandler { onOk() }
+            isDefaultButton = true
         }
 
 
